@@ -1,0 +1,102 @@
+$header-height: 48px;
+$header-shadow: 0 1px 3px rgba(0,0,0,0.1);
+$header-bg: #ffffff;
+$header-border: #dee2e6;
+
+// Mixins comunes
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+/* Header Styles */
+.layout-topbar {
+  background: $header-bg;
+  border-bottom: 1px solid $header-border;
+  height: $header-height;
+  @include flex-center;
+  justify-content: space-between;
+  box-shadow: $header-shadow;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.topbar-left {
+  @include flex-center;
+  gap: 0.75rem;
+}
+
+.layout-topbar-logo {
+  @include flex-center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.topbar-right {
+  @include flex-center;
+  gap: 0.5rem;
+}
+
+/* Menú del navbar optimizado */
+.topbar-menu {
+  border: none;
+  background: transparent;
+  height: $header-height;
+
+  .p-menubar {
+    border: none;
+    background: transparent;
+    height: $header-height;
+    padding: 0;
+  }
+
+  .p-menubar-root-list {
+    height: $header-height;
+    margin: 0;
+    padding: 0;
+    @include flex-center;
+  }
+
+  .p-menuitem {
+    height: $header-height;
+
+    &-link {
+      height: $header-height;
+      padding: 0 0.75rem;
+      @include flex-center;
+      border-radius: 6px;
+    }
+
+    &-text {
+      font-size: 0.875rem;
+    }
+
+    &-icon {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.user-avatar-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e9ecef;
+  border: 1px solid #6c757d;
+}
+
+/* Responsive para header */
+@media (max-width: 768px) {
+  .layout-topbar {
+    padding: 0 0.5rem;
+
+    .layout-topbar-logo span {
+      font-size: 0.875rem;
+    }
+  }
+}

@@ -1,0 +1,136 @@
+// =============================================
+// MIXINS PERSONALIZADOS
+// =============================================
+
+// Mixin para botones personalizados
+@mixin button-variant($bg-color, $border-color: $bg-color, $hover-bg: darken($bg-color, 10%), $hover-border: darken($border-color, 10%), $text-color: #ffffff) {
+  background-color: $bg-color;
+  border-color: $border-color;
+  color: $text-color;
+  
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $hover-border;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+  
+  &:active {
+    background-color: darken($bg-color, 15%);
+    border-color: darken($border-color, 15%);
+    transform: translateY(0);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba($bg-color, 0.25);
+  }
+}
+
+// Mixin para inputs personalizados
+@mixin input-variant($border-color: $primeng-surface-border, $focus-color: $primeng-primary-color) {
+  border: $border-width solid $border-color;
+  border-radius: $border-radius-base;
+  transition: $transition-base;
+  
+  &:focus {
+    border-color: $focus-color;
+    box-shadow: 0 0 0 0.2rem rgba($focus-color, 0.15);
+    outline: none;
+  }
+  
+  &:hover:not(:focus) {
+    border-color: lighten($border-color, -10%);
+  }
+}
+
+// Mixin para cards
+@mixin card-variant($bg-color: $primeng-surface-card, $border-color: $primeng-surface-border) {
+  background-color: $bg-color;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-base;
+  transition: box-shadow $animation-duration-base ease;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// Mixin para responsive design
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: #{$breakpoint-sm - 1px}) { @content; }
+  }
+  @if $breakpoint == sm {
+    @media (min-width: #{$breakpoint-sm}) { @content; }
+  }
+  @if $breakpoint == md {
+    @media (min-width: #{$breakpoint-md}) { @content; }
+  }
+  @if $breakpoint == lg {
+    @media (min-width: #{$breakpoint-lg}) { @content; }
+  }
+  @if $breakpoint == xl {
+    @media (min-width: #{$breakpoint-xl}) { @content; }
+  }
+  @if $breakpoint == xxl {
+    @media (min-width: #{$breakpoint-xxl}) { @content; }
+  }
+}
+
+// Mixin para truncar texto
+@mixin text-truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// Mixin para centrar elementos
+@mixin center($horizontal: true, $vertical: true) {
+  position: absolute;
+  
+  @if ($horizontal and $vertical) {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  } @else if ($horizontal) {
+    left: 50%;
+    transform: translate(-50%, 0);
+  } @else if ($vertical) {
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+}
+
+// Mixin para animaciones
+@mixin animate($name, $duration: $animation-duration-base, $timing: ease-in-out, $delay: 0s) {
+  animation: $name $duration $timing $delay;
+}
+
+// Mixin para transiciones suaves
+@mixin smooth-transition($properties: all, $duration: $animation-duration-base, $timing: ease-in-out) {
+  transition: $properties $duration $timing;
+}
+
+// Mixin para focus visible
+@mixin focus-visible($color: $primeng-primary-color, $offset: 2px) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+  }
+}
+
+// Mixin para glass effect
+@mixin glass-effect($opacity: 0.1, $blur: 10px) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blur);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

@@ -1,0 +1,37 @@
+// =============================================
+// BOOTSTRAP - SOLO UTILIDADES Y GRID
+// =============================================
+
+// Bootstrap Functions y Variables
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// Bootstrap Root y Reboot
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+
+// Bootstrap Typography
+@import "bootstrap/scss/type";
+
+// Bootstrap Grid System
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+
+// Bootstrap Utilities
+@import "bootstrap/scss/utilities/api";
+
+// Bootstrap Helpers
+@import "bootstrap/scss/helpers";
+
+// NOTA: NO importamos componentes de Bootstrap para evitar conflictos con PrimeNG
+// Los siguientes están comentados intencionalmente:
+// @import "bootstrap/scss/buttons";       // ❌ Usamos PrimeNG
+// @import "bootstrap/scss/forms";         // ❌ Usamos PrimeNG  
+// @import "bootstrap/scss/card";          // ❌ Usamos PrimeNG
+// @import "bootstrap/scss/nav";           // ❌ Usamos PrimeNG
+// @import "bootstrap/scss/navbar";        // ❌ Usamos PrimeNG
+// @import "bootstrap/scss/modal";         // ❌ Usamos PrimeNG
+// @import "bootstrap/scss/dropdown";      // ❌ Usamos PrimeNG

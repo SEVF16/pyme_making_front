@@ -1,0 +1,51 @@
+<div class="login-container">
+  <p-toast></p-toast>
+  
+  <div class="login-wrapper">
+    <p-card class="login-card" header="Iniciar Sesión">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Campo de usuario/email -->
+          <app-input
+            [label]="'Correo electrónico'"
+            [placeholder]="'Ingresa tu correo electrónico'"
+            [type]="'email'"
+            [iconName]="userIcon"
+            [control]="loginForm.get('username')"
+            [maxLength]="50"
+            
+            >
+          </app-input>
+        <!-- Campo de contraseña -->
+        <div class="password-field">
+        <app-input
+            [label]="'Contraseña'"
+            [placeholder]="showPassword() ? 'Ingresa tu contraseña' : '••••••'"
+            [type]="'lock'"
+            [iconName]="userIcon"
+            [iconType]="'button'"
+            iconPosition="right"
+            [control]="loginForm.get('password')"
+            [maxLength]="20"
+            (iconClick)="togglePasswordVisibility()"
+            >
+          </app-input>
+        </div>
+
+        <div class="form-actions">
+          <p-button 
+            type="submit" 
+            label="Iniciar Sesión" 
+            [loading]="isLoading()"
+            styleClass="login-button"
+            size="large">
+          </p-button>
+        </div>
+
+        <div class="login-links">
+          <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+          <p>¿No tienes cuenta? <a routerLink="/register" class="register-link">Regístrate</a></p>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+
+// app.component.scss (Solo layout principal)
+// Variables globales
+$header-height: 48px;
+$sidebar-width-collapsed: 60px;
+$sidebar-width-expanded: 180px;
+$layout-transition: 0.3s ease;
+$content-bg: #f8f9fa;
+
+/* Layout Principal */
+.layout-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenido principal */
+.layout-main {
+  flex: 1;
+  margin-top: $header-height;
+  margin-left: $sidebar-width-collapsed;
+  transition: margin-left $layout-transition;
+
+  &.sidebar-expanded {
+    margin-left: $sidebar-width-expanded;
+  }
+}
+
+.layout-content {
+  padding: 32px;
+  min-height: calc(100vh - $header-height);
+  background: $content-bg;
+}
+
+/* Responsive para el layout principal */
+@media (max-width: 768px) {
+  .layout-main {
+    margin-left: 0;
+
+    &.sidebar-expanded {
+      margin-left: 0;
+    }
+  }
+  
+  .layout-content {
+    padding: 1rem;
+  }
+}

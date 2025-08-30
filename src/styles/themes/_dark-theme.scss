@@ -1,0 +1,66 @@
+// =============================================
+// TEMA OSCURO
+// =============================================
+
+[data-theme="dark"] {
+  // ===== SUPERFICIES INVERTIDAS =====
+  --surface-0: #{$primeng-dark-surface-0};
+  --surface-50: #{$primeng-dark-surface-50};
+  --surface-100: #{$primeng-dark-surface-100};
+  --surface-200: #{$primeng-dark-surface-200};
+  --surface-300: #{$primeng-dark-surface-300};
+  --surface-400: #{$primeng-dark-surface-400};
+  --surface-500: #{$primeng-dark-surface-500};
+  --surface-600: #{$primeng-dark-surface-600};
+  --surface-700: #{$primeng-dark-surface-700};
+  --surface-800: #{$primeng-dark-surface-800};
+  --surface-900: #{$primeng-dark-surface-900};
+
+  // ===== COLORES DE TEXTO INVERTIDOS =====
+  --text-color: #{$primeng-dark-text-color};
+  --text-color-secondary: #{$primeng-dark-text-color-secondary};
+  --text-color-muted: #{$primeng-dark-text-color-muted};
+
+  // ===== ESTADOS DE SUPERFICIE =====
+  --surface-ground: var(--surface-0);
+  --surface-section: var(--surface-50);
+  --surface-card: var(--surface-50);
+  --surface-overlay: var(--surface-50);
+  --surface-border: var(--surface-200);
+  --surface-hover: var(--surface-100);
+
+  // ===== SOMBRAS AJUSTADAS PARA DARK MODE =====
+  --box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+// Auto detección de preferencia del sistema
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --surface-0: #{$primeng-dark-surface-0};
+    --surface-50: #{$primeng-dark-surface-50};
+    --surface-100: #{$primeng-dark-surface-100};
+    --surface-200: #{$primeng-dark-surface-200};
+    --surface-300: #{$primeng-dark-surface-300};
+    --surface-400: #{$primeng-dark-surface-400};
+    --surface-500: #{$primeng-dark-surface-500};
+    --surface-600: #{$primeng-dark-surface-600};
+    --surface-700: #{$primeng-dark-surface-700};
+    --surface-800: #{$primeng-dark-surface-800};
+    --surface-900: #{$primeng-dark-surface-900};
+
+    --text-color: #{$primeng-dark-text-color};
+    --text-color-secondary: #{$primeng-dark-text-color-secondary};
+    --text-color-muted: #{$primeng-dark-text-color-muted};
+
+    --surface-ground: var(--surface-0);
+    --surface-section: var(--surface-50);
+    --surface-card: var(--surface-50);
+    --surface-overlay: var(--surface-50);
+    --surface-border: var(--surface-200);
+    --surface-hover: var(--surface-100);
+  }
+}

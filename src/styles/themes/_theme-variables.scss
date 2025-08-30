@@ -1,0 +1,85 @@
+// =============================================
+// VARIABLES DE TEMA CON CSS CUSTOM PROPERTIES
+// =============================================
+
+:root {
+  // ===== COLORES PRINCIPALES =====
+  --primary-50: #{$color-primary-50};
+  --primary-100: #{$color-primary-100};
+  --primary-200: #{$color-primary-200};
+  --primary-300: #{$color-primary-300};
+  --primary-400: #{$color-primary-400};
+  --primary-500: #{$color-primary-500};
+  --primary-600: #{$color-primary-600};
+  --primary-700: #{$color-primary-700};
+  --primary-800: #{$color-primary-800};
+  --primary-900: #{$color-primary-900};
+  
+  --primary-color: var(--primary-500);
+  --primary-color-text: #ffffff;
+
+  // ===== SUPERFICIES =====
+  --surface-0: #{$primeng-surface-0};
+  --surface-50: #{$primeng-surface-50};
+  --surface-100: #{$primeng-surface-100};
+  --surface-200: #{$primeng-surface-200};
+  --surface-300: #{$primeng-surface-300};
+  --surface-400: #{$primeng-surface-400};
+  --surface-500: #{$primeng-surface-500};
+  --surface-600: #{$primeng-surface-600};
+  --surface-700: #{$primeng-surface-700};
+  --surface-800: #{$primeng-surface-800};
+  --surface-900: #{$primeng-surface-900};
+
+  // ===== COLORES DE TEXTO =====
+  --text-color: #{$primeng-text-color};
+  --text-color-secondary: #{$primeng-text-color-secondary};
+  --text-color-muted: #{$primeng-text-color-muted};
+
+  // ===== ESTADOS DE SUPERFICIE =====
+  --surface-ground: #{$primeng-surface-ground};
+  --surface-section: #{$primeng-surface-section};
+  --surface-card: #{$primeng-surface-card};
+  --surface-overlay: #{$primeng-surface-overlay};
+  --surface-border: #{$primeng-surface-border};
+  --surface-hover: #{$primeng-surface-hover};
+
+  // ===== COLORES SEMÁNTICOS =====
+  --success-color: #{$color-success};
+  --warning-color: #{$color-warning};
+  --danger-color: #{$color-danger};
+  --info-color: #{$color-info};
+
+  // ===== TIPOGRAFÍA =====
+  --font-family: #{$font-family-base};
+  --font-size-xs: #{$font-size-xs};
+  --font-size-sm: #{$font-size-sm};
+  --font-size-base: #{$font-size-base};
+  --font-size-lg: #{$font-size-lg};
+  --font-size-xl: #{$font-size-xl};
+  --font-size-2xl: #{$font-size-2xl};
+  --font-size-3xl: #{$font-size-3xl};
+
+  // ===== ESPACIADO =====
+  --spacing-1: #{$spacing-1};
+  --spacing-2: #{$spacing-2};
+  --spacing-3: #{$spacing-3};
+  --spacing-4: #{$spacing-4};
+  --spacing-5: #{$spacing-5};
+  --spacing-6: #{$spacing-6};
+  --spacing-8: #{$spacing-8};
+  --spacing-10: #{$spacing-10};
+  --spacing-12: #{$spacing-12};
+
+  // ===== BORDES Y SOMBRAS =====
+  --border-radius: #{$border-radius-base};
+  --border-radius-sm: #{$border-radius-sm};
+  --border-radius-lg: #{$border-radius-lg};
+  --border-radius-xl: #{$border-radius-xl};
+  
+  --box-shadow-sm: #{$shadow-sm};
+  --box-shadow: #{$shadow-base};
+  --box-shadow-md: #{$shadow-md};
+  --box-shadow-lg: #{$shadow-lg};
+  --box-shadow-xl: #{$shadow-xl};
+}

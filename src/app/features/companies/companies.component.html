@@ -1,0 +1,51 @@
+  <div class="container-fluid p-0 d-flex flex-column gap-3">
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h1 class="h3 mb-0 d-flex align-items-center gap-2">
+            <lucide-angular [img]="Building2Icon" size="24" class="text-primary"></lucide-angular>
+            Gestión de Empresas
+          </h1>
+          <p class="text-muted mb-0">Administra y configura las empresas del sistema</p>
+        </div>
+        
+        <!-- Toolbar Actions -->
+        <app-button-lib
+        [configuration]="{
+          text: 'Nueva Empresa',
+          icon: PlusIcon,              
+          variant: 'primary',          
+          size: 'normal',             
+    iconPosition: 'left',
+    
+        }">
+        </app-button-lib>
+      </div>
+
+      <!-- Enhanced Data Table -->
+      <app-custom-data-table
+        [data]="companies"
+        [columns]="tableColumns()"
+        [config]="tableConfig()"
+        (pageChange)="onPageChange($event)">
+      </app-custom-data-table>
+    </div>
+
+        <div class="form-container">
+      <h2>Ejemplo de Formulario con Input Reutilizable</h2>
+      
+
+        
+        <!-- Input básico sin icono -->
+        <div class="form-field">
+          <app-input
+            [label]="'Nombre Completo'"
+            [placeholder]="'Ingresa tu nombre'"
+            [control]="userForm.get('fullName')"
+   
+            [minLength]="2"
+            >
+          </app-input>
+        </div>
+        
+    

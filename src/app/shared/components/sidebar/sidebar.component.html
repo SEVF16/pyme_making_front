@@ -1,0 +1,59 @@
+<div class="layout-sidebar" [class.expanded]="isExpanded">
+  <nav class="sidebar-nav">
+    <div class="sidebar-menu">
+      @for (item of menuItems; track trackByFn($index, item)) {
+        <div class="menu-item">
+          
+          <!-- Item sin submenús -->
+          @if (!item.items) {
+            <div class="menu-link"
+                 [routerLink]="item.routerLink"
+                 routerLinkActive="active"
+                 [pTooltip]="item.label"
+                 tooltipPosition="right"
+                 [showDelay]="isExpanded ? 9999 : 500">
+              <div class="menu-icon">
+                <lucide-angular [img]="getIconComponent(item.icon)" size="20"></lucide-angular>
+              </div>
+              <span class="menu-label" [class.visible]="isExpanded">{{item.label}}</span>
+            </div>
+          }
+          
+          <!-- Item con submenús -->
+          @if (item.items) {
+            <div class="menu-group">
+              <div class="menu-link menu-parent"
+                   (click)="toggleMenuItem(item)"
+                   [pTooltip]="item.label"
+                   tooltipPosition="right"
+                   [showDelay]="isExpanded ? 9999 : 500">
+                <div class="menu-icon">
+                  <lucide-angular [img]="getIconComponent(item.icon)" size="20"></lucide-angular>
+                </div>
+                <span class="menu-label" [class.visible]="isExpanded">{{item.label}}</span>
+                <div class="menu-arrow" [class.visible]="isExpanded" [class.rotated]="item.expanded">
+                  <i class="pi pi-chevron-down"></i>
+                </div>
+              </div>
+              
+              <!-- Submenús -->
+              <div class="submenu" [class.expanded]="item.expanded && isExpanded">
+                @for (subitem of item.items; track trackByFn($index, subitem)) {
+                  <div class="submenu-item"
+                       [routerLink]="subitem.routerLink"
+                       routerLinkActive="active">
+                    <div class="submenu-icon">
+                      <lucide-angular [img]="getIconComponent(subitem.icon)" size="16"></lucide-angular>
+                    </div>
+                    <span class="submenu-label">{{subitem.label}}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          
+        </div>
+      }
+    </div>
+  </nav>
+</div>

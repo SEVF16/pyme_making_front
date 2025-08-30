@@ -1,0 +1,80 @@
+<!-- custom-data-table.component.html - Simplificado -->
+<div class="custom-datatable-wrapper">
+  <!-- Data Table -->
+  <p-table 
+    #dataTable
+    [value]="data"
+    [columns]="visibleColumns()"
+    [paginator]="config.showPaginator !== false"
+    [rows]="tableState().rows"
+    [totalRecords]="tableState().totalRecords"
+    [lazy]="config.lazy || false"
+    [first]="tableState().first"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first} - {last}"
+    [rowsPerPageOptions]="config.rowsPerPageOptions || [10, 25, 50, 100]"
+    [responsive]="config.responsive !== false"
+    [dataKey]="config.dataKey || 'id'"
+    [rowTrackBy]="trackBy"
+    [styleClass]="tableStyleClass()"
+    (onLazyLoad)="onLazyLoad($event)"
+    (onPage)="onPageChange($event)">
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        @for (col of visibleColumns(); track col.field) {
+          <th 
+            [ngStyle]="getColumnStyle(col)"
+            [class]="getColumnClass(col)">
+            <span>{{ col.header }}</span>
+          </th>
+        }
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+      <tr [class]="getRowClass(rowData, rowIndex)">
+        @for (col of visibleColumns(); track col.field) {
+          <td 
+            [ngStyle]="getColumnStyle(col)"
+            [class]="getColumnClass(col)">
+            
+            <!-- Actions Content -->
+            @if (col.actions) {
+              <div class="d-flex gap-1">
+                @for (action of getVisibleActions(col.actions, rowData); track action.label) {
+                  <p-button
+                    
+                    [outlined]="true"
+                    size="small"
+                    [disabled]="isActionDisabled(action, rowData)"
+                    [pTooltip]="action.tooltip || action.label"
+                    (onClick)="executeAction(action, rowData, rowIndex)">
+                    <lucide-angular [img]="getActionIcon(action.icon)" size="16"></lucide-angular>
+                  </p-button>
+                }
+              </div>
+            } @else {
+              <!-- Text Content - Todo tratado como string -->
+              <span>{{ getFieldValue(rowData, col) }}</span>
+            }
+          </td>
+        }
+      </tr>
+    </ng-template>
+
+    <!-- Empty State -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="visibleColumns().length" class="text-center py-4">
+          <div class="empty-state">
+            <h6 class="text-muted mb-2">{{ config.emptyMessage || 'No se encontraron datos' }}</h6>
+            <p class="text-muted small mb-0">No hay registros para mostrar</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

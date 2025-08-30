@@ -1,0 +1,82 @@
+<div [class]="containerClass()">
+  
+  <!-- Label -->
+  @if (label()) {
+    <label [for]="inputId()" class="input-label">{{ label() }}</label>
+  }
+  
+  <!-- Input Wrapper -->
+  <div [class]="inputWrapperClass()">
+    
+    <!-- Icono izquierdo -->
+    @if (iconName() && iconPosition() === 'left') {
+      <span 
+        class="input-icon input-icon-left"
+        [class.clickable]="isIconClickable()"
+        [class.non-clickable]="!isIconClickable()"
+        (click)="onIconClick($event)"
+        [title]="isIconClickable() ? 'Hacer clic' : ''">
+        <lucide-angular [img]="iconName()!" [size]="iconSize()"></lucide-angular>
+      </span>
+    }
+    
+    <!-- Input -->
+    <input
+      pInputText
+      [id]="inputId()"
+      [formControl]="control()"
+      [placeholder]="placeholder()"
+      [readonly]="readonly()"
+      [attr.name]="inputId()"
+      [attr.maxlength]="maxLength()"
+      [attr.minlength]="minLength()"
+      [type]="type()"
+      class="reusable-input"
+    />
+    
+    <!-- Icono derecho -->
+    @if (iconName() && iconPosition() === 'right') {
+      <span 
+        class="input-icon input-icon-right"
+        [class.clickable]="isIconClickable()"
+        [class.non-clickable]="!isIconClickable()"
+        (click)="onIconClick($event)"
+        [title]="isIconClickable() ? 'Hacer clic' : ''">
+        <lucide-angular [img]="iconName()!" [size]="iconSize()"></lucide-angular>
+      </span>
+    }
+    
+  </div>
+
+  
+  <!-- ERRORES DEL FORMULARIO REACTIVO -->
+@if (control() && control()!.errors && (control()!.dirty || control()!.touched)){
+    <div class="error-messages">
+      @if (control()!.errors!['required']) {
+        <small class="p-error">{{ label() || 'Este campo' }} es requerido</small>
+      }
+      @if (control()!.errors!['email']) {
+        <small class="p-error">Ingresa un email válido</small>
+      }
+      @if (control()!.errors!['minlength']) {
+        <small class="p-error">Mínimo {{ control()!.errors!['minlength'].requiredLength }} caracteres</small>
+      }
+      @if (control()!.errors!['maxlength']) {
+        <small class="p-error">Máximo {{ control()!.errors!['maxlength'].requiredLength }} caracteres</small>
+      }
+      @if (control()!.errors!['pattern']) {
+        <small class="p-error">Formato no válido</small>
+      }
+      @if (control()!.errors!['min']) {
+        <small class="p-error">El valor mínimo es {{ control()!.errors!['min'].min }}</small>
+      }
+      @if (control()!.errors!['max']) {
+        <small class="p-error">El valor máximo es {{ control()!.errors!['max'].max }}</small>
+      }
+      @if (control()!.errors!['passwordMismatch']) {
+        <small class="p-error">Las contraseñas no coinciden</small>
+      }
+    </div>
+  }
+  
+</div>

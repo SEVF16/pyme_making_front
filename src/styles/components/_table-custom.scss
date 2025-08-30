@@ -1,0 +1,427 @@
+// src/styles.scss - DataTable con altura fija y scroll - OPTIMIZADO
+
+// ===========================
+// VARIABLES CENTRALIZADAS
+// ===========================
+$table-border-color: #dee2e6;
+$table-border-radius: 8px;
+$table-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$table-header-bg: #f8f9fa;
+$table-text-color: #495057;
+$table-secondary-color: #6b7280;
+$table-zebra-bg: #f8f9fa;
+$table-hover-bg: #e3f2fd;
+$table-cell-height: 48px;
+$table-cell-padding: 0 12px;
+$transition-base: all 0.2s ease;
+
+// Alturas responsivas
+$heights: (
+  'mobile-small': 300px,
+  'mobile-large': 350px,
+  'tablet': 450px,
+  'desktop-small': 450px,
+  'desktop-large': 543px,
+  'default': 500px
+);
+
+// ===========================
+// MIXINS REUTILIZABLES
+// ===========================
+@mixin flex-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@mixin table-cell-base {
+  padding: $table-cell-padding;
+  vertical-align: middle;
+  height: $table-cell-height;
+}
+
+@mixin button-icon-base {
+  border: none;
+  background: transparent;
+  padding: 6px;
+  height: 28px;
+  width: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  transition: $transition-base;
+  
+  svg, lucide-angular svg {
+    color: #9ca3af;
+    transition: color 0.2s ease;
+  }
+}
+
+@mixin scrollbar-custom {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+// ===========================
+// ESTILOS PRINCIPALES
+// ===========================
+.custom-datatable-wrapper {
+  
+  .p-datatable {
+    border: 1px solid $table-border-color !important;
+    border-radius: $table-border-radius !important;
+    overflow: hidden !important;
+    box-shadow: $table-shadow !important;
+    height: map-get($heights, 'default') !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    // ===========================
+    // HEADER FIJO (NO SCROLL)
+    // ===========================
+    .p-datatable-header-box,
+    .p-datatable-thead {
+      flex-shrink: 0 !important;
+      position: relative !important;
+      z-index: 10 !important;
+    }
+
+    .p-datatable-thead > tr > th {
+      @include table-cell-base;
+      border-bottom: 2px solid $table-border-color !important;
+      background: $table-header-bg !important;
+      font-weight: 600 !important;
+      text-align: start !important;
+      color: $table-text-color !important;
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 10 !important;
+    }
+
+    // ===========================
+    // ÁREA SCROLLEABLE DEL CONTENIDO
+    // ===========================
+    .p-datatable-wrapper {
+      flex: 1 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      @include scrollbar-custom;
+    }
+
+    // ===========================
+    // FILAS DEL CUERPO
+    // ===========================
+    .p-datatable-tbody > tr {
+      
+      > td {
+        @include table-cell-base;
+        border-bottom: 1px solid #e9ecef !important;
+      }
+
+      &:nth-child(even) {
+        background-color: $table-zebra-bg !important;
+      }
+
+      &:hover {
+        background-color: $table-hover-bg !important;
+        transition: background-color 0.2s ease !important;
+      }
+    }
+
+    // ===========================
+    // BOTONES DE ACCIÓN
+    // ===========================
+    .p-button {
+      @include button-icon-base;
+
+      &:hover:not(:disabled) {
+        background-color: #f3f4f6 !important;
+        transform: scale(1.1) !important;
+        
+        // Colores específicos por tipo de botón
+        &.p-button-primary svg { color: #3b82f6 !important; }
+        &.p-button-secondary svg { color: #6b7280 !important; }
+        &.p-button-danger svg { color: #ef4444 !important; }
+        &.p-button-success svg { color: #10b981 !important; }
+        &.p-button-warning svg { color: #f59e0b !important; }
+        &.p-button-info svg { color: #06b6d4 !important; }
+      }
+
+      &:focus,
+      &:active {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+        outline: none !important;
+      }
+
+      &:disabled {
+        opacity: 0.4 !important;
+        cursor: not-allowed !important;
+        
+        svg {
+          color: #d1d5db !important;
+        }
+        
+        &:hover {
+          background: transparent !important;
+          transform: none !important;
+        }
+      }
+
+      // Limpieza de estilos no deseados
+      &.p-button-outlined {
+        border: none !important;
+        background: transparent !important;
+      }
+
+      .p-button-label {
+        display: none !important;
+      }
+
+      .p-button-icon {
+        margin: 0 !important;
+      }
+    }
+  }
+
+  // ===========================
+  // ALINEACIÓN DE ACCIONES
+  // ===========================
+  .d-flex {
+    @include flex-center;
+    gap: 4px !important;
+  }
+
+  // ===========================
+  // 🔥 PAGINADOR FIJO (PARTE INFERIOR)
+  // Estos estilos se aplican al componente p-paginator de PrimeNG
+  // que se renderiza automáticamente en la parte inferior de la tabla
+  // ===========================
+.p-paginator {
+    background: $table-header-bg !important;
+    border: none !important;
+    border-top: 1px solid $table-border-color !important;
+    @include flex-center;
+    gap: 12px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 10 !important;
+
+    // 🔥 OCULTAR COMPLETAMENTE LOS NÚMEROS DE PÁGINA
+    .p-paginator-pages {
+      display: none !important;
+    }
+
+    // 🔥 OCULTAR BOTONES DE PRIMERA Y ÚLTIMA PÁGINA
+    .p-paginator-first,
+    .p-paginator-last {
+      display: none !important;
+    }
+
+    // 🔥 OCULTAR OPCIONES DE FILAS POR PÁGINA
+    .p-paginator-rpp-options {
+      display: none !important;
+    }
+
+    // 🔥 MOSTRAR Y ESTILIZAR EL TEXTO DE ELEMENTOS ACTUALES
+    .p-paginator-current {
+     
+      font-size: 14px !important;
+      color: $table-text-color !important;
+      font-weight: 500 !important;
+      margin: 0 !important;
+      order: 2 !important; // Colocar en el centro
+    }
+
+    // 🔥 BOTONES DE NAVEGACIÓN ANTERIOR/SIGUIENTE (<, >)
+    .p-paginator-prev {
+      background: transparent !important;
+      border: none !important;
+      color: $table-secondary-color !important;
+      padding: 8px !important;
+      margin: 0 !important;
+      height: 40px !important;
+      width: 40px !important;
+      @include flex-center;
+      border-radius: 50% !important;
+      transition: $transition-base !important;
+      font-size: 14px !important;
+      order: 1 !important; // Colocar a la izquierda
+
+      &:hover:not(.p-disabled) {
+        background-color: #ffffff !important;
+        color: #374151 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      }
+
+      &.p-disabled {
+        color: #d1d5db !important;
+        cursor: not-allowed !important;
+        opacity: 0.4 !important;
+      }
+    }
+
+    .p-paginator-next {
+      background: transparent !important;
+      border: none !important;
+      color: $table-secondary-color !important;
+      padding: 8px !important;
+      margin: 0 !important;
+      height: 40px !important;
+      width: 40px !important;
+      @include flex-center;
+      border-radius: 50% !important;
+      transition: $transition-base !important;
+      font-size: 14px !important;
+      order: 3 !important; // Colocar a la derecha
+
+      &:hover:not(.p-disabled) {
+        background-color: #ffffff !important;
+        color: #374151 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      }
+
+      &.p-disabled {
+        color: #d1d5db !important;
+        cursor: not-allowed !important;
+        opacity: 0.4 !important;
+      }
+    }
+
+    // 🔥 ORGANIZAR EL LAYOUT: [<] [1-25 de 150 elementos] [>]
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+
+    // 🔥 RESPONSIVE: En móviles apilar verticalmente
+    @media (max-width: 576px) {
+      flex-direction: column !important;
+      gap: 8px !important;
+      padding: 10px !important;
+
+      .p-paginator-current {
+        order: 1 !important;
+        font-size: 12px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .p-paginator-prev {
+        order: 2 !important;
+      }
+
+      .p-paginator-next {
+        order: 3 !important;
+      }
+
+      // Contenedor para los botones en móvil
+      .p-paginator-prev,
+      .p-paginator-next {
+        height: 36px !important;
+        width: 36px !important;
+      }
+    }
+  }
+}
+
+// ===========================
+// CLASES DE VARIANTES DE ALTURA
+// ===========================
+@each $variant, $height in (
+  'table-small': 300px,
+  'table-medium': 400px,
+  'table-large': 600px,
+  'table-xl': 700px
+) {
+  .custom-datatable-wrapper.#{$variant} {
+    .p-datatable {
+      height: $height !important;
+    }
+  }
+}
+
+// Altura automática basada en viewport
+.custom-datatable-wrapper.table-viewport {
+  .p-datatable {
+    height: calc(100vh - 200px) !important;
+  }
+}
+
+// ===========================
+// RESPONSIVE DESIGN
+// ===========================
+@media (max-width: 480px) {
+  .custom-datatable-wrapper .p-datatable {
+    height: map-get($heights, 'mobile-small') !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .custom-datatable-wrapper .p-datatable {
+    height: map-get($heights, 'mobile-large') !important;
+    
+    .p-datatable-tbody > tr > td,
+    .p-datatable-thead > tr > th {
+      padding: 8px !important;
+      font-size: 12px !important;
+      height: 44px !important;
+    }
+
+    .p-button {
+      padding: 4px 6px !important;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .custom-datatable-wrapper .p-datatable {
+    height: map-get($heights, 'tablet') !important;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .custom-datatable-wrapper .p-datatable {
+    height: map-get($heights, 'desktop-small') !important;
+  }
+}
+
+@media (min-width: 1441px) {
+  .custom-datatable-wrapper .p-datatable {
+    height: map-get($heights, 'desktop-large') !important;
+  }
+}
+
+// ===========================
+// CLASES UTILITARIAS
+// ===========================
+.scrollable-table {
+  .p-datatable-wrapper {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+  }
+}
+
+.fixed-header-table {
+  .p-datatable-thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    background: $table-header-bg !important;
+  }
+}

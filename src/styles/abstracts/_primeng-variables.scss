@@ -1,0 +1,68 @@
+// =============================================
+// VARIABLES ESPECÍFICAS PARA PRIMENG
+// =============================================
+
+// NOTA: Estas variables sobrescriben las de PrimeNG
+// Se aplican usando CSS Custom Properties para theming dinámico
+
+// Colores principales de PrimeNG
+$primeng-primary-color: $color-primary-500;
+$primeng-primary-color-text: #ffffff;
+
+// Superficies
+$primeng-surface-0: #ffffff;
+$primeng-surface-50: $gray-50;
+$primeng-surface-100: $gray-100;
+$primeng-surface-200: $gray-200;
+$primeng-surface-300: $gray-300;
+$primeng-surface-400: $gray-400;
+$primeng-surface-500: $gray-500;
+$primeng-surface-600: $gray-600;
+$primeng-surface-700: $gray-700;
+$primeng-surface-800: $gray-800;
+$primeng-surface-900: $gray-900;
+
+// Colores de texto
+$primeng-text-color: $gray-700;
+$primeng-text-color-secondary: $gray-500;
+$primeng-text-color-muted: $gray-400;
+
+// Estados de superficie
+$primeng-surface-ground: $primeng-surface-0;
+$primeng-surface-section: $primeng-surface-50;
+$primeng-surface-card: $primeng-surface-0;
+$primeng-surface-overlay: $primeng-surface-0;
+$primeng-surface-border: $primeng-surface-200;
+$primeng-surface-hover: $primeng-surface-50;
+
+// Componentes específicos
+$primeng-button-padding-y: $spacing-2;
+$primeng-button-padding-x: $spacing-4;
+$primeng-button-border-radius: $border-radius-base;
+$primeng-button-font-weight: $font-weight-medium;
+
+$primeng-input-padding-y: $spacing-2;
+$primeng-input-padding-x: $spacing-3;
+$primeng-input-border-radius: $border-radius-base;
+$primeng-input-border-width: $border-width;
+
+$primeng-card-border-radius: $border-radius-lg;
+$primeng-card-shadow: $shadow-base;
+$primeng-card-border: $border-width solid $primeng-surface-border;
+
+// Tema oscuro para PrimeNG
+$primeng-dark-surface-0: $gray-900;
+$primeng-dark-surface-50: $gray-800;
+$primeng-dark-surface-100: $gray-700;
+$primeng-dark-surface-200: $gray-600;
+$primeng-dark-surface-300: $gray-500;
+$primeng-dark-surface-400: $gray-400;
+$primeng-dark-surface-500: $gray-300;
+$primeng-dark-surface-600: $gray-200;
+$primeng-dark-surface-700: $gray-100;
+$primeng-dark-surface-800: $gray-50;
+$primeng-dark-surface-900: #ffffff;
+
+$primeng-dark-text-color: $gray-100;
+$primeng-dark-text-color-secondary: $gray-300;
+$primeng-dark-text-color-muted: $gray-400;

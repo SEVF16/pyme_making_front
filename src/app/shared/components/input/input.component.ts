@@ -1,0 +1,81 @@
+// input.component.ts - FormControl como Input
+import { CommonModule } from '@angular/common';
+import { Component, input, computed, output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { LucideAngularModule, LucideIconData } from 'lucide-angular';
+import { InputTextModule } from 'primeng/inputtext';
+
+export type IconPosition = 'left' | 'right';
+export type IconType = 'icon' | 'button';
+@Component({
+  selector: 'app-input',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    LucideAngularModule
+  ],
+  templateUrl: './input.component.html',
+  styleUrl: './input.component.scss'
+})
+export class InputComponent {
+  
+  // Inputs del componente
+  label = input<string>('');
+  placeholder = input<string>('');
+  type = input<string>('text');
+  iconName = input<LucideIconData | null>(null);
+  iconPosition = input<IconPosition>('left');
+  iconSize = input<number>(16);
+  iconType = input<IconType>('icon'); 
+  size = input<'small' | 'medium' | 'large'>('medium');
+  readonly = input<boolean>(false);
+  maxLength = input<number | null>(null);
+  minLength = input<number | null>(null);
+  customClass = input<string>('');
+  
+  // FormControl como input - ESTE ES EL PUNTO CLAVE
+  control = input.required<any | FormControl>();
+  iconClick = output<void>();
+  // ID único para el input
+  private inputIdValue = `input-${Math.random().toString(36).substr(2, 9)}`;
+  inputId = computed(() => this.inputIdValue);
+  
+  // Clases computadas
+  containerClass = computed(() => {
+    const classes = ['reusable-input-container'];
+    if (this.customClass()) classes.push(this.customClass());
+    return classes.join(' ');
+  });
+    hasValidControl = computed(() => {
+    return this.control() !== null && this.control() instanceof FormControl;
+  });
+  inputWrapperClass = computed(() => {
+    const classes = ['input-wrapper'];
+    
+    // Agregar clase según la posición del icono
+    if (this.iconName()) {
+      classes.push(this.iconPosition() === 'left' ? 'has-icon-left' : 'has-icon-right');
+    }
+    
+    // Agregar clase de tamaño
+    if (this.size() !== 'medium') {
+      classes.push(`input-${this.size()}`);
+    }
+    
+    return classes.join(' ');
+  });
+
+    onIconClick(event: Event): void {
+    event.stopPropagation();
+    
+    // Solo emitir el evento si el ícono es de tipo botón
+    if (this.iconType() === 'button') {
+      this.iconClick.emit();
+    }
+  }
+
+  // Verificar si el ícono es clickeable (tipo botón)
+  isIconClickable = computed(() => this.iconType() === 'button');
+}

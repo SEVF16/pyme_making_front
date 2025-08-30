@@ -1,0 +1,45 @@
+    <p-button
+      [label]="config().text"
+      [severity]="config().variant || 'primary'"
+      [size]="config().size || 'normal'"
+      [disabled]="config().disabled || config().loading"
+      [loading]="config().loading"
+      [outlined]="isOutlined()"
+      [text]="isTextButton()"
+      [raised]="config().variant === 'raised'"
+      [rounded]="config().variant === 'rounded'"
+      [link]="config().variant === 'link'"
+      [type]="config().type || 'button'"
+      [styleClass]="getStyleClass()"
+      [id]="config().id"
+      [ariaLabel]="config().ariaLabel || config().text"
+      [title]="config().tooltip"
+      (onClick)="onClick()">
+      
+      <!-- Left Icon -->
+<!-- Left Icon -->
+@if (config().icon && (config().iconPosition === 'left' || !config().iconPosition) && config().iconPosition !== 'only') {
+  <lucide-angular 
+    [name]="config().icon!" 
+    [size]="config().iconSize || 16">
+  </lucide-angular>
+}
+
+<!-- Right Icon -->
+@if (config().icon && config().iconPosition === 'right' && config().iconPosition !== 'only') {
+  <lucide-angular 
+    [name]="config().icon!" 
+    [size]="config().iconSize || 16">
+  </lucide-angular>
+}
+
+<!-- Icon Only -->
+@if (config().icon && config().iconPosition === 'only') {
+  <lucide-angular 
+    [name]="config().icon!" 
+    [size]="config().iconSize || 16">
+  </lucide-angular>
+}
+
+      
+    </p-button>

@@ -1,0 +1,21 @@
+// =============================================
+// MAIN STYLESHEET - ORDEN DE IMPORTACIÓN
+// =============================================
+
+// 1. Abstracts (variables, mixins, funciones)
+@import './abstracts/variables';
+@import './abstracts/mixins';
+@import './abstracts/primeng-variables';
+
+@import './components/app';
+@import './components/table-custom';
+@import './components/sidebar';
+@import './components/header';
+// 2. Vendors (librerías externas)
+@import 'vendors/bootstrap';
+@import 'vendors/primeng';
+
+
+// 4. Themes (temas y variables de color)
+@import 'themes/dark-theme';
+@import 'themes/theme-variables';
