@@ -8,9 +8,8 @@
           <app-input
             [label]="'Correo electrónico'"
             [placeholder]="'Ingresa tu correo electrónico'"
-            [type]="'email'"
             [iconName]="userIcon"
-            [control]="loginForm.get('username')"
+            [control]="loginForm.get('email')"
             [maxLength]="50"
             
             >
@@ -20,7 +19,6 @@
         <app-input
             [label]="'Contraseña'"
             [placeholder]="showPassword() ? 'Ingresa tu contraseña' : '••••••'"
-            [type]="'lock'"
             [iconName]="userIcon"
             [iconType]="'button'"
             iconPosition="right"

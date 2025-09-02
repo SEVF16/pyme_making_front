@@ -1,8 +1,9 @@
-@if (isLoginPage) {
-  <!-- Solo mostrar el router outlet para login -->
+<!-- app.component.html -->
+@if (!isAuthenticated && isLoginPage) {
+  <!-- Solo mostrar el router outlet para login cuando no está autenticado Y está en página de login -->
   <router-outlet></router-outlet>
-} @else {
-  <!-- Layout normal con header y sidebar -->
+} @else if (isAuthenticated && !isLoginPage) {
+  <!-- Layout normal con header y sidebar cuando está autenticado Y NO está en página de login -->
   <div class="layout-wrapper">
     <!-- Header Component -->
     <app-header (toggleSidebar)="onToggleSidebar()"></app-header>
@@ -16,5 +17,10 @@
         <router-outlet></router-outlet>
       </div>
     </div>
+  </div>
+} @else {
+  <!-- Estado de carga o transición -->
+  <div class="loading-container">
+    <p>Verificando autenticación...</p>
   </div>
 }

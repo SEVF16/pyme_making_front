@@ -4,12 +4,17 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideClientHydration } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { headersInterceptor } from './interceptors/headers.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideAnimations() // ✅ Agrega esta línea para las animaciones
+    provideAnimations(),
+    provideHttpClient(
+      withInterceptors([headersInterceptor])
+    )
   ]
 };
