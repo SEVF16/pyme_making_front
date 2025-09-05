@@ -4,7 +4,7 @@
 // VARIABLES CENTRALIZADAS
 // ===========================
 $table-border-color: #dee2e6;
-$table-border-radius: 8px;
+$table-border-radius: 12px;
 $table-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 $table-header-bg: #f8f9fa;
 $table-text-color: #495057;
@@ -85,7 +85,7 @@ $heights: (
     border: 1px solid $table-border-color !important;
     border-radius: $table-border-radius !important;
     overflow: hidden !important;
-    box-shadow: $table-shadow !important;
+
     height: map-get($heights, 'default') !important;
     display: flex !important;
     flex-direction: column !important;
@@ -149,8 +149,8 @@ $heights: (
       @include button-icon-base;
 
       &:hover:not(:disabled) {
-        background-color: #f3f4f6 !important;
-        transform: scale(1.1) !important;
+       
+  
         
         // Colores específicos por tipo de botón
         &.p-button-primary svg { color: #3b82f6 !important; }

@@ -17,12 +17,12 @@ $content-bg: #f8f9fa;
 /* Contenido principal */
 .layout-main {
   flex: 1;
-  margin-top: $header-height;
-  margin-left: $sidebar-width-collapsed;
-  transition: margin-left $layout-transition;
+  padding-top: $header-height;
+  padding-left: $sidebar-width-collapsed;
+  transition: padding-left $layout-transition;
 
   &.sidebar-expanded {
-    margin-left: $sidebar-width-expanded;
+    padding-left: $sidebar-width-expanded;
   }
 }
 
@@ -35,10 +35,10 @@ $content-bg: #f8f9fa;
 /* Responsive para el layout principal */
 @media (max-width: 768px) {
   .layout-main {
-    margin-left: 0;
+    padding-left: 0;
 
     &.sidebar-expanded {
-      margin-left: 0;
+      padding-left: 0;
     }
   }
   

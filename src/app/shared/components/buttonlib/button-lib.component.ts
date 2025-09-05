@@ -18,7 +18,7 @@ export class ButtonLibComponent {
   }
   
   // Output events
-  @Output() buttonClick = new EventEmitter<Event>();
+  @Output() buttonClick = new EventEmitter<void>();
   
   // State
   readonly config = signal<ButtonConfig>({
@@ -110,8 +110,8 @@ export class ButtonLibComponent {
 
   // Event handler
   onClick(): void {
-    if (!this.config().disabled && !this.config().loading) {
+
       this.buttonClick.emit();
-    }
+
   }
 }

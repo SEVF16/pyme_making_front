@@ -1,0 +1,110 @@
+// En tu styles.scss (archivo global)
+.sidebar-custom {
+
+  
+  .p-sidebar{
+    border-radius: 12px;
+  }
+  
+  .p-sidebar-right {
+    top: 12px !important;
+    right: 12px !important;
+    height: calc(100vh - 24px) !important;
+  }
+  
+  // Para sidebar top
+  .p-sidebar-top {
+    top: 12px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+  }
+  
+  // Para sidebar left
+  .p-sidebar-left {
+    top: 12px !important;
+    left: 12px !important;
+    height: calc(100vh - 24px) !important;
+  }
+  
+  // Para sidebar bottom
+  .p-sidebar-bottom {
+    bottom: 12px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+  }
+  // Contenido interno
+  .p-sidebar-content {
+    border-radius: 12px;
+    background: #ffffff;
+  }
+  
+  // Header personalizado
+  .p-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .sidebar-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: black;
+  }
+  
+  .sidebar-content {
+    padding: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .sidebar-footer {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+// Tamaños predefinidos - FUERA de .sidebar-custom para que se apliquen globalmente
+.sidebar-small {
+  width: 320px !important;
+}
+
+.sidebar-medium {
+  width: 500px !important;
+}
+
+.sidebar-large {
+  width: 700px !important;
+}
+
+.sidebar-full {
+  width: 80vw !important;
+  height: 98vh !important;
+}
+
+.sidebar-top,
+.sidebar-bottom {
+  height: 50vh !important;
+}
+
+// Aplicar márgenes específicos cuando se combina con sidebar-custom
+.sidebar-custom.sidebar-small {
+  margin: 15px !important;
+}
+
+.sidebar-custom.sidebar-medium {
+  margin: 20px !important;
+}
+
+.sidebar-custom.sidebar-large {
+  margin: 25px !important;
+}
+
+.sidebar-custom.sidebar-full {
+  margin: 10px !important;
+  border-radius: 8px !important;
+}

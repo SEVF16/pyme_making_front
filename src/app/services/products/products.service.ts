@@ -14,6 +14,7 @@ import {
   ProductQueryParams, 
   PaginatedProductsResponse 
 } from '../../interfaces/product.interfaces';
+import { ApiResponse } from '../../interfaces/api-response.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +77,7 @@ export class ProductsService extends BaseApiService {
 
   // ===== MÉTODOS PRINCIPALES =====
 
-  getProducts(params: ProductQueryParams): Observable<PaginatedProductsResponse> {
+  getProducts(params: ProductQueryParams): Observable<ApiResponse<Product>> {
     this.ensureTenantId();
     
     const queryParams: any = { ...params };
@@ -87,91 +88,26 @@ export class ProductsService extends BaseApiService {
     if (!queryParams.sortField) queryParams.sortField = 'createdAt';
     if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
 
-    return this.get<PaginatedProductsResponse>('products', queryParams).pipe(
+    return this.get<ApiResponse<Product>>('products', queryParams).pipe(
       map(response => response)
     );
   }
 
-  getProductById(id: string): Observable<Product> {
-    this.ensureTenantId();
-    return this.get<Product>(`products/${id}`);
-  }
-
-  createProduct(productData: CreateProductDto): Observable<Product> {
+  getProductsSummary(params: ProductQueryParams): Observable<ApiResponse<Product>> {
     this.ensureTenantId();
     
-    // Asegurar que el companyId coincida con el tenant-id
-    if (!productData.companyId && this.currentTenantId) {
-      productData.companyId = this.currentTenantId;
-    }
+    const queryParams: any = { ...params };
     
-    return this.post<Product>('products', productData);
+    // Asegurar valores por defecto
+    if (!queryParams.limit) queryParams.limit = 20;
+    if (!queryParams.offset) queryParams.offset = 0;
+    if (!queryParams.sortField) queryParams.sortField = 'createdAt';
+    if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
+
+    return this.get<ApiResponse<Product>>('products/summary', queryParams).pipe(
+      map(response => response)
+    );
   }
-
-  updateProduct(id: string, productData: UpdateProductDto): Observable<Product> {
-    this.ensureTenantId();
-    return this.put<Product>(`products/${id}`, productData);
-  }
-
-  deleteProduct(id: string): Observable<void> {
-    this.ensureTenantId();
-    return this.delete<void>(`products/${id}`);
-  }
-
-  updateProductStatus(id: string, status: string): Observable<Product> {
-    this.ensureTenantId();
-    return this.patch<Product>(`products/${id}/status`, { status });
-  }
-
-  updateStock(id: string, stockData: UpdateStockDto): Observable<Product> {
-    this.ensureTenantId();
-    return this.patch<Product>(`products/${id}/stock`, stockData);
-  }
-
-  // ===== MÉTODOS DE BÚSQUEDA Y FILTROS =====
-
-  searchProducts(searchTerm: string, companyId?: string): Observable<Product[]> {
-    this.ensureTenantId();
-    
-    const params: any = { 
-      search: searchTerm,
-      companyId: companyId || this.currentTenantId
-    };
-    
-    return this.get<Product[]>('products/search', params);
-  }
-
-  getProductsByCategory(category: string, companyId?: string): Observable<Product[]> {
-    this.ensureTenantId();
-    
-    const params: any = { 
-      category,
-      companyId: companyId || this.currentTenantId
-    };
-    
-    return this.get<Product[]>('products/category', params);
-  }
-
-  getLowStockProducts(companyId?: string): Observable<Product[]> {
-    this.ensureTenantId();
-    
-    const params: any = { 
-      companyId: companyId || this.currentTenantId
-    };
-    
-    return this.get<Product[]>('products/low-stock', params);
-  }
-
-  getOutOfStockProducts(companyId?: string): Observable<Product[]> {
-    this.ensureTenantId();
-    
-    const params: any = { 
-      companyId: companyId || this.currentTenantId
-    };
-    
-    return this.get<Product[]>('products/out-of-stock', params);
-  }
-
   // ===== MÉTODOS DE VALIDACIÓN =====
 
   private ensureTenantId(): void {
@@ -180,71 +116,5 @@ export class ProductsService extends BaseApiService {
     }
   }
 
-  // ===== MÉTODOS DE GESTIÓN DE ESTADO LOCAL =====
-
-  addProductToLocalState(product: Product): void {
-    const currentProducts = this.productsSubject.value;
-    this.productsSubject.next([...currentProducts, product]);
-  }
-
-  updateProductInLocalState(updatedProduct: Product): void {
-    const currentProducts = this.productsSubject.value;
-    const updatedProducts = currentProducts.map(product =>
-      product.id === updatedProduct.id ? updatedProduct : product
-    );
-    this.productsSubject.next(updatedProducts);
-  }
-
-  removeProductFromLocalState(productId: string): void {
-    const currentProducts = this.productsSubject.value;
-    const filteredProducts = currentProducts.filter(product => product.id !== productId);
-    this.productsSubject.next(filteredProducts);
-  }
-
-  clearLocalProducts(): void {
-    this.productsSubject.next([]);
-  }
-
-  // ===== UTILIDADES =====
-
-  calculateProfitMargin(price: number, costPrice: number): number {
-    if (!costPrice || costPrice <= 0) return 0;
-    return ((price - costPrice) / costPrice) * 100;
-  }
-
-  isLowStock(stock: number, minStock: number): boolean {
-    return stock <= minStock;
-  }
-
-  isOutOfStock(stock: number): boolean {
-    return stock <= 0;
-  }
-
-  // ===== MÉTODOS DE FORMATEO =====
-
-  formatProductForCreation(product: any, companyId?: string): CreateProductDto {
-    return {
-      sku: product.sku,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      costPrice: product.costPrice,
-      category: product.category,
-      brand: product.brand,
-      productType: product.productType,
-      unit: product.unit,
-      stock: product.stock || 0,
-      minStock: product.minStock || 0,
-      maxStock: product.maxStock,
-      weight: product.weight,
-      dimensions: product.dimensions,
-      images: product.images,
-      barcode: product.barcode,
-      isActive: product.isActive !== undefined ? product.isActive : true,
-      allowNegativeStock: product.allowNegativeStock || false,
-      companyId: companyId || this.currentTenantId || '',
-      tags: product.tags,
-      additionalInfo: product.additionalInfo
-    };
-  }
+  
 }

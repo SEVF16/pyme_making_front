@@ -1,1 +1,80 @@
-<p>products works!</p>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h1 class="h3 mb-0 d-flex align-items-center gap-2">
+            <lucide-angular [img]="Building2Icon" size="24" class="text-primary"></lucide-angular>
+            Productos
+          </h1>
+          <p class="text-muted mb-0">Productos</p>
+        </div>
+        
+        <!-- Toolbar Actions -->
+        <app-button-lib
+        (buttonClick)="viewUserDetail()"
+        [configuration]="{
+          text: 'Nuevo producto',
+          icon: PlusIcon,              
+          variant: 'primary',          
+          size: 'normal',             
+    iconPosition: 'left',
+    
+        }">
+        </app-button-lib>
+      </div>
+      <app-custom-data-table
+        [data]="data"
+        [columns]="tableColumns()"
+        [config]="tableConfig()"
+        >
+      </app-custom-data-table>
+
+
+            <app-sidebar-view
+        [(visible)]="detailSidebarVisible"
+        [title]="'Detalle del Usuario'"
+        [data]="users[1]"
+        [config]="detailConfig">
+        
+        <ng-template #content let-data="data">
+          @if (data) {
+            <div class="user-detail">
+              <div class="user-header-detail">
+                <img [src]="data.avatar" [alt]="data.name" class="user-avatar-large">
+                <div class="user-main-info">
+                  <h2>{{ data.name }}</h2>
+                  <p class="user-role-large">{{ data.role }}</p>
+                </div>
+              </div>
+
+              <div class="user-details-section">
+                <h3>Información de Contacto</h3>
+                <div class="detail-item">
+                  <i class="pi pi-envelope"></i>
+                  <span>{{ data.email }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="pi pi-building"></i>
+                  <span>{{ data.department }}</span>
+                </div>
+              </div>
+
+              <div class="user-details-section">
+                <h3>Información Adicional</h3>
+                <div class="detail-item">
+                  <i class="pi pi-id-card"></i>
+                  <span>ID: {{ data.id }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="pi pi-user"></i>
+                  <span>Rol: {{ data.role }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </ng-template>
+
+        <ng-template #footer>
+          <div class="sidebar-actions">
+
+          </div>
+        </ng-template>
+      </app-sidebar-view>

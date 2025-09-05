@@ -1,0 +1,33 @@
+    <p-sidebar
+      [visible]="visible"
+      [position]="config.position || 'right'"
+      [modal]="config.modal ?? true"
+      [dismissible]="config.closable ?? true"
+      [closeOnEscape]="config.closable ?? true"
+      [showCloseIcon]="config.closable ?? true"
+      [style]="sidebarStyles"
+      class="sidebar-custom"
+      [styleClass]="getSizeClass()"
+      (onHide)="close()">
+      
+        <ng-template pTemplate="header">
+            <h3 class="sidebar-header-title">{{ title }}</h3>
+        </ng-template>
+
+      
+
+      <!-- Content -->
+      <div class="sidebar-content">
+        @if (contentTemplate) {
+          <ng-container *ngTemplateOutlet="contentTemplate; context: { data: data }"></ng-container>
+        }
+        <ng-content></ng-content>
+      </div>
+
+      <!-- Footer -->
+      @if (footerTemplate) {
+        <div class="sidebar-footer">
+          <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+        </div>
+      }
+    </p-sidebar>
