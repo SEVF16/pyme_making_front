@@ -13,8 +13,9 @@
       [styleClass]="getStyleClass()"
       [id]="config().id"
       [ariaLabel]="config().ariaLabel || config().text"
-      [title]="config().tooltip"
-      (onClick)="onClick()">
+      [title]="config().text"
+      (onClick)="onClick()"
+      class="button-custom-lib">
       
       <!-- Left Icon -->
 <!-- Left Icon -->

@@ -36,15 +36,14 @@
   }
   // Contenido interno
   .p-sidebar-content {
-    border-radius: 12px;
-    background: #ffffff;
+    padding: 24px;
   }
   
   // Header personalizado
   .p-sidebar-header {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgb(78 78 78 / 22%);
   }
   
   .sidebar-header-title {
@@ -55,16 +54,17 @@
   }
   
   .sidebar-content {
-    padding: 1.5rem;
     flex: 1;
-    overflow-y: auto;
   }
-  
-  .sidebar-footer {
-    padding: 1rem 1.5rem 1.5rem 1.5rem;
-    border-top: 1px solid #e9ecef;
-    background: #f8f9fa;
-    border-radius: 0 0 12px 12px;
+  .p-sidebar .p-sidebar-footer{
+    padding: 0 !important;
+  }
+    .sidebar-footer-default {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid rgb(78 78 78 / 22%);
   }
 }
 

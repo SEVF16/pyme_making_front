@@ -1,0 +1,62 @@
+ .simple-select-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SOLUCIÓN PRINCIPAL - Ancho fijo para el dropdown */
+    .simple-select-wrapper .p-dropdown {
+      width: 100% !important;
+      min-width: 200px; /* Ancho mínimo */
+    }
+
+    /* Asegurar que el input interno también tenga ancho completo */
+   .simple-select-wrapper .p-dropdown .p-inputtext {
+      width: 100% !important;
+    }
+
+    /* Opcional: Si quieres un ancho específico en lugar de 100% */
+    /* 
+    ::ng-deep .simple-select-wrapper .p-dropdown {
+      width: 300px !important;
+    }
+    */
+    .simple-select-label {
+      font-weight: 500;
+      color: var(--text-color);
+      font-size: 0.875rem;
+    }
+
+    .simple-select-label.required::after {
+      content: ' *';
+      color: var(--red-500);
+    }
+
+    .error-message {
+      color: var(--red-500);
+      font-size: 0.75rem;
+    }
+
+    .simple-select-error ::ng-deep .p-dropdown {
+      border-color: var(--red-500);
+    }.p-dropdown {
+  width: 100% !important;
+  min-width: 200px !important;
+}
+
+.p-dropdown .p-inputtext {
+  width: 100% !important;
+}
+.p-overlay-content .p-dropdown-panel .p-dropdown-items-wrapper ul.p-dropdown-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 0 !important;
+  padding: 8px !important;
+  margin: 0 !important;
+
+  .p-element{
+    .p-ripple{
+      border-radius: 8px;
+    }
+  }
+}

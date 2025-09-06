@@ -1,0 +1,27 @@
+    <div class="simple-select-wrapper">
+      @if (label) {
+        <label [for]="selectId" [class.required]="required">
+          {{ label }}
+        </label>
+      }
+
+      <p-dropdown
+        [id]="selectId"
+        [options]="options"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [filter]="filter"
+        [showClear]="showClear"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="value"
+        (ngModelChange)="onChange($event)"
+        (onBlur)="onTouched()"
+        [style]="{ 'width': '300px'}"
+        [styleClass]="getClasses()">
+      </p-dropdown>
+
+      @if (hasError()) {
+        <small class="error-message">{{ getErrorMessage() }}</small>
+      }
+    </div>

@@ -1,33 +1,43 @@
-    <p-sidebar
-      [visible]="visible"
+<!-- ✅ Asegúrate de que el template sea exactamente así: -->
+<p-sidebar
+      [(visible)]="config.visible"
       [position]="config.position || 'right'"
-      [modal]="config.modal ?? true"
-      [dismissible]="config.closable ?? true"
-      [closeOnEscape]="config.closable ?? true"
-      [showCloseIcon]="config.closable ?? true"
-      [style]="sidebarStyles"
-      class="sidebar-custom"
-      [styleClass]="getSizeClass()"
-      (onHide)="close()">
+      [modal]="config.modal !== false"
+      [dismissible]="config.dismissible !== false"
+      [closeOnEscape]="config.closeOnEscape !== false"
+      [blockScroll]="config.blockScroll !== false"
+      [baseZIndex]="config.baseZIndex || 0"
+      [autoZIndex]="config.autoZIndex !== false"
+      (onShow)="onShow.emit()"
+      (onHide)="onHide.emit()"
+  class="sidebar-custom"
+  [styleClass]="getSizeClass()">
+  
+  <ng-template pTemplate="header">
+    <h3 class="sidebar-header-title">{{ title }}</h3>
+  </ng-template>
+
+  <!-- Content -->
+  <div class="sidebar-content">
+
+    @if (contentTemplate) {
+      <ng-container *ngTemplateOutlet="contentTemplate; context: { data: data }"></ng-container>
+    }
+    <ng-content></ng-content>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="sidebar-footer-default">
       
-        <ng-template pTemplate="header">
-            <h3 class="sidebar-header-title">{{ title }}</h3>
-        </ng-template>
-
-      
-
-      <!-- Content -->
-      <div class="sidebar-content">
-        @if (contentTemplate) {
-          <ng-container *ngTemplateOutlet="contentTemplate; context: { data: data }"></ng-container>
-        }
-        <ng-content></ng-content>
-      </div>
-
-      <!-- Footer -->
-      @if (footerTemplate) {
-        <div class="sidebar-footer">
-          <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
-        </div>
-      }
-    </p-sidebar>
+      <app-button-lib
+        [configuration]="{
+          text: 'Nuevo producto',
+          icon: PlusIcon,              
+          variant: 'primary',          
+          size: 'normal',             
+          iconPosition: 'left'
+        }">
+      </app-button-lib>
+    </div>
+  </ng-template>
+</p-sidebar>

@@ -1,0 +1,269 @@
+/* ===============================================
+   ESTILOS GLOBALES PARA BOTONES CUSTOM
+   =============================================== */
+
+// Variables para botones
+:root {
+  --button-border-radius: 12px;
+  --button-font-weight: 500;
+  --button-transition: all 0.2s ease-in-out;
+  --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --button-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===============================================
+   ESTILOS BASE PARA TODOS LOS BOTONES CUSTOM
+   =============================================== */
+.button-custom-lib .p-button {
+  border-radius: var(--button-border-radius) !important;
+  font-weight: var(--button-font-weight) !important;
+  transition: var(--button-transition) !important;
+  position: relative;
+  overflow: hidden;
+  
+  // Mejorar la tipografía
+  font-family: inherit;
+  letter-spacing: 0.025em;
+  
+  // Estados hover y focus mejorados
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--button-shadow-hover);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+// Estilos para iconos dentro del botón
+.button-custom-lib lucide-angular {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  svg {
+    stroke-width: 2;
+  }
+}
+
+/* ===============================================
+   VARIANTES DE BOTÓN
+   =============================================== */
+
+// Primary Button
+.button-custom-lib .p-button-primary {
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  border: none;
+  box-shadow: var(--button-shadow);
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  }
+}
+
+// Primary Outlined
+.button-custom-lib .p-button-primary.p-button-outlined {
+  border: 1px solid var(--primary-500);
+  background: transparent;
+  color: var(--primary-500);
+  
+  &:hover:not(:disabled) {
+    background: var(--primary-50);
+    border-color: var(--primary-600);
+    color: var(--primary-600);
+  }
+}
+
+// Secondary Button
+.button-custom-lib .p-button-secondary {
+  background: var(--surface-100);
+  border: 1px solid var(--surface-300);
+  color: var(--text-color);
+  
+  &:hover:not(:disabled) {
+    background: var(--surface-200);
+    border-color: var(--surface-400);
+  }
+}
+
+// Success Button
+.button-custom-lib .p-button-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  }
+}
+
+// Danger Button
+.button-custom-lib .p-button-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+}
+
+// Warning Button
+.button-custom-lib .p-button-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: none;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  }
+}
+
+// Info Button
+.button-custom-lib .p-button-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  }
+}
+
+/* ===============================================
+   TAMAÑOS DE BOTÓN
+   =============================================== */
+
+.button-custom-lib .p-button-sm {
+  font-size: 0.875rem;
+  min-height: 2rem;
+}
+
+.button-custom-lib .p-button {
+  font-size: 1rem;
+  min-height: 2.5rem;
+}
+
+.button-custom-lib .p-button-lg {
+  font-size: 1.125rem;
+  min-height: 3rem;
+}
+
+/* ===============================================
+   ESTADOS ESPECIALES
+   =============================================== */
+
+// Loading state
+.button-custom-lib .p-button[data-pc-section="loadingIcon"] {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+// Disabled state
+.button-custom-lib .p-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+// Text buttons
+.button-custom-lib .p-button-text {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  
+  &:hover:not(:disabled) {
+    background: var(--primary-50) !important;
+    transform: none;
+  }
+}
+
+// Link buttons
+.button-custom-lib .p-button-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-decoration: underline;
+  
+  &:hover:not(:disabled) {
+    background: transparent !important;
+    text-decoration: none;
+    transform: none;
+  }
+}
+
+// Raised buttons
+.button-custom-lib .p-button-raised {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Rounded buttons
+.button-custom-lib .p-button-rounded {
+  border-radius: 2rem !important;
+}
+
+/* ===============================================
+   POSICIONAMIENTO DE ICONOS
+   =============================================== */
+
+// Icon + Text spacing
+.button-custom-lib .p-button-label {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+// Icon only buttons
+.button-custom-lib .p-button:has(lucide-angular):not(:has(.p-button-label)) {
+  min-width: 2.5rem;
+  padding: 0.75rem;
+  
+  &.p-button-sm {
+    min-width: 2rem;
+    padding: 0.5rem;
+  }
+  
+  &.p-button-lg {
+    min-width: 3rem;
+    padding: 1rem;
+  }
+}
+
+// Left icon spacing
+.button-custom-lib lucide-angular + .p-button-label {
+  margin-left: 0.5rem;
+}
+
+// Right icon spacing  
+.button-custom-lib .p-button-label + lucide-angular {
+  margin-left: 0.5rem;
+}
+
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+
+@media (max-width: 768px) {
+  .button-custom-lib .p-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .button-custom-lib .p-button-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+  }
+  
+  .button-custom-lib .p-button-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+  }
+}

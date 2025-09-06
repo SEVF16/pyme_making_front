@@ -30,12 +30,12 @@ ngOnInit(): void {
   // Suscribirse a los cambios de autenticación
   this.authSubscription = this.authService.authState$.subscribe(
     authState => {
-      console.log('App Component - Estado de auth cambió:', authState);
+      // console.log('App Component - Estado de auth cambió:', authState);
       this.isAuthenticated = authState.isAuthenticated;
       
       // Si está autenticado y está en login, redirigir
       if (this.isAuthenticated && this.isLoginPage) {
-        console.log('Usuario autenticado en página de login, redirigiendo...');
+        // console.log('Usuario autenticado en página de login, redirigiendo...');
         this.router.navigate(['/companies']);
       }
     }
