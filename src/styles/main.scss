@@ -7,6 +7,9 @@
 @import './abstracts/mixins';
 @import './abstracts/primeng-variables';
 
+// 
+@import './base/forms';
+//
 @import './components/app';
 @import './components/table-custom';
 @import './components/sidebar';
@@ -14,6 +17,7 @@
 @import './components/siderar_view';
 @import './components/button';
 @import './components/select-lib';
+@import './components/upload_file';
 // 2. Vendors (librerías externas)
 @import 'vendors/bootstrap';
 @import 'vendors/primeng';

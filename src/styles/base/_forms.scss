@@ -1,0 +1,85 @@
+// Estilos para todos los labels en formularios PrimeNG
+.p-field label,
+.p-float-label label,
+.p-inputgroup label,
+label {
+  font-weight: 500 !important;
+  color: #374151 !important;
+  font-size: 0.875rem !important;
+}
+
+// Si usas p-floatLabel específicamente
+.p-float-label label {
+  font-weight: 500 !important;
+  color: #374151 !important;
+  font-size: 0.875rem !important;
+}
+
+// Asterisco rojo para labels requeridos
+label.required::after {
+  content: " *";
+  color: #ef4444 !important; /* Rojo */
+  font-weight: 500;
+}
+
+/* Variante más específica si necesitas mayor especificidad */
+.p-field label.required::after,
+.p-float-label label.required::after {
+  content: " *";
+  color: #ef4444 !important;
+  font-weight: 500;
+}
+// Altura uniforme para todos los inputs de PrimeNG
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar input,
+.p-inputnumber input,
+.p-password input,
+.p-chips .p-inputtext,
+.p-autocomplete .p-inputtext,
+.p-cascadeselect,
+.p-treeselect,
+.p-listbox,
+.p-selectbutton .p-button,
+.p-togglebutton,
+.p-inputgroup .p-inputtext {
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+// Para dropdowns y multiselects que tienen contenido interno
+.p-dropdown .p-dropdown-label,
+.p-multiselect .p-multiselect-label {
+  line-height: 48px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+// Para calendarios
+.p-calendar .p-inputtext {
+  height: 48px !important;
+  line-height: 48px !important;
+}
+
+// Para input number con botones
+.p-inputnumber .p-inputnumber-input {
+  height: 48px !important;
+}
+
+// Para chips
+.p-chips .p-chips-multiple-container {
+  min-height: 48px !important;
+  padding: 4px 8px !important;
+}
+
+// Para autocomplete
+.p-autocomplete .p-autocomplete-multiple-container {
+  min-height: 48px !important;
+  padding: 4px 8px !important;
+}

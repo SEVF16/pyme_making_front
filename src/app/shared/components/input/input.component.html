@@ -2,7 +2,7 @@
   
   <!-- Label -->
   @if (label()) {
-    <label [for]="inputId()" class="input-label">{{ label() }}</label>
+    <label [for]="inputId()" [class.required]="hasRequiredValidator()" class="input-label">{{ label() }}</label>
   }
   
   <!-- Input Wrapper -->

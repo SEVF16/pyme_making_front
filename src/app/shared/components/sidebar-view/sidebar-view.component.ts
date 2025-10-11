@@ -21,7 +21,7 @@ export class SidebarViewComponent implements OnInit {
   @Input() title?: string;
   @Input() data?: any;
   @Input() config: SidebarConfig  = { visible: false };
-
+  @Input( ) isDisabled: boolean = false;
   @Output() onClose = new EventEmitter<void>();
   @Output() onShow = new EventEmitter<void>();
   @Output() onHide = new EventEmitter<void>();

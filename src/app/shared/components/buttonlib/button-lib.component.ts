@@ -24,7 +24,7 @@ export class ButtonLibComponent {
   readonly config = signal<ButtonConfig>({
     variant: 'primary',
     size: 'md',
-    iconPosition: 'left',
+    iconPosition: 'right',
     iconSize: 16,
     type: 'button',
     disabled: false,

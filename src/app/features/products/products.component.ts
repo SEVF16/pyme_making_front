@@ -3,7 +3,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products/products.service';
-import { PaginatedProductsResponse, Product, ProductQueryParams } from '../../interfaces/product.interfaces';
+import {  CreateProductDto, Product, ProductChangeEvent, ProductQueryParams } from '../../interfaces/product.interfaces';
 import { ApiResponse } from '../../interfaces/api-response.interfaces';
 import { TableColumn, TableConfig } from '../../shared/components/data-table/models/data-table.models';
 import { CustomDataTableComponent } from '../../shared/components/data-table/custom-data-table.component';
@@ -27,14 +27,11 @@ export class ProductsComponent implements OnInit {
   products: Product[] = [];
   loading = false;
   error: string | null = null;
-  
-  // Parámetros de paginación
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
   hasNext = false;
-  
-
+  isDisabled : boolean = false;
   readonly tableColumns = signal<TableColumn[]>([
     {
       field: 'name',
@@ -84,7 +81,6 @@ export class ProductsComponent implements OnInit {
       ]
     }
   ]);
-  
   readonly tableConfig = signal<TableConfig>({
     showPaginator: true,
     rows: 10,
@@ -94,10 +90,7 @@ export class ProductsComponent implements OnInit {
     emptyMessage: 'No hay empresas registradas',
     tableStyleClass: 'table-hover'
   });
-
   public data: any = [];
-  
-
   formSidebarConfig: SidebarConfig = { visible: false, position: 'right', size: 'full'  };
   constructor(private productsService: ProductsService) {}
 
@@ -153,10 +146,16 @@ export class ProductsComponent implements OnInit {
       name: product.name,
       price: product.price,
       stock: product.stock,
-      status: product.status,
+      status: product.isActive,
       sku: product.sku,
       rawPrice: product.price,
-      rawStatus: product.status
+      rawStatus: product.isActive
     }));
+  }
+
+  onProductChange(productEvent: ProductChangeEvent): void {
+    console.log('Producto válido:', productEvent);
+    this.isDisabled = productEvent.isValid;
+    // Aquí puedes guardar en el backend
   }
 }

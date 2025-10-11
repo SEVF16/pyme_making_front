@@ -11,16 +11,16 @@
     
     <div class="col">
         <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
+            [label]="'Nombre producto'"
+            [placeholder]="'Nombre producto'"
             [control]="productForm.get('name')"
             [minLength]="2">
         </app-input>
     </div>
         <div class="col">
         <app-input 
-            [label]="'description'"
-            [placeholder]="'Product description'"
+            [label]="'Descripción producto'"
+            [placeholder]="'Descripción producto'"
             [control]="productForm.get('description')"
             [minLength]="2">
         </app-input>
@@ -29,8 +29,8 @@
 <div class="row g-4">
     <div class="col">
         <app-input 
-            [label]="'Sku'"
-            [placeholder]="'Sku'"
+            [label]="'Precio'"
+            [placeholder]="'Precio producto'"
             [control]="productForm.get('price')"
             [minLength]="3">
         </app-input>
@@ -38,51 +38,35 @@
     
     <div class="col">
         <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
+            [label]="'Costo producto'"
+            [placeholder]="'Costo producto'"
             [control]="productForm.get('costPrice')"
             [minLength]="2">
         </app-input>
     </div>
-</div>
-<div class="row g-4">
-    <div class="col">
-        <app-input 
-            [label]="'Sku'"
-            [placeholder]="'Sku'"
-            [control]="productForm.get('sku')"
-            [minLength]="3">
-        </app-input>
-    </div>
     <div class="col">
         <app-select-lib
-  label="Categoría"
-  placeholder="Selecciona una categoría"
-  [options]="categories"
-  [control]="productForm.get('category')">
-</app-select-lib>
+        label="Categoría"
+        placeholder="Selecciona una categoría"
+        [options]="categories"
+        [control]="productForm.get('category')"
+        formControlName="category">
+        </app-select-lib>
     </div>
     <div class="col">
         <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
-            [control]="productForm.get('name')"
-            [minLength]="2">
+            [label]="'Marca producto'"
+            [placeholder]="'Marca producto'"
+            [control]="productForm.get('brand')"
+            [minLength]="3">
         </app-input>
     </div>
+
     <div class="col">
         <app-input 
-            [label]="'description'"
-            [placeholder]="'Product description'"
-            [control]="productForm.get('description')"
-            [minLength]="2">
-        </app-input>
-    </div>
-    <div class="col">
-        <app-input 
-            [label]="'description'"
-            [placeholder]="'Product description'"
-            [control]="productForm.get('description')"
+            [label]="'Tipo producto'"
+            [placeholder]="'Tipo producto'"
+            [control]="productForm.get('productType')"
             [minLength]="2">
         </app-input>
     </div>
@@ -90,26 +74,26 @@
 <div class="row g-4">
     <div class="col">
         <app-input 
-            [label]="'Sku'"
-            [placeholder]="'Sku'"
-            [control]="productForm.get('sku')"
+            [label]="'Stock producto'"
+            [placeholder]="'Stock producto'"
+            [control]="productForm.get('stock')"
             [minLength]="3">
         </app-input>
     </div>
     
     <div class="col">
         <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
-            [control]="productForm.get('name')"
+            [label]="'Mínimo stock'"
+            [placeholder]="'Mínimo stock'"
+            [control]="productForm.get('minStock')"
             [minLength]="2">
         </app-input>
     </div>
     <div class="col">
         <app-input 
-            [label]="'description'"
-            [placeholder]="'Product description'"
-            [control]="productForm.get('description')"
+            [label]="'Máximo stock'"
+            [placeholder]="'Máximo stock'"
+            [control]="productForm.get('maxStock')"
             [minLength]="2">
         </app-input>
     </div>
@@ -117,37 +101,54 @@
 <div class="row g-4">
     <div class="col">
         <app-input 
-            [label]="'Sku'"
-            [placeholder]="'Sku'"
-            [control]="productForm.get('sku')"
+            [label]="'Codigo de barra'"
+            [placeholder]="'Código de barra'"
+            [control]="productForm.get('companyId')"
             [minLength]="3">
         </app-input>
     </div>
     
     <div class="col">
         <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
-            [control]="productForm.get('name')"
+            [label]="'Estado'"
+            [placeholder]="'Estado'"
+            [control]="productForm.get('isActive')"
             [minLength]="2">
         </app-input>
     </div>
-    <div class="col">
-        <app-input 
-            [label]="'Sku'"
-            [placeholder]="'Sku'"
-            [control]="productForm.get('sku')"
-            [minLength]="3">
-        </app-input>
-    </div>
-    
-    <div class="col">
-        <app-input 
-            [label]="'Name'"
-            [placeholder]="'Product Name'"
-            [control]="productForm.get('name')"
-            [minLength]="2">
-        </app-input>
-    </div>
+</div>
+<div class="row g-4">
+
+<p-fileUpload
+    class="compact-upload"
+    name="demo[]"
+    url="https://www.primefaces.org/cdn/api/upload.php"
+    (onUpload)="onUpload($event)"
+    [multiple]="false"
+    accept="image/*"
+    maxFileSize="1000000"
+    chooseLabel="Seleccionar"
+    uploadLabel="Subir"
+    cancelLabel="Cancelar"
+    chooseIcon="pi pi-plus"
+    uploadIcon="pi pi-upload"
+    cancelIcon="pi pi-times"
+    [showUploadButton]="true"
+    [showCancelButton]="true">
+             
+    <ng-template pTemplate="content">
+        <div class="upload-info-compact">
+            <p>📁 JPG, PNG, GIF | Máx: 1MB</p>
+        </div>
+        <ul *ngIf="uploadedFiles.length" class="uploaded-files-compact">
+            <li *ngFor="let file of uploadedFiles" class="uploaded-file-compact">
+                <i class="pi pi-check-circle"></i>
+                {{ file.name }}
+                <span class="file-size">({{ formatFileSize(file.size) }})</span>
+            </li>
+        </ul>
+    </ng-template>
+</p-fileUpload>
+
 </div>
 </div>

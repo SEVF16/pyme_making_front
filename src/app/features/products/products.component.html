@@ -30,10 +30,11 @@
 <app-sidebar-view
         [config]="formSidebarConfig"
         [title]="'Crear Producto'"
+        [isDisabled]="isDisabled"
         (onConfirm)="saveUser()"
         (onCancel)="closeFormSidebar()">
   
   <ng-template #content>
-    <app-product-form></app-product-form>
+    <app-product-form (productChange)="onProductChange($event)"></app-product-form>
   </ng-template>
 </app-sidebar-view>

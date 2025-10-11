@@ -31,12 +31,14 @@
       
       <app-button-lib
         [configuration]="{
-          text: 'Nuevo producto',
+          text: 'Crear producto',
           icon: PlusIcon,              
           variant: 'primary',          
           size: 'normal',             
-          iconPosition: 'left'
-        }">
+          iconPosition: 'right',
+          disabled: !isDisabled
+        }"
+        (buttonClick)="onShow.emit()">
       </app-button-lib>
     </div>
   </ng-template>

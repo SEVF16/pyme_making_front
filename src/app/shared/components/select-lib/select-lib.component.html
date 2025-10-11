@@ -1,27 +1,25 @@
-    <div class="simple-select-wrapper">
-      @if (label) {
-        <label [for]="selectId" [class.required]="required">
-          {{ label }}
-        </label>
-      }
+<div class="form-group">
+  @if (label) {
+    <label [for]="selectId" [class.required]="hasRequiredValidator()">
+      {{ label }}
+    </label>
+  }
 
-      <p-dropdown
-        [id]="selectId"
-        [options]="options"
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [filter]="filter"
-        [showClear]="showClear"
-        optionLabel="label"
-        optionValue="value"
-        [ngModel]="value"
-        (ngModelChange)="onChange($event)"
-        (onBlur)="onTouched()"
-        [style]="{ 'width': '300px'}"
-        [styleClass]="getClasses()">
-      </p-dropdown>
+  <p-dropdown
+    [id]="selectId"
+    [options]="options"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [filter]="filter"
+    [showClear]="showClear"
+    optionLabel="label"
+    optionValue="value"
+    [formControl]="$any(control)"
+    [style]="{ 'width': '100%' }"
+    [styleClass]="getClasses()">
+  </p-dropdown>
 
-      @if (hasError()) {
-        <small class="error-message">{{ getErrorMessage() }}</small>
-      }
-    </div>
+  @if (hasError()) {
+    <small class="error-message d-block mt-1 text-danger">{{ getErrorMessage() }}</small>
+  }
+</div>

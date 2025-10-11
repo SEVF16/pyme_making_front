@@ -1,7 +1,7 @@
 // input.component.ts - FormControl como Input
 import { CommonModule } from '@angular/common';
 import { Component, input, computed, output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, LucideIconData } from 'lucide-angular';
 import { InputTextModule } from 'primeng/inputtext';
 
@@ -75,7 +75,12 @@ export class InputComponent {
       this.iconClick.emit();
     }
   }
-
+  hasRequiredValidator(): boolean {
+    if (!this.control()?.validator) return false;
+    
+    const validator = this.control().validator({} as AbstractControl);
+    return !!(validator && validator['required']);
+  }
   // Verificar si el ícono es clickeable (tipo botón)
   isIconClickable = computed(() => this.iconType() === 'button');
 }
