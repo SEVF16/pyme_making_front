@@ -21,6 +21,14 @@ export const routes: Routes = [
         path: 'products',
         loadComponent: () => import('./features/products/products.component').then(m => m.ProductsComponent),
       },
+      {
+        path: 'customers',
+        loadComponent: () => import('./features/customers/customers.component').then(m => m.CustomersComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent),
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

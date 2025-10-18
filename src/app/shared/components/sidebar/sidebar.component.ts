@@ -39,19 +39,19 @@ export class SidebarComponent {
       expanded: false
     },
     {
-      label: 'Usuarios',
+      label: 'Personas',
       icon: 'Users',
       expanded: false,
       items: [
         {
-          label: 'Lista de usuarios',
+          label: 'Lista de clientes',
           icon: 'List',
-          routerLink: '/users'
+          routerLink: '/customers'
         },
         {
-          label: 'Nuevo usuario',
-          icon: 'UserPlus',
-          routerLink: '/users/new'
+          label: 'Lista de usuario',
+          icon: 'List',
+          routerLink: '/users'
         }
       ]
     },

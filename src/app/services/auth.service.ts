@@ -13,7 +13,7 @@ export interface LoginRequest {
   companyId: string;
 }
 
-export interface ApiResponse<T> {
+interface ApiResponse<T> {
   success: boolean;
   data: T;
   statusCode: number | null;

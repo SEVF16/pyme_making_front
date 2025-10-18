@@ -106,12 +106,6 @@ export class CustomDataTableComponent implements OnInit {
     this.pageChange.emit(pageEvent);
   }
 
-  // Utility methods
-  getFieldValue(rowData: any, column: TableColumn): string {
-    const value = rowData[column.field];
-    return value != null ? String(value) : '';
-  }
-
   getColumnStyle(column: TableColumn): any {
     const styles: any = {};
     if (column.width) styles.width = column.width;
@@ -158,4 +152,34 @@ export class CustomDataTableComponent implements OnInit {
     };
     return iconMap[iconName] || this.EyeIcon;
   }
+    // ✨ NUEVOS MÉTODOS PARA TEMPLATES PERSONALIZADOS
+  
+  /**
+   * Obtiene el valor del campo principal
+   */
+  getFieldValue(rowData: any, column: TableColumn): string {
+    if (column.customRender) {
+      return column.customRender(rowData);
+    }
+    const value = rowData[column.field];
+    return value != null ? String(value) : '';
+  }
+
+  /**
+   * Obtiene el valor del subtítulo (ej: RUT)
+   */
+  getSubtitleValue(rowData: any, column: TableColumn): string {
+    if (!column.subtitle) return '';
+    const value = rowData[column.subtitle];
+    return value != null ? String(value) : '';
+  }
+
+  /**
+   * Verifica si la columna tiene un template específico
+   */
+  hasTemplate(column: TableColumn, templateName: string): boolean {
+    return column.template === templateName;
+  }
+
+
 }

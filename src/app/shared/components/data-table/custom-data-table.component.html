@@ -41,12 +41,11 @@
             [ngStyle]="getColumnStyle(col)"
             [class]="getColumnClass(col)">
             
-            <!-- Actions Content -->
+            <!-- ✨ TEMPLATE: Acciones -->
             @if (col.actions) {
-              <div class="d-flex gap-1">
+              <div class="d-flex gap-1 justify-content-center">
                 @for (action of getVisibleActions(col.actions, rowData); track action.label) {
                   <p-button
-                    
                     [outlined]="true"
                     size="small"
                     [disabled]="isActionDisabled(action, rowData)"
@@ -56,8 +55,34 @@
                   </p-button>
                 }
               </div>
-            } @else {
-              <!-- Text Content - Todo tratado como string -->
+            } 
+            
+            <!-- ✨ TEMPLATE: Nombre con Subtítulo (RUT) -->
+            @else if (hasTemplate(col, 'nameWithSubtitle')) {
+              <div class="name-with-subtitle">
+                <div class="fw-semibold text-dark">
+                  {{ getFieldValue(rowData, col) }}
+                </div>
+                <small class="text-muted d-block mt-1">
+                  {{ getSubtitleValue(rowData, col) }}
+                </small>
+              </div>
+            }
+            
+            <!-- ✨ TEMPLATE: Badge -->
+            @else if (hasTemplate(col, 'badge')) {
+              <span [class]="'badge bg-' + (col.customRender ? col.customRender(rowData) : 'secondary')">
+                {{ getFieldValue(rowData, col) }}
+              </span>
+            }
+            
+            <!-- ✨ TEMPLATE: Custom Render -->
+            @else if (col.customRender) {
+              <span [innerHTML]="col.customRender(rowData)"></span>
+            }
+            
+            <!-- ✨ TEMPLATE: Default (texto simple) -->
+            @else {
               <span>{{ getFieldValue(rowData, col) }}</span>
             }
           </td>

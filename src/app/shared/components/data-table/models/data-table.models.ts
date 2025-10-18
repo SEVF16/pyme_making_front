@@ -16,6 +16,10 @@ export interface TableColumn {
   align?: string;
   hidden?: boolean;
   actions?: TableAction[];
+  template?: 'custom' | 'badge' | 'avatar' | 'nameWithSubtitle';
+  customRender?: (rowData: any) => string; // Función para renderizado custom
+  subtitle?: string; // Campo para subtítulo (ej: RUT bajo el nombre)
+  cssClass?: string;
 }
 
 export interface TableConfig {
