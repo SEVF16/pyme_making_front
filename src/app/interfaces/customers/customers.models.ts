@@ -4,7 +4,7 @@ import { ICreateCustomerDto, ICustomer, ICustomerAdditionalInfo, ICustomerStatus
  * Clase para el modelo de Cliente con valores por defecto
  * Útil para instanciar clientes con configuración inicial
  */
-export class CustomerModel implements ICustomer {
+export class Customer implements ICustomer {
   id?: string;
   rut: string;
   firstName: string;
@@ -16,7 +16,7 @@ export class CustomerModel implements ICustomer {
   region: string;
   postalCode: string;
   customerType: ICustomerType;
-  status: ICustomerStatus;
+  //status: ICustomerStatus;
   companyId: string;
   birthDate?: string | Date;
   website?: string;
@@ -34,10 +34,10 @@ export class CustomerModel implements ICustomer {
     this.address = data?.address || '';
     this.city = data?.city || '';
     this.region = data?.region || '';
-    this.postalCode = data?.postalCode || '';
+    this.postalCode = data?.postalCode || '7500000';
     this.customerType = data?.customerType || 'individual';
-    this.status = data?.status || 'active';
-    this.companyId = data?.companyId || '';
+ //   this.status = data?.status || 'active';
+    this.companyId = data?.companyId || '4e3657a9-31be-4af7-b1a8-a6380d3fb107';
 
     // Campos opcionales
     this.id = data?.id;
@@ -58,16 +58,16 @@ export class CustomerModel implements ICustomer {
   /**
    * Verifica si el cliente está activo
    */
-  isActive(): boolean {
-    return this.status === 'active';
-  }
+  // isActive(): boolean {
+  //   return this.status === 'active';
+  // }
 
   /**
    * Verifica si el cliente está bloqueado
-   */
-  isBlocked(): boolean {
-    return this.status === 'blocked';
-  }
+  //  */
+  // isBlocked(): boolean {
+  //   return this.status === 'blocked';
+  // }
 
   /**
    * Verifica si es cliente tipo empresa
@@ -119,7 +119,7 @@ export class CustomerModel implements ICustomer {
       region: this.region,
       postalCode: this.postalCode,
       customerType: this.customerType,
-      status: this.status,
+    //  status: this.status,
       companyId: this.companyId,
       birthDate: typeof this.birthDate === 'string' ? this.birthDate : this.birthDate?.toISOString(),
       website: this.website,
@@ -177,46 +177,46 @@ export class CustomerModel implements ICustomer {
   /**
    * Obtiene badge class según el estado
    */
-  getStatusBadgeClass(): string {
-    switch (this.status) {
-      case 'active':
-        return 'bg-success';
-      case 'inactive':
-        return 'bg-secondary';
-      case 'blocked':
-        return 'bg-danger';
-      default:
-        return 'bg-secondary';
-    }
-  }
+  // getStatusBadgeClass(): string {
+  //   switch (this.status) {
+  //     case 'active':
+  //       return 'bg-success';
+  //     case 'inactive':
+  //       return 'bg-secondary';
+  //     case 'blocked':
+  //       return 'bg-danger';
+  //     default:
+  //       return 'bg-secondary';
+  //   }
+  // }
 
-  /**
-   * Obtiene texto traducido del estado
-   */
-  getStatusLabel(): string {
-    switch (this.status) {
-      case 'active':
-        return 'Activo';
-      case 'inactive':
-        return 'Inactivo';
-      case 'blocked':
-        return 'Bloqueado';
-      default:
-        return this.status;
-    }
-  }
+  // /**
+  //  * Obtiene texto traducido del estado
+  //  */
+  // getStatusLabel(): string {
+  //   switch (this.status) {
+  //     case 'active':
+  //       return 'Activo';
+  //     case 'inactive':
+  //       return 'Inactivo';
+  //     case 'blocked':
+  //       return 'Bloqueado';
+  //     default:
+  //       return this.status;
+  //   }
+  // }
 
-  /**
-   * Obtiene texto traducido del tipo
-   */
-  getTypeLabel(): string {
-    switch (this.customerType) {
-      case 'individual':
-        return 'Individual';
-      case 'business':
-        return 'Empresa';
-      default:
-        return this.customerType;
-    }
-  }
+  // /**
+  //  * Obtiene texto traducido del tipo
+  //  */
+  // getTypeLabel(): string {
+  //   switch (this.customerType) {
+  //     case 'individual':
+  //       return 'Individual';
+  //     case 'business':
+  //       return 'Empresa';
+  //     default:
+  //       return this.customerType;
+  //   }
+  // }
 }

@@ -4,7 +4,8 @@ import { Component, input, computed, output } from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, LucideIconData } from 'lucide-angular';
 import { InputTextModule } from 'primeng/inputtext';
-
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { MaskConfig } from './interfaces/mask-config.interface';
 export type IconPosition = 'left' | 'right';
 export type IconType = 'icon' | 'button';
 @Component({
@@ -14,7 +15,8 @@ export type IconType = 'icon' | 'button';
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
-    LucideAngularModule
+    LucideAngularModule,
+    NgxMaskDirective
   ],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss'
@@ -34,14 +36,29 @@ export class InputComponent {
   maxLength = input<number | null>(null);
   minLength = input<number | null>(null);
   customClass = input<string>('');
-  
+  mask = input<string | MaskConfig>('');
+
+
   // FormControl como input - ESTE ES EL PUNTO CLAVE
   control = input.required<any | FormControl>();
   iconClick = output<void>();
   // ID único para el input
   private inputIdValue = `input-${Math.random().toString(36).substr(2, 9)}`;
   inputId = computed(() => this.inputIdValue);
-  
+  // Computed para extraer las propiedades
+maskPattern = computed(() => {
+  const maskValue = this.mask();
+  return typeof maskValue === 'string' ? maskValue : maskValue?.mask || '';
+});
+
+maskOptions = computed(() => {
+  const maskValue = this.mask();
+  if (typeof maskValue === 'object' && maskValue !== null) {
+    const { mask, ...options } = maskValue;
+    return options;
+  }
+  return {};
+});
   // Clases computadas
   containerClass = computed(() => {
     const classes = ['reusable-input-container'];

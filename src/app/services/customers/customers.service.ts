@@ -6,8 +6,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { CustomerQueryDto } from '../../interfaces/customers/customers-query-params.interfaces';
 import { map, Observable } from 'rxjs';
 
-import { ICustomer } from '../../interfaces/customers/customers.interfaces';
-import { ApiResponse } from '../../interfaces/api-response.interfaces';
+import { ICreateCustomerDto, ICustomer } from '../../interfaces/customers/customers.interfaces';
+import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,7 @@ export class CustomersService extends BaseApiService {
     }
   }
 
-  getCustomers(params: CustomerQueryDto): Observable<ApiResponse<ICustomer>> {
+  getCustomers(params: CustomerQueryDto): Observable<ApiPaginatedResponse<ICustomer>> {
     this.ensureTenantId();
     
     const queryParams: any = { ...params };
@@ -76,7 +76,23 @@ export class CustomersService extends BaseApiService {
     if (!queryParams.sortField) queryParams.sortField = 'createdAt';
     if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
 
-    return this.get<ApiResponse<ICustomer>>('customers/summary', queryParams).pipe(
+    return this.get<ApiPaginatedResponse<ICustomer>>('customers/summary', queryParams).pipe(
+      map(response => response)
+    );
+  }
+
+  getCustomer(id: string): Observable<ApiResponse<ICustomer>> {
+    this.ensureTenantId();
+
+
+    return this.get<ApiResponse<ICustomer>>(`customers/${id}`).pipe(
+      map(response => response)
+    );
+  }
+
+  createCustomer(dto: ICreateCustomerDto): Observable<ApiResponse<ICustomer>> {
+    this.ensureTenantId();
+    return this.post<ApiResponse<ICustomer>>('customers', dto).pipe(
       map(response => response)
     );
   }

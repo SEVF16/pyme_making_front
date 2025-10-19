@@ -14,7 +14,7 @@ import {
   ProductQueryParams, 
   PaginatedProductsResponse 
 } from '../../interfaces/product.interfaces';
-import { ApiResponse } from '../../interfaces/api-response.interfaces';
+import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +93,7 @@ export class ProductsService extends BaseApiService {
     );
   }
 
-  getProductsSummary(params: ProductQueryParams): Observable<ApiResponse<Product>> {
+  getProductsSummary(params: ProductQueryParams): Observable<ApiPaginatedResponse<Product>> {
     this.ensureTenantId();
     
     const queryParams: any = { ...params };
@@ -104,7 +104,7 @@ export class ProductsService extends BaseApiService {
     if (!queryParams.sortField) queryParams.sortField = 'createdAt';
     if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
 
-    return this.get<ApiResponse<Product>>('products/summary', queryParams).pipe(
+    return this.get<ApiPaginatedResponse<Product>>('products/summary', queryParams).pipe(
       map(response => response)
     );
   }

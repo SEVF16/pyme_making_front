@@ -1,0 +1,116 @@
+<!-- Primera fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-select-lib
+      [label]="'Tipo de Cliente '"
+      [placeholder]="'Selecciona tipo de cliente'"
+      [options]="customerTypes"
+      [control]="customerForm.get('customerType')">
+    </app-select-lib>
+  </div>
+  <div class="col">
+    <app-input 
+      [label]="'RUT '"
+      [placeholder]="'12.345.678-9'"
+      [control]="customerForm.get('rut')"
+      [mask]="rutMask"
+      [minLength]="3">
+    </app-input>
+  </div>
+</div>
+
+<!-- Segunda fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-input 
+      [label]="'Nombre '"
+      [placeholder]="'Nombre'"
+      [control]="customerForm.get('firstName')"
+      [minLength]="2">
+    </app-input>
+  </div>
+  <div class="col">
+    <app-input 
+      [label]="'Apellido '"
+      [placeholder]="'Apellido'"
+      [control]="customerForm.get('lastName')"
+      [minLength]="2">
+    </app-input>
+  </div>
+</div>
+
+<!-- Tercera fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-input 
+      [label]="'Email '"
+      [placeholder]="'email@ejemplo.com'"
+      [control]="customerForm.get('email')"
+      type="email">
+    </app-input>
+  </div>
+  <div class="col">
+    <app-input 
+      [label]="'Teléfono '"
+      [placeholder]="'+56 9 1234 5678'"
+      [mask]="phoneMask"
+      [control]="customerForm.get('phone')"
+      [minLength]="8">
+    </app-input>
+  </div>
+</div>
+
+<!-- Cuarta fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-input 
+      [label]="'Sitio Web'"
+      [placeholder]="'https://www.ejemplo.com'"
+      [control]="customerForm.get('website')"
+      type="url">
+    </app-input>
+  </div>
+  <div class="col">
+    <app-input 
+      [label]="'Dirección '"
+      [placeholder]="'Dirección completa'"
+      [control]="customerForm.get('address')"
+      [minLength]="5">
+    </app-input>
+  </div>
+</div>
+
+<!-- Quinta fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-input 
+      [label]="'Ciudad '"
+      [placeholder]="'Ciudad'"
+      [control]="customerForm.get('city')"
+      [minLength]="2">
+    </app-input>
+  </div>
+  <div class="col">
+    <app-select-lib
+      [label]="'Región '"
+      [placeholder]="'Selecciona una región'"
+      [options]="regions"
+      [control]="customerForm.get('region')">
+    </app-select-lib>
+  </div>
+</div>
+
+<!-- Sexta fila -->
+<div class="row g-4">
+  <div class="col">
+    <app-input 
+      [label]="'Fecha de Nacimiento'"
+      [placeholder]="''"
+      [control]="customerForm.get('birthDate')"
+      type="date">
+    </app-input>
+  </div>
+  <div class="col">
+    <!-- Campo adicional si necesitas completar la fila, o dejar vacío -->
+  </div>
+</div>

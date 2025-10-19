@@ -25,21 +25,12 @@
     }
     <ng-content></ng-content>
   </div>
-
   <ng-template pTemplate="footer">
-    <div class="sidebar-footer-default">
-      
-      <app-button-lib
-        [configuration]="{
-          text: 'Crear producto',
-          icon: PlusIcon,              
-          variant: 'primary',          
-          size: 'normal',             
-          iconPosition: 'right',
-          disabled: !isDisabled
-        }"
-        (buttonClick)="onShow.emit()">
-      </app-button-lib>
-    </div>
-  </ng-template>
+  <div class="sidebar-footer">
+    @if (footerTemplate) {
+      <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+    }
+    
+  </div>
+</ng-template>
 </p-sidebar>

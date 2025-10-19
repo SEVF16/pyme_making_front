@@ -247,6 +247,23 @@
 }
 
 
+
+.btn-edit{
+ .p-button{
+    border: none !important;
+    background: transparent;
+    padding: 6px;
+    height: 28px;
+    width: 28px;
+    min-width: 28px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
+}
+
 /* ===============================================
    RESPONSIVE DESIGN
    =============================================== */

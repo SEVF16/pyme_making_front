@@ -1,13 +1,22 @@
-// Interfaz genérica base para todas las respuestas paginadas
-export interface ApiResponse<T> {
+export interface BaseApiResponse {
   success: boolean;
-  data: ApiData<T>;
   statusCode: number | null;
   message: string | null;
   timestamp: string;
   path: string;
 }
 
+// Para respuestas simples (sin paginación)
+export interface ApiResponse<T> extends BaseApiResponse {
+  data: T;
+}
+
+// Para respuestas paginadas
+export interface ApiPaginatedResponse<T> extends BaseApiResponse {
+  data: ApiData<T>;
+}
+
+// Datos paginados
 export interface ApiData<T> {
   result: T[];
   hasNext: boolean;

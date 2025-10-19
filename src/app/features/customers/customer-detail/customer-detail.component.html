@@ -1,0 +1,109 @@
+<p-card  styleClass="info-card">
+      <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center p-3">
+      <h5 class="mb-0">Información del Cliente</h5>
+    <p-button
+        class="btn-edit"
+        [outlined]="true"
+        size="small"
+        [pTooltip]="'Editar'"
+        (onClick)="openFormSidebar();">
+        <lucide-angular [img]="iconPencil" size="16" class="d-flex justify-content-center align-items-center"></lucide-angular>
+    </p-button>
+    </div>
+  </ng-template>
+  <div class="container-fluid">
+    <!-- Fila 1: Información Personal -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">RUT</label>
+        <div class="text-dark">{{ customer.rut }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Nombre</label>
+        <div class="text-dark">{{ customer.firstName }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Apellido</label>
+        <div class="text-dark">{{ customer.lastName }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Email</label>
+        <div class="text-dark">{{ customer.email }}</div>
+      </div>
+    </div>
+
+    <!-- Fila 2: Contacto y Dirección -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Teléfono</label>
+        <div class="text-dark">{{ customer.phone }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Dirección</label>
+        <div class="text-dark">{{ customer.address }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Ciudad</label>
+        <div class="text-dark">{{ customer.city }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Región</label>
+        <div class="text-dark">{{ customer.region }}</div>
+      </div>
+    </div>
+
+    <!-- Fila 3: Información Adicional -->
+    <div class="row g-3">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Código Postal</label>
+        <div class="text-dark">{{ customer.postalCode }}</div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Tipo Cliente</label>
+        <div class="text-dark">{{ customer.customerType }}</div>
+      </div>
+      <!-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Estado</label>
+        <div class="mt-1">
+          <p-tag [value]="customer.status" [severity]="getStatusSeverity(customer.status)"></p-tag>
+        </div>
+      </div> -->
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+        <label class="fw-bold text-muted small">Fecha Nacimiento</label>
+        <div class="text-dark">{{ customer.birthDate | date:'dd/MM/yyyy' }}</div>
+      </div>
+    </div>
+  </div>
+</p-card>
+
+@if (formSidebarConfig.visible) {
+<app-sidebar-view
+        [config]="formSidebarConfig"
+        [title]="'Editar cliente'"
+>
+  
+  <ng-template #content>
+    <app-customer-form (customerEventChange)="onCustomerEventChange($event)" [customer]="customer"></app-customer-form>
+  </ng-template>
+
+  
+  <ng-template #footer>
+    <div class="sidebar-footer-default">
+      
+      <app-button-lib
+        [configuration]="{
+          text: 'Crear cliente',
+                        
+          variant: 'primary',          
+          size: 'normal',             
+          iconPosition: 'right',
+          disabled: !isDisabled
+        }"
+        (buttonClick)="editCustomer()"
+        >
+      </app-button-lib>
+    </div>
+  </ng-template>
+</app-sidebar-view>
+}

@@ -6,6 +6,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { headersInterceptor } from './interceptors/headers.interceptor';
+import { provideNgxMask } from 'ngx-mask';
 
 
 export const appConfig: ApplicationConfig = {
@@ -14,6 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideAnimations(),
+    provideNgxMask(),
     provideHttpClient(
       withInterceptors([headersInterceptor])
     )

@@ -36,6 +36,7 @@ export class SidebarViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("inic");
   }
 
   getSizeClass(): string {

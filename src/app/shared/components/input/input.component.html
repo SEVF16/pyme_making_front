@@ -31,6 +31,13 @@
       [attr.maxlength]="maxLength()"
       [attr.minlength]="minLength()"
       [type]="type()"
+      [mask]="maskPattern()"
+      [dropSpecialCharacters]="maskOptions().dropSpecialCharacters || false"
+      [showMaskTyped]="maskOptions().showMaskTyped || false"
+      [clearIfNotMatch]="maskOptions().clearIfNotMatch || false"
+      [validation]="maskOptions().validation || false"
+      [prefix]="maskOptions().prefix || ''"
+      [suffix]="maskOptions().suffix || ''"
       class="reusable-input"
     />
     

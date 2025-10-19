@@ -9,9 +9,9 @@
   
   <!-- Toolbar Actions -->
   <app-button-lib
-    
+    (buttonClick)="openFormSidebar()"
     [configuration]="{
-      text: 'Nuevo producto',
+      text: 'Nuevo cliente',
       icon: PlusIcon,              
       variant: 'primary',          
       size: 'normal',             
@@ -23,5 +23,37 @@
 <app-custom-data-table
   [data]="data"
   [columns]="tableColumns()"
-  [config]="tableConfig()">
+  [config]="tableConfig()"
+  >
 </app-custom-data-table>
+
+<app-sidebar-view
+        [config]="formSidebarConfig"
+        [title]="'Crear cliente'"
+        [isDisabled]="isDisabled"
+        (onConfirm)="saveUser()"
+        (onCancel)="closeFormSidebar()">
+  
+  <ng-template #content>
+    <app-customer-form (customerEventChange)="onCustomerEventChange($event)"></app-customer-form>
+  </ng-template>
+
+  
+  <ng-template #footer>
+    <div class="sidebar-footer-default">
+      
+      <app-button-lib
+        [configuration]="{
+          text: 'Crear cliente',
+          icon: PlusIcon,              
+          variant: 'primary',          
+          size: 'normal',             
+          iconPosition: 'right',
+          disabled: !isDisabled
+        }"
+        (buttonClick)="saveUser()"
+        >
+      </app-button-lib>
+    </div>
+  </ng-template>
+</app-sidebar-view>

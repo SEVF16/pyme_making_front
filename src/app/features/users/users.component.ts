@@ -142,7 +142,7 @@ export class UsersComponent implements OnInit {
         email: customer.email,
         phone: customer.phone,
         customerType: customer.customerType,
-        status: customer.status,
+        //status: customer.status,
       }));
     }
 }

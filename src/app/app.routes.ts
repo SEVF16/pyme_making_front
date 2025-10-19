@@ -23,7 +23,16 @@ export const routes: Routes = [
       },
       {
         path: 'customers',
-        loadComponent: () => import('./features/customers/customers.component').then(m => m.CustomersComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/customers/customers.component').then(m => m.CustomersComponent),
+          },
+          {
+            path: ':id',  
+            loadComponent: () => import('./features/customers/customer-detail/customer-detail.component').then(m => m.CustomerDetailComponent),
+          }
+        ]
       },
       {
         path: 'users',

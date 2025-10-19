@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products/products.service';
 import {  CreateProductDto, Product, ProductChangeEvent, ProductQueryParams } from '../../interfaces/product.interfaces';
-import { ApiResponse } from '../../interfaces/api-response.interfaces';
+import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 import { TableColumn, TableConfig } from '../../shared/components/data-table/models/data-table.models';
 import { CustomDataTableComponent } from '../../shared/components/data-table/custom-data-table.component';
 import { Building2, LucideAngularModule, Plus } from 'lucide-angular';
@@ -124,7 +124,7 @@ export class ProductsComponent implements OnInit {
     };
 
     this.productsService.getProductsSummary(queryParams).subscribe({
-      next: (response: ApiResponse<Product>) => {
+      next: (response: ApiPaginatedResponse<Product>) => {
         console.log(response);
         this.products = response.data.result;
         this.hasNext = response.data.hasNext;

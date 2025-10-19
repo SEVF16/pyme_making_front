@@ -33,7 +33,7 @@ export interface ICustomer {
   region: string;
   postalCode: string;
   customerType: ICustomerType;
-  status: ICustomerStatus;
+ // status: ICustomerStatus;
   companyId: string;
 
   // Campos opcionales
@@ -60,7 +60,7 @@ export interface ICreateCustomerDto {
   region: string;
   postalCode: string;
   customerType: ICustomerType;
-  status: ICustomerStatus;
+//  status: ICustomerStatus;
   companyId: string;
   birthDate?: string;
   website?: string;
