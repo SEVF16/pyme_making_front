@@ -71,6 +71,6 @@ export interface ICreateCustomerDto {
  * DTO para actualizar un cliente existente
  */
 export interface IUpdateCustomerDto extends Partial<ICreateCustomerDto> {
-  id: string;
+  id?: string;
 }
 

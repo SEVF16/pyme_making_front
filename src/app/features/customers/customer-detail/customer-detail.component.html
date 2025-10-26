@@ -1,3 +1,14 @@
+<div class="d-flex flex-column gap-3">
+    <p-button
+        class="btn-edit"
+        [outlined]="true"
+        size="small"
+        [pTooltip]="'Volver'"
+        (onClick)="backPage();">
+        <lucide-angular [img]="iconArrow" size="20" class="d-flex justify-content-center align-items-center">
+          Volver
+        </lucide-angular>
+      </p-button>
 <p-card  styleClass="info-card">
       <ng-template pTemplate="header">
     <div class="d-flex justify-content-between align-items-center p-3">
@@ -12,6 +23,7 @@
     </p-button>
     </div>
   </ng-template>
+  @if (customer) {
   <div class="container-fluid">
     <!-- Fila 1: Información Personal -->
     <div class="row g-3 mb-4">
@@ -75,7 +87,11 @@
       </div>
     </div>
   </div>
+  }
+
 </p-card>
+</div>
+
 
 @if (formSidebarConfig.visible) {
 <app-sidebar-view
@@ -93,7 +109,7 @@
       
       <app-button-lib
         [configuration]="{
-          text: 'Crear cliente',
+          text: 'Editar cliente',
                         
           variant: 'primary',          
           size: 'normal',             

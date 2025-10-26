@@ -16,7 +16,7 @@ import { SidebarConfig } from '../../shared/components/sidebar-view/interfaces/s
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { DataChangeEvent } from '../../shared/interfaces/data-change-event.interface';
 import { Customer } from '../../interfaces/customers/customers.models';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
   selector: 'app-customers',
@@ -25,10 +25,8 @@ import { MessageService } from 'primeng/api';
        LucideAngularModule, ButtonLibComponent, SidebarViewComponent, CustomerFormComponent],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
-  providers: [MessageService]
 })
 export class CustomersComponent implements OnInit {
-  private messageService = inject(MessageService);
   loading = false;
   error: string | null = null;
   currentPage = 1;
@@ -84,22 +82,22 @@ export class CustomersComponent implements OnInit {
           tooltip: 'Ver detalles',
           command: (rowData, rowIndex) => this.customerDetail(rowData)
         },
-        {
-          label: 'Editar',
-          icon: 'edit',
-          severity: 'primary',
-          tooltip: 'Editar empresa',
-          command: (rowData, rowIndex) => this.loadCustomers(rowData),
-          visible: (rowData) => rowData.status !== 'Suspendido'
-        },
-        {
-          label: 'Eliminar',
-          icon: 'delete',
-          severity: 'danger',
-          tooltip: 'Eliminar empresa',
-          command: (rowData, rowIndex) => this.loadCustomers(rowData),
-          visible: (rowData) => rowData.status === 'Inactivo'
-        }
+        // {
+        //   label: 'Editar',
+        //   icon: 'edit',
+        //   severity: 'primary',
+        //   tooltip: 'Editar empresa',
+        //   command: (rowData, rowIndex) => this.loadCustomers(rowData),
+        //   visible: (rowData) => rowData.status !== 'Suspendido'
+        // },
+        // {
+        //   label: 'Eliminar',
+        //   icon: 'delete',
+        //   severity: 'danger',
+        //   tooltip: 'Eliminar empresa',
+        //   command: (rowData, rowIndex) => this.loadCustomers(rowData),
+        //   visible: (rowData) => rowData.status === 'Inactivo'
+        // }
       ]
     }
   ]);
@@ -119,6 +117,7 @@ export class CustomersComponent implements OnInit {
   private customer!: Customer;
   constructor(
     private customersService: CustomersService,
+    private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -157,7 +156,7 @@ export class CustomersComponent implements OnInit {
       console.warn('No se encontró id en rowData para navegar al detalle', rowData);
       return;
     }
-
+    
     // Navega a /customers/:id (ruta relativa al módulo/route actual)
     this.router.navigate([rowData.id], { relativeTo: this.route });
   }
@@ -185,21 +184,17 @@ export class CustomersComponent implements OnInit {
     this.customersService.createCustomer(customerDto).subscribe({
     next: (response : ApiResponse<ICustomer>) => {
         console.log('Customer enviado exitosamente:', response);
-                  this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Cliente creado con éxito'
-          });
+          this.notificationService.showSuccess( 
+            'Cliente creado con éxito'
+          );
        this.formSidebarConfig.visible = false;
        this.loadCustomers(); 
     },
     error: (error) => {
         console.error('Error enviando customer:', error);
-                  this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.message || 'Error al crear el cliente'
-          });
+                  this.notificationService.showError(
+             error.message || 'Error al crear el cliente'
+          );
     }
 });
   }

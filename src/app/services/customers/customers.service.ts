@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { CustomerQueryDto } from '../../interfaces/customers/customers-query-params.interfaces';
 import { map, Observable } from 'rxjs';
 
-import { ICreateCustomerDto, ICustomer } from '../../interfaces/customers/customers.interfaces';
+import { ICreateCustomerDto, ICustomer, IUpdateCustomerDto } from '../../interfaces/customers/customers.interfaces';
 import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 
 @Injectable({
@@ -96,6 +96,16 @@ export class CustomersService extends BaseApiService {
       map(response => response)
     );
   }
+
+  updateCustomer(id: string, dto: IUpdateCustomerDto): Observable<ApiResponse<ICustomer>> {
+  this.ensureTenantId();
+ 
+  const { id: _, ...updateData } = dto;
+  
+  return this.put<ApiResponse<ICustomer>>(`customers/${id}`, updateData).pipe(
+    map(response => response)
+  );
+}
   private ensureTenantId(): void {
     if (!this.currentTenantId) {
       throw new Error('Tenant ID no está configurado. Llama a setTenantId() primero.');

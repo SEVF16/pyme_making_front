@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { headersInterceptor } from './interceptors/headers.interceptor';
 import { provideNgxMask } from 'ngx-mask';
+import { MessageService } from 'primeng/api';
 
 
 export const appConfig: ApplicationConfig = {
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimations(),
     provideNgxMask(),
+    MessageService,
     provideHttpClient(
       withInterceptors([headersInterceptor])
     )

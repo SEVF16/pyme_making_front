@@ -38,6 +38,10 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent),
       },
+      {
+        path: 'pucharse',
+        loadComponent: () => import('./features/purchase/purchase-summary.component').then(m => m.PurchaseSummaryComponent),
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

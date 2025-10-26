@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { LucideAngularModule, Pencil } from 'lucide-angular';
+import { ArrowLeft, LucideAngularModule, Pencil, Rows } from 'lucide-angular';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CustomersService } from '../../../services/customers/customers.service';
-import { ICreateCustomerDto, ICustomer } from '../../../interfaces/customers/customers.interfaces';
+import { ICreateCustomerDto, ICustomer, IUpdateCustomerDto } from '../../../interfaces/customers/customers.interfaces';
 import { ApiResponse } from '../../../interfaces/api-response.interfaces';
 import { SidebarViewComponent } from '../../../shared/components/sidebar-view/sidebar-view.component';
 import { CustomerFormComponent } from '../customer-form/customer-form.component';
 import { SidebarConfig } from '../../../shared/components/sidebar-view/interfaces/siderbar-config.interface';
 import { DataChangeEvent } from '../../../shared/interfaces/data-change-event.interface';
 import { ButtonLibComponent } from '../../../shared/components/buttonlib/button-lib.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '../../../shared/services/notification.service';
+
 @Component({
   selector: 'app-customer-detail',
   standalone: true,
@@ -28,25 +30,31 @@ CustomerFormComponent,
 ButtonLibComponent,
   ],
   templateUrl: './customer-detail.component.html',
-  styleUrl: './customer-detail.component.scss'
+  styleUrl: './customer-detail.component.scss',
+
 })
 export class CustomerDetailComponent implements OnInit {
-  public readonly iconPencil = Pencil
+  public readonly iconPencil = Pencil; 
+  public readonly iconArrow = ArrowLeft;
   public customer!: ICustomer;
-formSidebarConfig: SidebarConfig = { visible: false, position: 'right', size: 'large'  };
-isDisabled : boolean = false;
-private route = inject(ActivatedRoute)
+  formSidebarConfig: SidebarConfig = { visible: false, position: 'right', size: 'large'  };
+  isDisabled : boolean = false;
+  private notificationService = inject(NotificationService);
+  private route = inject(ActivatedRoute); 
+  private router = inject(Router);
+  private customerId: string = '';
+  private customerUpdate!:IUpdateCustomerDto;
     constructor(
       private customersService: CustomersService,
     ) {}
   ngOnInit(): void {
-    const customerId = this.route.snapshot.params['id'];
-      if (customerId) {
-    this.getCustomer(customerId);
-  } else {
-    console.error('No customer ID found in route');
+    this.customerId = this.route.snapshot.params['id'];
+    if (this.customerId) {
+      this.getCustomer(this.customerId);
+
+    }
   }
-  }
+
   // Método para el color del tag de status
   getStatusSeverity(status: string): 'success' | 'warning' | 'danger' | 'info' {
     switch(status) {
@@ -58,15 +66,18 @@ private route = inject(ActivatedRoute)
   }
 
   public editCustomer(): void {
-
-    console.log('Editar cliente:', this.customer.rut);
+    this.updateCustomer(this.customerId)
   }
-    openFormSidebar(): void {
+  openFormSidebar(): void {
     this.formSidebarConfig.visible = true;
   }
-    closeFormSidebar(): void {
+  closeFormSidebar(): void {
     this.formSidebarConfig.visible = false;
     
+  }
+
+  public backPage(): void {
+    this.router.navigate(['/customers']);
   }
   getCustomer(id: string): void {
     this.customersService.getCustomer(id).subscribe({
@@ -83,8 +94,37 @@ private route = inject(ActivatedRoute)
     });
   }
 
-    public onCustomerEventChange(event: DataChangeEvent<ICreateCustomerDto>) {
-      console.log(event);
+  updateCustomer(id: string): void {
+        this.customersService.updateCustomer(id,this.customerUpdate).subscribe({
+      next: (response : ApiResponse<ICustomer>) => {
+       this.formSidebarConfig.visible = false;
+       this.getCustomer(id); 
+        this.notificationService.showSuccess(
+          'Actualización exitosa',
+        );
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Error al actualizar',
+        );
+      }
+    });
+  }
+  
 
-    }
+  public onCustomerEventChange(event: DataChangeEvent<ICreateCustomerDto>) {
+    console.log(event);
+    this.isDisabled = event.isValid;
+  if (event.isValid) {
+    // Crear el objeto de actualización
+    const { rut, firstName, lastName, companyId, ...updatableFields } = event.data;
+    
+    const updateData: IUpdateCustomerDto = {
+      id: this.customer.id,
+      ...updatableFields
+    };
+    this.customerUpdate = updateData;
+
+  }
+  }
 }

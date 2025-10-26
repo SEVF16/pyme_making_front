@@ -53,18 +53,18 @@ export class CustomerFormComponent implements OnInit {
   }
     initializeForm(): void {
     this.customerForm = this.fb.group({
-      rut: [{ value: '', disabled: true }, [Validators.required]],
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      rut: [{ value: '', disabled: this.customer()?.rut ? true : false  }, [Validators.required]],
+      firstName: [{ value: '', disabled: this.customer()?.firstName ? true : false  }, [Validators.required, Validators.minLength(2)]],
+      lastName: [{ value: '', disabled: this.customer()?.lastName ? true : false  }, [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\+?[\d\s-]+$/)]],
       address: ['', Validators.required],
       city: ['', Validators.required],
       region: ['', Validators.required],
       postalCode: ['', []],
-      customerType: ['', Validators.required],
+      customerType: [{ value: '', disabled: this.customer()?.customerType ? true : false  }, Validators.required],
       companyId: ['', ],
-      birthDate: [''],
+      birthDate: [{ value: '', disabled: this.customer()?.birthDate ? true : false  }],
       website: ['', Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)],
       additionalInfo: this.fb.group({})
     });

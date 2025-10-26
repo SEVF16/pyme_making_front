@@ -1,1 +1,173 @@
-<p>users works!</p>
+
+  <!-- Header Section -->
+  <div class="users-header">
+    <div class="header-content">
+      <div class="title-section">
+        <lucide-icon [img]="UsersIcon" class="header-icon"></lucide-icon>
+        <h1 class="page-title">Usuarios</h1>
+      </div>
+  <app-button-lib
+    (buttonClick)="openFormSidebar()"
+    [configuration]="{
+      text: 'Nuevo usuario',
+      icon: PlusIcon,              
+      variant: 'primary',          
+      size: 'normal',             
+      iconPosition: 'left'
+    }">
+  </app-button-lib>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando usuarios...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-container">
+      <div class="error-message">
+        <p>{{ error() }}</p>
+        <button class="btn btn-secondary" (click)="loadUsers()">Reintentar</button>
+      </div>
+    </div>
+  }
+
+  <!-- Users Grid -->
+  @if (!loading() && !error()) {
+    <div class="users-grid">
+      @for (user of users(); track user.id) {
+        <div class="user-card">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="user-avatar">
+              @if (user.avatar) {
+                <img [src]="user.avatar" [alt]="user.fullName" />
+              } @else {
+                <div class="avatar-placeholder">
+                  {{ user?.firstName?.charAt(0)?.toUpperCase() }}{{ user?.lastName?.charAt(0)?.toUpperCase() }}
+                </div>
+              }
+            </div>
+            <p-button
+              class="btn-edit"
+              [outlined]="true"
+              size="small"
+              (onClick)="onEditUser(user);">
+              <lucide-icon [img]="PencilIcon" [size]="18" [color]="'white'" class="d-flex justify-content-center align-items-center"></lucide-icon>
+            </p-button>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body">
+            <h3 class="user-name">{{ user.firstName }} {{ user.lastName }}</h3>
+            <p class="user-email">{{ user.email }}</p>
+
+            <div class="user-details">
+              @if (user.phone) {
+                <div class="detail-item">
+                  <span class="detail-label">Teléfono:</span>
+                  <span class="detail-value">{{ user.phone }}</span>
+                </div>
+              }
+
+              <div class="detail-item">
+                <span class="detail-label">Rol:</span>
+                <span class="detail-value">{{ getRoleLabel(user.role) }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Estado:</span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(user.status)">
+                  {{ getStatusLabel(user.status) }}
+                </span>
+              </div>
+
+              @if (user.lastLoginAt) {
+                <div class="detail-item">
+                  <span class="detail-label">Último acceso:</span>
+                  <span class="detail-value">{{ user.lastLoginAt | date: 'short' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer">
+            <button
+              class="btn btn-danger btn-delete"
+              (click)="onDeleteUser(user)">
+              <lucide-icon [img]="Trash2Icon" [size]="18"></lucide-icon>
+              <span>Eliminar</span>
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <lucide-icon [img]="UsersIcon" [size]="64" class="empty-icon"></lucide-icon>
+          <h3>No hay usuarios registrados</h3>
+          <p>Comienza agregando tu primer usuario al sistema</p>
+          <button class="btn btn-primary">
+            <lucide-icon [img]="PlusIcon" [size]="18"></lucide-icon>
+            <span>Agregar Usuario</span>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (users().length > 0) {
+      <div class="pagination-container">
+        <button
+          class="btn btn-secondary"
+          [disabled]="currentPage === 1"
+          (click)="loadUsers(currentPage - 1)">
+          Anterior
+        </button>
+        <span class="page-info">Página {{ currentPage }}</span>
+        <button
+          class="btn btn-secondary"
+          [disabled]="!hasNext"
+          (click)="loadUsers(currentPage + 1)">
+          Siguiente
+        </button>
+      </div>
+    }
+  }
+
+
+@if (formSidebarConfig.visible) {
+<app-sidebar-view
+        [config]="formSidebarConfig"
+        [title]="'Crear usuario'">
+  
+  <ng-template #content>
+    <app-user-form [mode]="mode" [userData]="createUserDto()" (userEventChange)="onUserEventChange($event)"></app-user-form>
+  </ng-template>
+
+  
+  <ng-template #footer>
+    <div class="sidebar-footer-default">
+      
+      <app-button-lib
+        [configuration]="{
+          text: 'Crear usuario',
+          icon: PlusIcon,              
+          variant: 'primary',          
+          size: 'normal',             
+          iconPosition: 'right',
+          disabled: !isDisabled
+        }"
+        (buttonClick)="onSaveNewUser()"
+        >
+      </app-button-lib>
+    </div>
+  </ng-template>
+</app-sidebar-view>
+}
+
+

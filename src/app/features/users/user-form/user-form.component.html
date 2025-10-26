@@ -1,0 +1,110 @@
+<div class="container-fluid">
+  <!-- Información Personal -->
+  <div class="form-section card mb-4">
+    <div class="card-body">
+      <h3 class="section-title card-title">Información Personal</h3>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-input
+            [label]="'Nombre'"
+            [placeholder]="'Ingrese el nombre'"
+            [control]="userForm.get('firstName')">
+          </app-input>
+        </div>
+
+        <div class="col-md-4">
+          <app-input
+            [label]="'Apellido'"
+            [placeholder]="'Ingrese el apellido'"
+            [control]="userForm.get('lastName')">
+          </app-input>
+        </div>
+
+        <div class="col-md-4">
+          <app-input
+            [label]="'Correo Electrónico'"
+            [placeholder]="'usuario@ejemplo.com'"
+            [control]="userForm.get('email')">
+          </app-input>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-input
+            [label]="'Teléfono'"
+            [placeholder]="'+1234567890'"
+            [control]="userForm.get('phone')">
+          </app-input>
+        </div>
+        <!-- Columnas vacías para mantener el layout -->
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seguridad -->
+  <div class="form-section card mb-4">
+    <div class="card-body">
+      <h3 class="section-title card-title">Seguridad</h3>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-input
+            [label]="'Contraseña'"
+            [placeholder]="mode === FormMode.CREATE ? 'Ingrese la contraseña' : 'Dejar en blanco para no cambiar'"
+            [control]="userForm.get('password')"
+            [type]="'password'">
+          </app-input>
+        </div>
+        <div class="col-md-4">
+          <app-input
+            [label]="'Contraseña'"
+            [placeholder]="mode === FormMode.CREATE ? 'Ingrese la contraseña' : 'Dejar en blanco para no cambiar'"
+            [control]="userForm.get('password')"
+            [type]="'password'">
+          </app-input>
+        </div>
+        <!-- Columna vacía para mantener el layout -->
+        <div class="col-md-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rol y Estado -->
+  <div class="form-section card mb-4">
+    <div class="card-body">
+      <h3 class="section-title card-title">Rol y Estado</h3>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-select-lib
+            [label]="'Rol'"
+            [placeholder]="'Seleccione el rol'"
+            [options]="roleOptions"
+            [control]="userForm.get('role')">
+          </app-select-lib>
+        </div>
+
+        <div class="col-md-4">
+          <app-input
+            [label]="'Permisos'"
+            [placeholder]="'read, write, delete'"
+            [control]="userForm.get('permissions')">
+          </app-input>
+        </div>
+        <div class="col-md-4" *ngIf="mode === FormMode.CREATE">
+          <app-select-lib
+            [label]="'Enviar Email de Bienvenida'"
+            [placeholder]="'Seleccione una opción'"
+            [options]="sendWelcomeEmailOptions"
+            [control]="userForm.get('sendWelcomeEmail')">
+          </app-select-lib>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

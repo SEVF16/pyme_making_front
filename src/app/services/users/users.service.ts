@@ -5,7 +5,8 @@ import { BaseApiService } from '../base-api.service';
 import { isPlatformBrowser } from '@angular/common';
 import { IUserQuery } from '../../interfaces/users/users-query-params.interfaces';
 import { map, Observable } from 'rxjs';
-import { ApiResponse } from '../../interfaces/api-response.interfaces';
+import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
+import { ICreateUserDto, IUser } from '../../interfaces/users/user-interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +64,14 @@ private currentTenantId: string | null = null;
     }
   }
 
-  getUsers(params: IUserQuery): Observable<ApiResponse<any>> {
+  createUser(dto: ICreateUserDto): Observable<ApiResponse<IUser>> {
+    this.ensureTenantId();
+    return this.post<ApiResponse<IUser>>('users', dto).pipe(
+      map(response => response)
+    );
+  }
+
+  getUsers(params: IUserQuery): Observable<ApiPaginatedResponse<IUser[]>> {
     this.ensureTenantId();
     
     const queryParams: any = { ...params };
@@ -74,7 +82,7 @@ private currentTenantId: string | null = null;
     if (!queryParams.sortField) queryParams.sortField = 'createdAt';
     if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
 
-    return this.get<ApiResponse<any>>('users/summary', queryParams).pipe(
+    return this.get<ApiPaginatedResponse<IUser[]>>('users/summary', queryParams).pipe(
       map(response => response)
     );
   }
