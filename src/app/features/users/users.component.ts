@@ -4,7 +4,7 @@ import { Pencil, Trash2, LucideAngularModule, Plus, Users } from 'lucide-angular
 import { UsersService } from '../../services/users/users.service';
 import { IUserQuery } from '../../interfaces/users/users-query-params.interfaces';
 import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
-import { ICreateUserDto, IUser } from '../../interfaces/users/user-interfaces';
+import { ICreateUserDto, IUpdateUserDto, IUser } from '../../interfaces/users/user-interfaces';
 import { ButtonModule } from 'primeng/button';
 import { SidebarViewComponent } from '../../shared/components/sidebar-view/sidebar-view.component';
 import { FormMode, UserFormComponent } from './user-form/user-form.component';
@@ -32,6 +32,8 @@ export class UsersComponent implements OnInit {
   // State management con signals
   users = signal<IUser[]>([]);
   createUserDto= signal<ICreateUserDto | null>(null);
+  updateUserDto= signal<IUpdateUserDto | null>(null);
+  userDto= signal<IUser | null>(null);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
   formSidebarConfig: SidebarConfig = { visible: false, position: 'right', size: 'full'  };
@@ -102,12 +104,18 @@ export class UsersComponent implements OnInit {
     console.log('Editando usuario:', user);
     this.formSidebarConfig.visible = true;
     this.mode = FormMode.EDIT;
+    this.userDto.set(user);
     const userDto: ICreateUserDto = User.userToCreateDto(user);
     this.createUserDto.set(userDto);
   }
 
   onSaveNewUser(): void { 
-    this.saveUser();
+    if(this.mode === FormMode.EDIT){
+      this.editUser();
+    }else{
+      this.saveUser();
+    }
+
   }
   /**
    * Maneja el evento de eliminación de usuario
@@ -167,7 +175,7 @@ saveUser(): void {
         console.log('Customer enviado exitosamente:', response);
         this.notificationService.showSuccess('Cliente creado con éxito');
         this.formSidebarConfig.visible = false;
-
+        this.loadUsers();
       },
       error: (error) => {
         console.error('Error enviando customer:', error);
@@ -181,11 +189,41 @@ saveUser(): void {
     this.notificationService.showError('No hay datos de usuario para guardar');
   }
 }
+editUser(): void {
+  const userDto = this.updateUserDto();
+  const userId = this.userDto()?.id;
+  if (userDto && userId) {
+    this.usersService.updateUser(userId,userDto).subscribe({
+      next: (response: ApiResponse<IUser>) => {
+        console.log('Customer enviado exitosamente:', response);
+        this.notificationService.showSuccess('Cliente actualizado con éxito');
+        this.formSidebarConfig.visible = false;
+        this.loadUsers();
+      },
+      error: (error) => {
+        console.error('Error enviando customer:', error);
+        this.notificationService.showError(
+          error.message || 'Error al actualizar el cliente'
+        );
+      }
+    });
+  } else {
+    console.warn('No user data available to save');
+    this.notificationService.showError('No hay datos de usuario para guardar');
+  }
+}
+
   public onUserEventChange(event: DataChangeEvent<ICreateUserDto>) {
     console.log(event);
-    this.isDisabled = event.isValid;
-    // En tu componente
-    this.createUserDto.set(new CreateUserDto(event.data));
+    if (event.isValid) {
+      this.isDisabled = event.isValid;
+      if (this.mode === FormMode.CREATE) {
+        this.createUserDto.set(new CreateUserDto(event.data));
+      }else{
+        this.updateUserDto.set(CreateUserDto.createToUpdateDto(event.data));
+      }
+    }
+
     console.log(this.createUserDto());
   }
 }

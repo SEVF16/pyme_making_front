@@ -12,7 +12,8 @@ import {
   UpdateProductDto, 
   UpdateStockDto, 
   ProductQueryParams, 
-  PaginatedProductsResponse 
+  PaginatedProductsResponse, 
+  StockMovementResponseDto
 } from '../../interfaces/product.interfaces';
 import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 
@@ -77,6 +78,30 @@ export class ProductsService extends BaseApiService {
 
   // ===== MÉTODOS PRINCIPALES =====
 
+  createProduct(dto: CreateProductDto): Observable<ApiResponse<Product>> {
+    this.ensureTenantId();
+    return this.post<ApiResponse<Product>>('products', dto).pipe(
+      map(response => response)
+    );
+  }
+  updateProduct(id: string, dto: UpdateProductDto): Observable<ApiResponse<Product>> {
+    this.ensureTenantId();
+  
+    const { id: _, ...updateData } = dto;
+    
+    return this.put<ApiResponse<Product>>(`products/${id}`, updateData).pipe(
+      map(response => response)
+    );
+  }
+
+  updateProductStock(id: string, dto: UpdateStockDto): Observable<ApiResponse<Product>> {
+    this.ensureTenantId();
+
+    
+    return this.put<ApiResponse<Product>>(`products/${id}/stock`, dto).pipe(
+      map(response => response)
+    );
+  }
   getProducts(params: ProductQueryParams): Observable<ApiResponse<Product>> {
     this.ensureTenantId();
     
@@ -89,6 +114,24 @@ export class ProductsService extends BaseApiService {
     if (!queryParams.sortDirection) queryParams.sortDirection = 'DESC';
 
     return this.get<ApiResponse<Product>>('products', queryParams).pipe(
+      map(response => response)
+    );
+  }
+
+  getProduct(id: string): Observable<ApiResponse<Product>> {
+    this.ensureTenantId();
+
+
+    return this.get<ApiResponse<Product>>(`products/${id}`).pipe(
+      map(response => response)
+    );
+  }
+
+    getProductHistoryMovement(id: string): Observable<ApiPaginatedResponse<StockMovementResponseDto>> {
+    this.ensureTenantId();
+
+
+    return this.post<ApiPaginatedResponse<StockMovementResponseDto>>(`products/${id}/stock-history`, {}).pipe(
       map(response => response)
     );
   }

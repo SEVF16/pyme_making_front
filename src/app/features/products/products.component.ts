@@ -3,7 +3,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products/products.service';
-import {  CreateProductDto, Product, ProductChangeEvent, ProductQueryParams } from '../../interfaces/product.interfaces';
+import {  CreateProductDto, Product, ProductQueryParams } from '../../interfaces/product.interfaces';
 import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 import { TableColumn, TableConfig } from '../../shared/components/data-table/models/data-table.models';
 import { CustomDataTableComponent } from '../../shared/components/data-table/custom-data-table.component';
@@ -12,6 +12,8 @@ import { ButtonLibComponent } from '../../shared/components/buttonlib/button-lib
 import { SidebarViewComponent } from '../../shared/components/sidebar-view/sidebar-view.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { SidebarConfig } from '../../shared/components/sidebar-view/interfaces/siderbar-config.interface';
+import { DataChangeEvent } from '../../shared/interfaces/data-change-event.interface';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -60,7 +62,7 @@ export class ProductsComponent implements OnInit {
           icon: 'eye',
           severity: 'info',
           tooltip: 'Ver detalles',
-          command: (rowData, rowIndex) => this.loadProducts(rowData)
+          command: (rowData) => this.productDetail(rowData)
         },
         {
           label: 'Editar',
@@ -92,7 +94,11 @@ export class ProductsComponent implements OnInit {
   });
   public data: any = [];
   formSidebarConfig: SidebarConfig = { visible: false, position: 'right', size: 'full'  };
-  constructor(private productsService: ProductsService) {}
+  createProductDto!: CreateProductDto;
+  constructor(private productsService: ProductsService,
+        private router: Router,
+        private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -106,8 +112,27 @@ export class ProductsComponent implements OnInit {
     
   }
 
-  saveUser(): void {
-      
+  private productDetail(rowData: any): void {
+    if (!rowData || !rowData.id) {
+      console.warn('No se encontró id en rowData para navegar al detalle', rowData);
+      return;
+    }
+    
+    // Navega a /customers/:id (ruta relativa al módulo/route actual)
+    this.router.navigate([rowData.id], { relativeTo: this.route });
+  }
+  saveProduct(): void {
+    this.productsService.createProduct(this.createProductDto).subscribe({
+      next: (response: ApiResponse<Product>) => {
+        this.closeFormSidebar();
+        this.loadProducts();
+      },
+      error: (error) => {
+        this.error = 'Error al cargar los productos';
+        this.loading = false;
+        console.error('Error loading products:', error);
+      }
+    });
   }
 
   loadProducts(page: number = 1): void {
@@ -153,9 +178,13 @@ export class ProductsComponent implements OnInit {
     }));
   }
 
-  onProductChange(productEvent: ProductChangeEvent): void {
+  onProductChange(productEvent: DataChangeEvent<CreateProductDto>): void {
     console.log('Producto válido:', productEvent);
     this.isDisabled = productEvent.isValid;
-    // Aquí puedes guardar en el backend
+    if (productEvent.isValid) {
+      this.createProductDto = productEvent.data;
+      this.createProductDto.companyId = '4e3657a9-31be-4af7-b1a8-a6380d3fb107'; 
+          // Aquí puedes guardar en el backend
+    }
   }
 }

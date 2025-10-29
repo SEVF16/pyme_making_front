@@ -1,0 +1,38 @@
+.info-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  ::ng-deep .p-card-body {
+    padding: 1.5rem;
+  }
+}
+
+.btn-edit {
+  ::ng-deep button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.product-image {
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Responsive text sizing
+@media (max-width: 768px) {
+  .info-card {
+    ::ng-deep .p-card-body {
+      padding: 1rem;
+    }
+  }
+
+  label {
+    font-size: 0.75rem !important;
+  }
+}

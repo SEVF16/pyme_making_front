@@ -1,4 +1,4 @@
-import { ICreateUserDto, IUser } from "./user-interfaces";
+import { ICreateUserDto, IUpdateUserDto, IUser } from "./user-interfaces";
 
 export class User implements IUser {
   id?: string;
@@ -141,5 +141,94 @@ export class CreateUserDto implements ICreateUserDto {
       sendWelcomeEmail: dto.sendWelcomeEmail || false
     };
   }
+
+  static createToUpdateDto(createDto: ICreateUserDto): IUpdateUserDto {
+    return {
+      firstName: createDto.firstName,
+      lastName: createDto.lastName,
+      email: createDto.email,
+      phone: createDto.phone,
+      role: createDto.role,
+      permissions: createDto.permissions,
+      // status y emailVerified no vienen en createDto, se usarán valores por defecto
+      status: 'active',
+      emailVerified: false
+    };
+  }
 }
 
+export class UpdateUserDto implements IUpdateUserDto {
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly email: string;
+  readonly phone?: string;
+  readonly role: string;
+  readonly permissions: string[];
+  readonly status?: string;
+  readonly emailVerified?: boolean;
+
+  constructor(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    role: string;
+    permissions: string[];
+    status?: string;
+    emailVerified?: boolean;
+  }) {
+    this.firstName = data.firstName;
+    this.lastName = data.lastName;
+    this.email = data.email;
+    this.phone = data.phone;
+    this.role = data.role;
+    this.permissions = data.permissions;
+    this.status = data.status;
+    this.emailVerified = data.emailVerified;
+  }
+
+  /**
+   * Convierte IUser a IUpdateUserDto para edición
+   */
+  static userToUpdateDto(user: IUser): IUpdateUserDto {
+    // Convertir permissions de string a string[]
+    const permissionsArray = user.permissions ? 
+      (typeof user.permissions === 'string' ? 
+        user.permissions.split(',').map(p => p.trim()) : 
+        [user.permissions]) : 
+      [];
+
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      permissions: permissionsArray,
+      status: user.status,
+      emailVerified: user.emailVerified
+      // NOTA: No incluir companyId, password, sendWelcomeEmail
+    };
+  }
+
+  /**
+   * Actualiza un usuario existente con datos del DTO
+   */
+  static updateDtoToUser(dto: IUpdateUserDto, existingUser: IUser): IUser {
+    return {
+      ...existingUser,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      fullName: `${dto.firstName} ${dto.lastName}`.trim(),
+      email: dto.email,
+      phone: dto.phone,
+      role: dto.role,
+      permissions: Array.isArray(dto.permissions) ? 
+        dto.permissions.join(',') : 
+        String(dto.permissions),
+      status: dto.status || existingUser.status,
+      emailVerified: dto.emailVerified !== undefined ? dto.emailVerified : existingUser.emailVerified,
+      updatedAt: new Date().toISOString()
+    };
+  }
+}

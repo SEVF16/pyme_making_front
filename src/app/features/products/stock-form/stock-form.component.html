@@ -1,0 +1,64 @@
+<div class="stock-form-container">
+  <div class="d-flex flex-column gap-4">
+
+    <!-- Movement Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Información del Movimiento</h3>
+
+      <div class="row g-4">
+        <!-- Movement Type -->
+        <div class="col-md-6">
+          <app-select-lib
+            label="Tipo de Movimiento"
+            placeholder="Seleccione el tipo"
+            [options]="movementTypeOptions"
+            [control]="stockForm.get('movementType')"
+            formControlName="movementType">
+          </app-select-lib>
+        </div>
+
+        <!-- Quantity -->
+        <div class="col-md-6">
+          <app-input
+            [label]="shouldQuantityBePositive ? 'Cantidad de Entrada' : shouldQuantityBeNegative ? 'Cantidad de Salida' : 'Cantidad de Ajuste'"
+            [placeholder]="shouldQuantityBePositive ? 'Cantidad positiva' : shouldQuantityBeNegative ? 'Cantidad negativa' : 'Cantidad positiva o negativa'"
+            [control]="stockForm.get('quantity')"
+            [type]="'number'">
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Información de Referencia</h3>
+
+      <div class="row g-4">
+        <!-- Reason -->
+        <div class="col-md-6">
+          <app-input
+            [label]="'Razón del Movimiento'"
+            [placeholder]="'Ej: Compra de inventario, Venta a cliente...'"
+            [control]="stockForm.get('reason')"
+            [type]="'text'"
+            [maxLength]="200">
+          </app-input>
+        </div>
+
+        <!-- Reference -->
+        <div class="col-md-6">
+          <app-input
+            [label]="'Referencia del Documento'"
+            [placeholder]="'Ej: FAC-001, VEN-001...'"
+            [control]="stockForm.get('reference')"
+            [type]="'text'"
+            [maxLength]="50">
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+  
+
+  </div>
+</div>

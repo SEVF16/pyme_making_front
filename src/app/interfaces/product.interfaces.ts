@@ -54,6 +54,26 @@ export interface Product {
   updatedAt?: Date;
 }
 
+
+export interface StockMovementResponseDto {
+  id: string;
+  productId: string;
+  movementType: 'in' | 'out' | 'adjustment';
+  quantity: number;
+  previousStock: number;
+  newStock: number;
+  reason?: string;
+  reference?: string;
+  userId?: string;
+  unitCost?: number;
+  totalCost?: number;
+  createdAt: Date;
+  product?: {
+    sku: string;
+    name: string;
+    category: string;
+  };
+}
 /**
  * DTO para crear un nuevo producto
  * Contiene solo los campos necesarios para la creación
@@ -89,6 +109,7 @@ export interface CreateProductDto {
 export interface UpdateProductDto extends Partial<CreateProductDto> {
   id: string;
 }
+
 
 /**
  * Clase para el modelo de Producto con valores por defecto
@@ -223,7 +244,7 @@ export class ProductModel implements Product {
 
 export interface UpdateStockDto {
   quantity: number;
-  movementType: 'INCREMENT' | 'DECREMENT' | 'SET';
+  movementType: 'in' | 'out' | 'adjustment';
   reason?: string;
   reference?: string;
 }
@@ -251,9 +272,4 @@ export interface PaginatedProductsResponse {
   offset: number;
   limit: number;
   timestamp: string;
-}
-
-export interface ProductChangeEvent {
-  product: CreateProductDto;
-  isValid: boolean;
 }

@@ -1,0 +1,309 @@
+<div class="d-flex flex-column gap-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <p-button
+      class="btn-edit"
+      [outlined]="true"
+      size="small"
+      [pTooltip]="'Volver'"
+      (onClick)="backPage();">
+      <lucide-angular [img]="iconArrow" size="20" class="d-flex justify-content-center align-items-center">
+        Volver
+      </lucide-angular>
+    </p-button>
+      <app-button-lib
+      (buttonClick)="openFormStockSidebar()"
+      [configuration]="{
+        text: 'Actualizar Stock',
+        icon: PlusIcon,              
+        variant: 'primary',          
+        size: 'small',             
+        iconPosition: 'left'
+      }">
+    </app-button-lib>
+  </div>
+
+
+  <p-card styleClass="info-card">
+    <ng-template pTemplate="header">
+      <div class="d-flex justify-content-between align-items-center p-3">
+        <h5 class="mb-0">Información del Producto</h5>
+    <p-button
+        class="btn-edit"
+        [outlined]="true"
+        size="small"
+        [pTooltip]="'Editar'"
+        (onClick)="openFormSidebar();">
+        <lucide-angular [img]="iconPencil" size="16" class="d-flex justify-content-center align-items-center"></lucide-angular>
+    </p-button>
+      </div>
+    </ng-template>
+
+    @if (isLoading) {
+      <div class="d-flex justify-content-center align-items-center p-5">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      </div>
+    }
+
+    @if (!isLoading && product) {
+      <div class="container-fluid">
+        <!-- Fila 1: Identificación Básica -->
+        <div class="row g-3 mb-4">
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">SKU</label>
+            <div class="text-dark">{{ product.sku }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Nombre</label>
+            <div class="text-dark">{{ product.name }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Código de Barras</label>
+            <div class="text-dark">{{ product.barcode || 'N/A' }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Estado</label>
+            <div class="mt-1">
+              <p-tag
+                [value]="product.isActive ? 'Activo' : 'Inactivo'"
+                [severity]="getStatusSeverity(product.isActive)">
+              </p-tag>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2: Descripción (full width) -->
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="fw-bold text-muted small">Descripción</label>
+            <div class="text-dark">{{ product.description }}</div>
+          </div>
+        </div>
+
+        <!-- Fila 3: Información Comercial -->
+        <div class="row g-3 mb-4">
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Precio de Venta</label>
+            <div class="text-dark">{{ product.price | currency:'CLP':'symbol-narrow':'1.0-0' }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Precio de Costo</label>
+            <div class="text-dark">{{ product.costPrice ? (product.costPrice | currency:'CLP':'symbol-narrow':'1.0-0') : 'N/A' }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Margen de Ganancia</label>
+            <div class="text-dark">
+              @if (product.costPrice) {
+                {{ calculateMargin() | number:'1.2-2' }}%
+              } @else {
+                N/A
+              }
+            </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Categoría</label>
+            <div class="text-dark">{{ product.category }}</div>
+          </div>
+        </div>
+
+        <!-- Fila 4: Tipo y Marca -->
+        <div class="row g-3 mb-4">
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Tipo de Producto</label>
+            <div class="mt-1">
+              <p-tag
+                [value]="formatProductType(product.productType)"
+                [severity]="getProductTypeSeverity(product.productType)">
+              </p-tag>
+            </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Marca</label>
+            <div class="text-dark">{{ product.brand || 'N/A' }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Unidad de Medida</label>
+            <div class="text-dark">{{ product.unit || 'unidad' }}</div>
+          </div>
+        </div>
+
+        <!-- Fila 5: Inventario -->
+        <div class="row g-3 mb-4">
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Stock Actual</label>
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-dark">{{ product.stock ?? 0 }}</span>
+              @if (isOutOfStock()) {
+                <p-tag value="Sin Stock" severity="danger"></p-tag>
+              } @else if (isLowStock()) {
+                <p-tag value="Stock Bajo" severity="warning"></p-tag>
+              }
+            </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Stock Mínimo</label>
+            <div class="text-dark">{{ product.minStock ?? 0 }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Stock Máximo</label>
+            <div class="text-dark">{{ product.maxStock ?? 0 }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Permite Stock Negativo</label>
+            <div class="mt-1">
+              <p-tag
+                [value]="product.allowNegativeStock ? 'Sí' : 'No'"
+                [severity]="product.allowNegativeStock ? 'info' : 'secondary'">
+              </p-tag>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 6: Características Físicas -->
+        <div class="row g-3 mb-4">
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Peso</label>
+            <div class="text-dark">{{ product.weight ? (product.weight + ' kg') : 'N/A' }}</div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <label class="fw-bold text-muted small">Dimensiones</label>
+            <div class="text-dark">{{ product.dimensions || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <!-- Fila 7: Tags -->
+        @if (product.tags && product.tags.length > 0) {
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="fw-bold text-muted small">Etiquetas</label>
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                @for (tag of product.tags; track tag) {
+                  <p-tag [value]="tag" severity="secondary"></p-tag>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Fila 8: Imágenes -->
+        @if (product.images && product.images.length > 0) {
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="fw-bold text-muted small">Imágenes</label>
+              <div class="d-flex flex-wrap gap-3 mt-2">
+                @for (image of product.images; track image) {
+                  <img
+                    [src]="image"
+                    [alt]="product.name"
+                    class="product-image"
+                    style="max-width: 150px; max-height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6;">
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Fila 9: Auditoría -->
+        @if (product.createdAt || product.updatedAt) {
+          <div class="row g-3">
+            @if (product.createdAt) {
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <label class="fw-bold text-muted small">Fecha de Creación</label>
+                <div class="text-dark">{{ product.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            }
+            @if (product.updatedAt) {
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <label class="fw-bold text-muted small">Última Actualización</label>
+                <div class="text-dark">{{ product.updatedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (!isLoading && !product) {
+      <div class="d-flex flex-column justify-content-center align-items-center p-5">
+        <i class="pi pi-exclamation-triangle text-warning" style="font-size: 3rem"></i>
+        <p class="mt-3 text-muted">No se pudo cargar la información del producto</p>
+      </div>
+    }
+  </p-card>
+
+  <!-- Sección de Historial de Movimientos -->
+  @if (!isLoading && product) {
+    <p-card styleClass="info-card mt-3">
+      <ng-template pTemplate="header">
+        <div class="d-flex justify-content-between align-items-center p-3">
+          <h5 class="mb-0">Historial de Movimientos de Inventario</h5>
+        </div>
+      </ng-template>
+
+      @if (isLoadingHistory) {
+        <div class="d-flex justify-content-center align-items-center p-5">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <span class="ms-3">Cargando historial de movimientos...</span>
+        </div>
+      }
+
+      @if (!isLoadingHistory && data.length > 0) {
+        <app-custom-data-table
+          [data]="data"
+          [columns]="historyTableColumns"
+          [config]="historyTableConfig">
+        </app-custom-data-table>
+      }
+
+      @if (!isLoadingHistory && data.length === 0) {
+        <div class="d-flex flex-column justify-content-center align-items-center p-5">
+          <i class="pi pi-inbox text-muted" style="font-size: 3rem"></i>
+          <p class="mt-3 text-muted">No se encontraron movimientos de inventario para este producto</p>
+        </div>
+      }
+    </p-card>
+  }
+</div>
+
+@if (formSidebarConfig.visible) {
+<app-sidebar-view
+        [config]="formSidebarConfig"
+        [title]="'Editar Producto'"
+        (onCancel)="closeFormSidebar()">
+  
+  <ng-template #content>
+    @if (viewFormProduct) {
+     <app-product-form
+      [productData]="productDataForEdit"
+      (productChange)="onProductChange($event)">
+    </app-product-form>
+    }@else if (viewFormStock) {
+ 
+    <app-stock-form
+      (stockChange)="onStockChange($event)"
+    >
+
+    </app-stock-form>
+    }
+
+  </ng-template>
+
+    <ng-template #footer>
+    <div class="sidebar-footer-default">
+      
+      <app-button-lib
+        [configuration]="{
+          text: productDataForEdit ? 'Actualizar producto' : 'Crear producto',
+          icon: PlusIcon,
+          variant: 'primary',
+          size: 'normal',
+          iconPosition: 'right',
+          disabled: !isDisabled
+        }"
+        (buttonClick)="onActionComplete()"
+        >
+      </app-button-lib>
+    </div>
+  </ng-template>
+</app-sidebar-view>
+
+}

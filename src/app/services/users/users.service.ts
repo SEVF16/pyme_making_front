@@ -7,6 +7,7 @@ import { IUserQuery } from '../../interfaces/users/users-query-params.interfaces
 import { map, Observable } from 'rxjs';
 import { ApiPaginatedResponse, ApiResponse } from '../../interfaces/api-response.interfaces';
 import { ICreateUserDto, IUser } from '../../interfaces/users/user-interfaces';
+import { UpdateUserDto } from '../../interfaces/users/user.models';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,15 @@ private currentTenantId: string | null = null;
     );
   }
 
+    updateUser(id: string, dto: UpdateUserDto): Observable<ApiResponse<IUser>> {
+    this.ensureTenantId();
+   
+
+    
+    return this.put<ApiResponse<IUser>>(`users/${id}`, dto).pipe(
+      map(response => response)
+    );
+  }
   getUsers(params: IUserQuery): Observable<ApiPaginatedResponse<IUser[]>> {
     this.ensureTenantId();
     

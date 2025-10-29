@@ -19,7 +19,17 @@ export const routes: Routes = [
       },
       {
         path: 'products',
-        loadComponent: () => import('./features/products/products.component').then(m => m.ProductsComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/products/products.component').then(m => m.ProductsComponent),
+          },
+          {
+            path: ':id',  
+            loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
+          }
+        ]
+        
       },
       {
         path: 'customers',

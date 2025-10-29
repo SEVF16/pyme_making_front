@@ -31,3 +31,8 @@ export interface ICreateUserDto {
   permissions: string[];
   sendWelcomeEmail?: boolean;
 }
+
+export interface IUpdateUserDto extends Omit<ICreateUserDto, 'companyId' | 'password' | 'sendWelcomeEmail'> {
+  status?: string;
+  emailVerified?: boolean;
+}
