@@ -1,0 +1,47 @@
+ 
+    <div class="purchase-total-card">
+      <div class="total-header">
+        <h3>Resumen de Compra</h3>
+      </div>
+
+      <div class="total-content">
+        <div class="total-row">
+          <span class="label">Subtotal:</span>
+          <span class="value">{{ subtotal | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+
+        @if (totalDiscount > 0) {
+          <div class="total-row discount">
+            <span class="label">Descuentos:</span>
+            <span class="value">-{{ totalDiscount | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+        }
+
+        @if (totalTax > 0) {
+          <div class="total-row tax">
+            <span class="label">Impuestos:</span>
+            <span class="value">{{ totalTax | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+        }
+
+        <div class="divider"></div>
+
+        <div class="total-row total">
+          <span class="label">Total:</span>
+          <span class="value">{{ total | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+
+        <div class="total-row items-count">
+          <span class="label">Items:</span>
+          <span class="value">{{ itemsCount }}</span>
+        </div>
+
+        @if (totalQuantity > 0) {
+          <div class="total-row quantity">
+            <span class="label">Cantidad total:</span>
+            <span class="value">{{ totalQuantity }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  

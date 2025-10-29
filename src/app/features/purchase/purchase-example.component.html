@@ -1,0 +1,51 @@
+
+    <div class="example-container">
+      <div class="example-header">
+        <h1>Ejemplo de Resumen de Compra</h1>
+        <div class="layout-controls">
+          <button
+            class="layout-btn"
+            [class.active]="layout() === 'horizontal'"
+            (click)="layout.set('horizontal')">
+            Horizontal
+          </button>
+          <button
+            class="layout-btn"
+            [class.active]="layout() === 'vertical'"
+            (click)="layout.set('vertical')">
+            Vertical
+          </button>
+        </div>
+      </div>
+
+      <div class="example-content">
+        <app-purchase-summary
+          [initialPurchase]="initialPurchase"
+          [paymentMethods]="paymentMethods"
+          [layout]="layout()"
+          [showActions]="true"
+          [showValidationStatus]="true"
+          saveButtonLabel="Completar Compra"
+          (purchaseChange)="onPurchaseChange($event)"
+          (save)="onSave($event)"
+          (clear)="onClear()"
+        />
+      </div>
+
+      <!-- Panel de información de eventos -->
+      <div class="events-panel">
+        <h3>Eventos</h3>
+        <div class="event-log">
+          @for (event of events(); track $index) {
+            <div class="event-item" [class]="event.type">
+              <span class="event-time">{{ event.time }}</span>
+              <span class="event-type">{{ event.type }}</span>
+              <span class="event-message">{{ event.message }}</span>
+            </div>
+          }
+          @if (events().length === 0) {
+            <div class="no-events">No hay eventos aún</div>
+          }
+        </div>
+      </div>
+    </div>

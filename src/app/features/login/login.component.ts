@@ -43,7 +43,7 @@ export class LoginComponent {
   loginForm = this.fb.group({
     email: ['admin@empresa.cl', [Validators.required, Validators.email]],
     password: ['Admin123!', [Validators.required, Validators.minLength(6)]],
-    companyId: ['4e3657a9-31be-4af7-b1a8-a6380d3fb107', [Validators.required]]
+    companyId: ['fbbb5649-59a9-48b7-a94f-99aac852bb5c', [Validators.required]]
   });
 
   ngOnInit(): void {
@@ -162,7 +162,7 @@ export class LoginComponent {
     this.loginForm.patchValue({
       email: 'admin@empresa.cl',
       password: 'Admin123!',
-      companyId: '4e3657a9-31be-4af7-b1a8-a6380d3fb107'
+      companyId: 'fbbb5649-59a9-48b7-a94f-99aac852bb5c'
     });
   }
 }

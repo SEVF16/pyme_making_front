@@ -1,11 +1,9 @@
-<!-- app.component.html -->
-
 @if (!isAuthenticated && isLoginPage) {
   <!-- Solo mostrar el router outlet para login cuando no está autenticado Y está en página de login -->
-    <p-toast></p-toast>
+  <p-toast></p-toast>
   <router-outlet></router-outlet>
-} @else if (isAuthenticated && !isLoginPage) {
-  <!-- Layout normal con header y sidebar cuando está autenticado Y NO está en página de login -->
+} @else if (isAuthenticated && !isLoginPage && !isPucharsePage) {
+  <!-- Layout normal con header y sidebar cuando está autenticado Y NO está en página de login Y NO en pucharse -->
   <div class="layout-wrapper">
     <!-- Header Component -->
     <app-header (toggleSidebar)="onToggleSidebar()"></app-header>
@@ -16,11 +14,15 @@
     <!-- Contenido principal -->
     <div class="layout-main" [class.sidebar-expanded]="sidebarExpanded">
       <div class="layout-content">
-         <p-toast></p-toast>
+        <p-toast></p-toast>
         <router-outlet></router-outlet>
       </div>
     </div>
   </div>
+} @else if (isAuthenticated && isPucharsePage) {
+  <!-- Solo contenido sin header/sidebar para pucharse -->
+  <p-toast></p-toast>
+  <router-outlet></router-outlet>
 } @else {
   <!-- Estado de carga o transición -->
   <div class="loading-container">

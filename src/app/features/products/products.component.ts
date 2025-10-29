@@ -183,7 +183,7 @@ export class ProductsComponent implements OnInit {
     this.isDisabled = productEvent.isValid;
     if (productEvent.isValid) {
       this.createProductDto = productEvent.data;
-      this.createProductDto.companyId = '4e3657a9-31be-4af7-b1a8-a6380d3fb107'; 
+      this.createProductDto.companyId = 'fbbb5649-59a9-48b7-a94f-99aac852bb5c'; 
           // Aquí puedes guardar en el backend
     }
   }

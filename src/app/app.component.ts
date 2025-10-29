@@ -19,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   sidebarExpanded: boolean = false;
   isLoginPage = false;
   isAuthenticated = false;
+  isPucharsePage: boolean = false;
   private routerSubscription!: Subscription;
   private authSubscription!: Subscription;
 
@@ -47,6 +48,7 @@ ngOnInit(): void {
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe((event: any) => {
       this.isLoginPage = event.url === '/login' || event.urlAfterRedirects === '/login';
+       this.isPucharsePage = this.router.url.includes('/pucharse');
       console.log('Ruta cambió:', event.url, 'Es login:', this.isLoginPage);
     });
 

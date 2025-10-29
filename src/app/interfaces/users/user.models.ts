@@ -39,7 +39,7 @@ export class User implements IUser {
     sendWelcomeEmail?: boolean
   ) {
     this.id = id;
-    this.companyId = "4e3657a9-31be-4af7-b1a8-a6380d3fb107";
+    this.companyId = "fbbb5649-59a9-48b7-a94f-99aac852bb5c";
     this.firstName = firstName;
     this.lastName = lastName;
     this.fullName = fullName;
@@ -65,7 +65,7 @@ export class User implements IUser {
       [];
 
     return {
-      companyId: "4e3657a9-31be-4af7-b1a8-a6380d3fb107",
+      companyId: "fbbb5649-59a9-48b7-a94f-99aac852bb5c",
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -102,7 +102,7 @@ export class CreateUserDto implements ICreateUserDto {
     permissions: string[];
     sendWelcomeEmail?: boolean;
   }) {
-    this.companyId = "4e3657a9-31be-4af7-b1a8-a6380d3fb107";
+    this.companyId = "fbbb5649-59a9-48b7-a94f-99aac852bb5c";
     this.firstName = data.firstName;
     this.lastName = data.lastName;
     this.email = data.email;
@@ -121,7 +121,7 @@ export class CreateUserDto implements ICreateUserDto {
     const timestamp = new Date().toISOString();
     
     return {
-      companyId: "4e3657a9-31be-4af7-b1a8-a6380d3fb107",
+      companyId: "fbbb5649-59a9-48b7-a94f-99aac852bb5c",
       firstName: dto.firstName,
       lastName: dto.lastName,
       fullName: `${dto.firstName} ${dto.lastName}`.trim(),
