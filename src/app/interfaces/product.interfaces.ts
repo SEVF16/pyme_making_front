@@ -264,6 +264,7 @@ export interface ProductQueryParams {
   maxPrice?: number;
   lowStock?: boolean;
   outOfStock?: boolean;
+  q?:string
 }
 
 export interface PaginatedProductsResponse {

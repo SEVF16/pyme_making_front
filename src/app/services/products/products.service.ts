@@ -151,6 +151,16 @@ export class ProductsService extends BaseApiService {
       map(response => response)
     );
   }
+
+  getProductsSearch(params: ProductQueryParams): Observable<ApiResponse<Product[]>> {
+    this.ensureTenantId();
+    
+
+
+    return this.get<ApiResponse<Product[]>>('products/search/summary', params).pipe(
+      map(response => response)
+    );
+  }
   // ===== MÉTODOS DE VALIDACIÓN =====
 
   private ensureTenantId(): void {

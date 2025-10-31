@@ -1,0 +1,100 @@
+
+    <div class="purchase-summary-container">
+      <div class="summary-content" [class.layout-vertical]="layout === 'vertical'" [class.layout-horizontal]="layout === 'horizontal'">
+        <!-- Sección de Productos -->
+                   
+        <div class="section section-products">
+          <div class="purchase-products-card">
+            <div class="products-header">
+              <h3>Productos Seleccionados</h3>
+              <app-autocomplete-lib
+                placeholder="Buscar producto..."
+                [control]="form.get('selectedUser')"
+                [options]="productOptions"
+                [forceSelection]="false"
+                [clearAfterSelection]="true"
+                [emptyMessage]="isLoading ? 'Buscando...' : 'No se encontraron productos'"
+                [minLength]="2"
+                (onSelect)="onUserSelect($event)"
+                (onClear)="onUserClear()"
+
+              />
+              <span class="badge">{{ products.length }}</span>
+            </div>
+
+            <app-purchase-products
+              [products]="products()"
+              [readonly]="readonly"
+              (removeProduct)="handleRemoveProduct($event)"
+              (quantityChange)="handleQuantityChange($event)"
+            />
+        </div>
+      </div>
+        <!-- Sección lateral con Total y Método de Pago -->
+        <div class="section section-sidebar">
+          <!-- Sección de Total -->
+          <div class="subsection">
+            <app-purchase-total
+              [subtotal]="subtotal()"
+              [totalDiscount]="totalDiscount()"
+              [totalTax]="totalTax()"
+              [total]="total()"
+              [itemsCount]="itemsCount()"
+              [totalQuantity]="totalQuantity()"
+            />
+          </div>
+
+          <!-- Sección de Método de Pago -->
+          <div class="subsection">
+            <app-purchase-payment
+              [paymentMethods]="paymentMethods"
+              [selectedPaymentMethodId]="selectedPaymentMethodId()"
+              [selectedPaymentMethod]="selectedPaymentMethod()"
+              [readonly]="readonly"
+              (paymentMethodSelect)="handlePaymentMethodSelect($event)"
+            />
+          </div>
+
+          <!-- Acciones -->
+          @if (!readonly && showActions) {
+            <div class="subsection actions-section">
+              <button
+                class="btn btn-secondary"
+                (click)="handleClear()"
+                [disabled]="itemsCount() === 0">
+                Limpiar
+              </button>
+              <button
+                class="btn btn-primary"
+                (click)="handleSave()"
+                [disabled]="!isValid()">
+                {{ saveButtonLabel }}
+              </button>
+            </div>
+          }
+
+          <!-- Estado de validación -->
+          @if (showValidationStatus) {
+            <div class="subsection validation-status">
+              @if (isValid()) {
+                <div class="status-message status-valid">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Compra válida</span>
+                </div>
+              } @else {
+                <div class="status-message status-invalid">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>{{ validationMessage() }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>

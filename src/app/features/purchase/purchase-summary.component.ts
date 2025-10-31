@@ -1,10 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PurchaseTotalComponent } from './components/purchase-total/purchase-total.component';
 import { PurchaseProductsComponent } from './components/purchase-products/purchase-products.component';
 import { PurchasePaymentComponent } from './components/purchase-payment/purchase-payment.component';
 import { Purchase, PurchaseItem, PaymentMethod, PurchaseChangeEvent } from '../../interfaces/purchase/purchase.interfaces';
 import { PurchaseModel } from '../../interfaces/purchase/purchase.models';
+import { AutocompleteLibComponent } from '../../shared/components/autocomplete-lib/autocomplete-lib.component';
+import { catchError, debounceTime, distinctUntilChanged, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { Option } from '../../shared/components/select-lib/select-lib.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ProductsService } from '../../services/products/products.service';
+import { Product, ProductQueryParams } from '../../interfaces/product.interfaces';
+import { ApiResponse } from '../../interfaces/api-response.interfaces';
 
 /**
  * Componente Smart/Container para gestionar el resumen de compra
@@ -27,322 +34,52 @@ import { PurchaseModel } from '../../interfaces/purchase/purchase.models';
     CommonModule,
     PurchaseTotalComponent,
     PurchaseProductsComponent,
-    PurchasePaymentComponent
+    PurchasePaymentComponent,
+    AutocompleteLibComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="purchase-summary-container">
-      <div class="summary-header">
-        <h2>Resumen de Compra</h2>
-        @if (purchaseNumber()) {
-          <span class="purchase-number">{{ purchaseNumber() }}</span>
-        }
-      </div>
-
-      <div class="summary-content" [class.layout-vertical]="layout === 'vertical'" [class.layout-horizontal]="layout === 'horizontal'">
-        <!-- Sección de Productos -->
-        <div class="section section-products">
-          <app-purchase-products
-            [products]="products()"
-            [readonly]="readonly"
-            (removeProduct)="handleRemoveProduct($event)"
-            (quantityChange)="handleQuantityChange($event)"
-          />
-        </div>
-
-        <!-- Sección lateral con Total y Método de Pago -->
-        <div class="section section-sidebar">
-          <!-- Sección de Total -->
-          <div class="subsection">
-            <app-purchase-total
-              [subtotal]="subtotal()"
-              [totalDiscount]="totalDiscount()"
-              [totalTax]="totalTax()"
-              [total]="total()"
-              [itemsCount]="itemsCount()"
-              [totalQuantity]="totalQuantity()"
-            />
-          </div>
-
-          <!-- Sección de Método de Pago -->
-          <div class="subsection">
-            <app-purchase-payment
-              [paymentMethods]="paymentMethods"
-              [selectedPaymentMethodId]="selectedPaymentMethodId()"
-              [selectedPaymentMethod]="selectedPaymentMethod()"
-              [readonly]="readonly"
-              (paymentMethodSelect)="handlePaymentMethodSelect($event)"
-            />
-          </div>
-
-          <!-- Acciones -->
-          @if (!readonly && showActions) {
-            <div class="subsection actions-section">
-              <button
-                class="btn btn-secondary"
-                (click)="handleClear()"
-                [disabled]="itemsCount() === 0">
-                Limpiar
-              </button>
-              <button
-                class="btn btn-primary"
-                (click)="handleSave()"
-                [disabled]="!isValid()">
-                {{ saveButtonLabel }}
-              </button>
-            </div>
-          }
-
-          <!-- Estado de validación -->
-          @if (showValidationStatus) {
-            <div class="subsection validation-status">
-              @if (isValid()) {
-                <div class="status-message status-valid">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <span>Compra válida</span>
-                </div>
-              } @else {
-                <div class="status-message status-invalid">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                  <span>{{ validationMessage() }}</span>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .purchase-summary-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #f3f4f6;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .summary-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-      h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-
-      .purchase-number {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-    }
-
-    .summary-content {
-      flex: 1;
-      display: flex;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      overflow: hidden;
-
-      &.layout-horizontal {
-        flex-direction: row;
-
-        .section-products {
-          flex: 2;
-          min-width: 0;
-        }
-
-        .section-sidebar {
-          flex: 1;
-          min-width: 350px;
-          max-width: 450px;
-        }
-      }
-
-      &.layout-vertical {
-        flex-direction: column;
-
-        .section-products {
-          flex: 1;
-          min-height: 300px;
-        }
-
-        .section-sidebar {
-          display: flex;
-          gap: 1rem;
-
-          .subsection {
-            flex: 1;
-          }
-
-          .actions-section,
-          .validation-status {
-            flex: 0 0 auto;
-          }
-        }
-      }
-    }
-
-    .section {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .section-sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .subsection {
-      flex-shrink: 0;
-
-      &:has(app-purchase-total),
-      &:has(app-purchase-payment) {
-        flex-shrink: 1;
-      }
-    }
-
-    .actions-section {
-      display: flex;
-      gap: 0.75rem;
-      padding: 1rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn {
-      flex: 1;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.938rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      &.btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-
-        &:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-      }
-
-      &.btn-secondary {
-        background: white;
-        color: #6b7280;
-        border: 2px solid #e5e7eb;
-
-        &:hover:not(:disabled) {
-          border-color: #d1d5db;
-          background: #f9fafb;
-        }
-      }
-    }
-
-    .validation-status {
-      padding: 1rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .status-message {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-
-      svg {
-        flex-shrink: 0;
-      }
-
-      &.status-valid {
-        color: #10b981;
-      }
-
-      &.status-invalid {
-        color: #ef4444;
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .summary-content.layout-horizontal {
-        flex-direction: column;
-
-        .section-sidebar {
-          max-width: 100%;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 1rem;
-        }
-      }
-    }
-
-    @media (max-width: 640px) {
-      .summary-header {
-        padding: 1rem 1.5rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-
-        h2 {
-          font-size: 1.25rem;
-        }
-      }
-
-      .summary-content {
-        padding: 1rem;
-        gap: 1rem;
-      }
-
-      .section-sidebar {
-        grid-template-columns: 1fr !important;
-      }
-
-      .actions-section {
-        flex-direction: column;
-      }
-    }
-  `]
+  templateUrl: './purchase-summary.component.html',
 })
 export class PurchaseSummaryComponent implements OnInit {
   // Inputs
   @Input() initialPurchase?: Purchase;
-  @Input() paymentMethods: PaymentMethod[] = [];
+  @Input() paymentMethods: PaymentMethod[] = [
+    {
+      id: 'pm-001',
+      type: 'cash',
+      name: 'Efectivo',
+      description: 'Pago en efectivo',
+      isActive: true
+    },
+    {
+      id: 'pm-002',
+      type: 'credit_card',
+      name: 'Tarjeta de Crédito',
+      description: 'Visa, Mastercard, American Express',
+      isActive: true
+    },
+    {
+      id: 'pm-003',
+      type: 'debit_card',
+      name: 'Tarjeta de Débito',
+      description: 'Débito Visa o Mastercard',
+      isActive: true
+    },
+    {
+      id: 'pm-004',
+      type: 'transfer',
+      name: 'Transferencia Bancaria',
+      description: 'Transferencia electrónica',
+      isActive: true
+    },
+    {
+      id: 'pm-005',
+      type: 'check',
+      name: 'Cheque',
+      description: 'Cheque al día o a fecha',
+      isActive: false
+    }
+  ];
   @Input() readonly: boolean = false;
   @Input() layout: 'horizontal' | 'vertical' = 'horizontal';
   @Input() showActions: boolean = true;
@@ -370,12 +107,144 @@ export class PurchaseSummaryComponent implements OnInit {
   protected purchaseNumber = computed(() => this.purchaseModel().purchaseNumber);
   protected isValid = computed(() => this.purchaseModel().isValid());
   protected validationMessage = computed(() => this.getValidationMessage());
+  private destroy$ = new Subject<void>();
 
+  isLoading = false;
+  productOptions: Option[] = [];
+  productsSummary: Product[] = [];
+  form!: FormGroup;
+    constructor(
+      private readonly formBuilder: FormBuilder,
+      private productService: ProductsService,
+      private cdr: ChangeDetectorRef
+    ) {
+      this.form = this.formBuilder.group({
+        selectedUser: ['']
+      });
+    }
+  
   ngOnInit(): void {
     if (this.initialPurchase) {
       this.purchaseModel.set(new PurchaseModel(this.initialPurchase));
     }
     this.emitChange();
+        this.form.get('selectedUser')?.valueChanges.pipe(
+          debounceTime(300), // Espera 300ms después de que el usuario deje de escribir
+          distinctUntilChanged(), // Solo emite si el valor cambió
+          switchMap(query => this.performSearch(query || '')),
+          takeUntil(this.destroy$)
+        ).subscribe({
+          next: (options: Option[]) => {
+            this.productOptions = options;
+            this.isLoading = false;
+            this.cdr.markForCheck(); // Marcar para detección de cambios
+          },
+          error: (error) => {
+            console.error('Error en búsqueda de productos:', error);
+            this.productOptions = [];
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          }
+        });
+  }
+  private performSearch(query: string) {
+    if (query.length < 3) {
+      this.isLoading = true;
+      return of([]);
+    }
+
+    // Activar loading state
+    this.isLoading = true;
+    this.cdr.markForCheck();
+
+    const params: ProductQueryParams = {
+      q: query,
+      limit: 10
+    };
+
+    return this.productService.getProductsSearch(params).pipe(
+      map((response: ApiResponse<Product[]>) => {
+        this.productsSummary = response.data;
+        return response.data.map(product => ({
+          label: `${product.name} - ${product.barcode}`,
+          value: product.id || ''
+        }));
+      }),
+      catchError(error => {
+        console.error('Error searching products:', error);
+        return of([]);
+      })
+    );
+  }
+
+    onUserSelect(option: Option) {
+
+const selectedProduct = this.productsSummary.find(product => product.id === option.value);
+    
+    if (selectedProduct) {
+      
+      // Verificar si el producto ya existe en los items
+      const currentModel = this.purchaseModel();
+      const existingItemIndex = currentModel.items.findIndex(item => item.productId === selectedProduct.id);
+      
+      if (existingItemIndex >= 0) {
+        // Si el producto ya existe, incrementar la cantidad
+        const updatedItems = [...currentModel.items];
+        const existingItem = updatedItems[existingItemIndex];
+        updatedItems[existingItemIndex] = {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
+          subtotal: existingItem.unitPrice * (existingItem.quantity + 1),
+          total: (existingItem.unitPrice * (existingItem.quantity + 1)) - (existingItem.discount || 0) + (existingItem.tax || 0)
+        };
+        
+        this.updatePurchaseModelWithItems(updatedItems);
+
+      } else {
+        // Si es un producto nuevo, agregarlo
+        const newPurchaseItem: PurchaseItem = {
+          productId: selectedProduct.id || '',
+          productName: selectedProduct.name,
+          productSku: selectedProduct.barcode || selectedProduct.sku || '',
+          quantity: 1,
+          unitPrice: Number(selectedProduct.price) || 0, // Convertir a número
+          subtotal: Number(selectedProduct.price) || 0,   // Convertir a número
+          discount: 0,
+          tax: 0,
+          total: Number(selectedProduct.price) || 0       // Convertir a número
+        };
+        
+        const updatedItems = [...currentModel.items, newPurchaseItem];
+        this.updatePurchaseModelWithItems(updatedItems);
+
+      }
+      
+      
+
+    }
+    // Lógica adicional cuando se selecciona un producto
+  }
+private updatePurchaseModelWithItems(items: PurchaseItem[]): void {
+  const currentModel = this.purchaseModel();
+  
+  const newModel = new PurchaseModel();
+  Object.assign(newModel, currentModel);
+  newModel.items = items;
+  
+  // Recalcular todos los totales
+  newModel.subtotal = newModel.calculateSubtotal();
+  newModel.totalDiscount = newModel.calculateTotalDiscount();
+  newModel.totalTax = newModel.calculateTotalTax();
+  newModel.total = newModel.calculateTotal();
+  
+  
+  this.purchaseModel.set(newModel);
+}
+  onUserClear() {
+    console.log('Autocomplete limpiado');
+    this.productOptions = [];
+    this.isLoading = false;
+    this.cdr.markForCheck();
   }
 
   /**

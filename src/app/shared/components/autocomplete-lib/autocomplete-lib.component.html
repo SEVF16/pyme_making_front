@@ -1,0 +1,66 @@
+<div [class]="containerClass()">
+  
+  <!-- Label -->
+  @if (label()) {
+    <label [for]="inputId()" [class.required]="hasRequiredValidator()" class="autocomplete-label">{{ label() }}</label>
+  }
+  
+  <!-- Autocomplete Wrapper -->
+  <div [class]="autocompleteWrapperClass()">
+    
+    <!-- AutoComplete -->
+    <p-autoComplete
+      [id]="inputId()"
+      [formControl]="control()"
+      [suggestions]="options()"
+      [placeholder]="placeholder()"
+      [readonly]="readonly()"
+      [minLength]="minLength()"
+      [forceSelection]="forceSelection()"
+      [emptyMessage]="emptyMessage()"
+      [delay]="0"
+      field="label"
+      dataKey="value"
+      [completeOnFocus]="false"
+      [showClear]="true"
+      styleClass="reusable-autocomplete"
+      [inputStyle]="{'width': '100%'}"
+      (completeMethod)="onCompleteMethod($event)"
+      (onSelect)="onOptionSelect($event)"
+      (onClear)="onAutocompleteClick()"
+      (onFocus)="onInputFocus($event)"
+    />
+    
+    @if (iconName()) {
+      <span 
+        class="autocomplete-icon"
+        [class]="'autocomplete-icon-' + iconPosition()"
+        [class.clickable]="isIconClickable()"
+        [class.non-clickable]="!isIconClickable()"
+        (click)="onIconClick($event)"
+        [title]="isIconClickable() ? 'Hacer clic' : ''">
+        <lucide-angular 
+          [img]="iconName()!" 
+          [size]="iconSize()">
+        </lucide-angular>
+      </span>
+    }
+    
+  </div>
+
+  <!-- ERRORES DEL FORMULARIO REACTIVO -->
+  @if (control() && control()!.errors && (control()!.dirty || control()!.touched)) {
+    <div class="error-messages">
+      @if (control()!.errors!['required']) {
+        <small class="p-error">{{ label() || 'Este campo' }} es requerido</small>
+      }
+      @if (control()!.errors!['pattern']) {
+        <small class="p-error">Selección no válida</small>
+      }
+      @if (control()!.errors!['invalidSelection']) {
+        <small class="p-error">Debe seleccionar una opción válida</small>
+      }
+    </div>
+  }
+  
+</div>

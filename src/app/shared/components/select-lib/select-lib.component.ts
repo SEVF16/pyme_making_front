@@ -5,7 +5,7 @@ import { DropdownModule } from 'primeng/dropdown';
 
 export interface Option {
   label: string;
-  value: any;
+  value: string;
 }
 
 @Component({

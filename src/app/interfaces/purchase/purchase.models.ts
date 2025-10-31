@@ -116,7 +116,7 @@ export class PurchaseModel implements Purchase {
     this.paymentMethod = data?.paymentMethod;
     this.status = data?.status || 'draft';
     this.notes = data?.notes;
-    this.companyId = data?.companyId || '';
+    this.companyId = data?.companyId || 'fbbb5649-59a9-48b7-a94f-99aac852bb5c';
     this.createdAt = data?.createdAt;
     this.updatedAt = data?.updatedAt;
 

@@ -1,22 +1,6 @@
 
     <div class="example-container">
-      <div class="example-header">
-        <h1>Ejemplo de Resumen de Compra</h1>
-        <div class="layout-controls">
-          <button
-            class="layout-btn"
-            [class.active]="layout() === 'horizontal'"
-            (click)="layout.set('horizontal')">
-            Horizontal
-          </button>
-          <button
-            class="layout-btn"
-            [class.active]="layout() === 'vertical'"
-            (click)="layout.set('vertical')">
-            Vertical
-          </button>
-        </div>
-      </div>
+
 
       <div class="example-content">
         <app-purchase-summary
