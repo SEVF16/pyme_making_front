@@ -1,0 +1,177 @@
+<!-- ticket-detail.component.html -->
+<div class="ticket-detail-container" *ngIf="!loading && ticket">
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="header-left">
+      <button class="back-button" (click)="goBack()">
+        <lucide-angular [img]="ArrowLeftIcon" [size]="20"></lucide-angular>
+        Volver
+      </button>
+      <h1>{{ ticket.ticketNumber | ticketNumber }}</h1>
+      <span [class]="'badge ' + getStatusBadgeClass(ticket.status)">
+        {{ ticket.status | ticketStatus }}
+      </span>
+    </div>
+
+    <div class="header-right">
+      <app-button-lib
+        [icon]="PrinterIcon"
+        label="Imprimir"
+        severity="primary"
+        (click)="printTicket()"
+      ></app-button-lib>
+
+      <app-button-lib
+        *ngIf="ticket.canCancel()"
+        [icon]="XCircleIcon"
+        label="Cancelar"
+        severity="danger"
+        (click)="cancelTicket()"
+      ></app-button-lib>
+
+      <app-button-lib
+        *ngIf="ticket.canConvert()"
+        [icon]="FileTextIcon"
+        label="Convertir a Boleta"
+        severity="success"
+        (click)="convertToBoleta()"
+      ></app-button-lib>
+    </div>
+  </div>
+
+  <!-- Disclaimer Legal -->
+  <div appTicketDisclaimer></div>
+
+  <!-- Información de Conversión -->
+  <div *ngIf="ticket.isConverted()" class="conversion-info">
+    <div class="conversion-icon">✓</div>
+    <div class="conversion-text">
+      <strong>Este ticket fue convertido a Boleta Electrónica</strong>
+      <p>Fecha de conversión: {{ formatDate(ticket.convertedAt) }}</p>
+      <a [routerLink]="['/invoices', ticket.convertedToInvoiceId]" class="view-invoice-link">
+        Ver Boleta →
+      </a>
+    </div>
+  </div>
+
+  <!-- Grid de Información -->
+  <div class="info-grid">
+    <!-- Cliente -->
+    <div class="info-card">
+      <h3>Información del Cliente</h3>
+      <div class="info-content">
+        <div class="info-row">
+          <span class="label">Nombre:</span>
+          <span class="value">{{ ticket.customerData?.name || 'Consumidor Final' }}</span>
+        </div>
+        <div class="info-row" *ngIf="ticket.customerData?.rut">
+          <span class="label">RUT:</span>
+          <span class="value">{{ ticket.customerData.rut }}</span>
+        </div>
+        <div class="info-row" *ngIf="ticket.customerData?.email">
+          <span class="label">Email:</span>
+          <span class="value">{{ ticket.customerData.email }}</span>
+        </div>
+        <div class="info-row" *ngIf="ticket.customerData?.phone">
+          <span class="label">Teléfono:</span>
+          <span class="value">{{ ticket.customerData.phone }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información General -->
+    <div class="info-card">
+      <h3>Información General</h3>
+      <div class="info-content">
+        <div class="info-row">
+          <span class="label">Fecha de Emisión:</span>
+          <span class="value">{{ formatDate(ticket.issueDate) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Método de Pago:</span>
+          <span class="value">{{ formatPaymentMethod(ticket.paymentMethod) }}</span>
+        </div>
+        <div class="info-row" *ngIf="ticket.transactionReference">
+          <span class="label">Referencia:</span>
+          <span class="value">{{ ticket.transactionReference }}</span>
+        </div>
+        <div class="info-row" *ngIf="ticket.notes">
+          <span class="label">Notas:</span>
+          <span class="value">{{ ticket.notes }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items -->
+  <div class="items-card">
+    <h3>Detalle de Items</h3>
+    <div class="items-table-container">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Descripción</th>
+            <th class="text-center">Cantidad</th>
+            <th class="text-right">Precio Unit.</th>
+            <th class="text-right">Descuento</th>
+            <th class="text-right">IVA</th>
+            <th class="text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ticket.items">
+            <td>
+              <div class="item-description">{{ item.description }}</div>
+              <div class="item-sku" *ngIf="item.sku">SKU: {{ item.sku }}</div>
+            </td>
+            <td class="text-center">{{ item.quantity }}</td>
+            <td class="text-right">{{ formatCurrency(item.unitPrice) }}</td>
+            <td class="text-right">
+              <span *ngIf="item.discountAmount > 0">
+                -{{ formatCurrency(item.discountAmount) }}
+                <small *ngIf="item.discountPercentage > 0">({{ item.discountPercentage }}%)</small>
+              </span>
+              <span *ngIf="item.discountAmount === 0">-</span>
+            </td>
+            <td class="text-right">{{ formatCurrency(item.taxAmount) }}</td>
+            <td class="text-right total-cell">{{ formatCurrency(item.lineTotal) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Totales -->
+  <div class="totals-card">
+    <h3>Totales</h3>
+    <div class="totals-content">
+      <div class="total-row">
+        <span class="label">Subtotal:</span>
+        <span class="value">{{ formatCurrency(ticket.subtotal) }}</span>
+      </div>
+      <div class="total-row" *ngIf="ticket.discountTotal > 0">
+        <span class="label">Descuentos:</span>
+        <span class="value discount">-{{ formatCurrency(ticket.discountTotal) }}</span>
+      </div>
+      <div class="total-row">
+        <span class="label">IVA (19%):</span>
+        <span class="value">{{ formatCurrency(ticket.taxTotal) }}</span>
+      </div>
+      <div class="total-row total">
+        <span class="label">TOTAL:</span>
+        <span class="value">{{ formatCurrency(ticket.total) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div *ngIf="loading" class="loading-container">
+  <p>Cargando ticket...</p>
+</div>
+
+<!-- Error -->
+<div *ngIf="error && !loading" class="error-container">
+  <p>{{ error }}</p>
+  <button class="back-button" (click)="goBack()">Volver a la lista</button>
+</div>

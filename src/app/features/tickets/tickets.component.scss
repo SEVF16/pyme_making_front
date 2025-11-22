@@ -1,0 +1,137 @@
+// tickets.component.scss
+.tickets-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .header-icon {
+      color: var(--primary-color, #007bff);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .header-right {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.filters-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 200px;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-color, #007bff);
+      }
+    }
+  }
+
+  .refresh-button {
+    align-self: flex-end;
+    padding: 8px 16px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+      background: darken(#007bff, 10%);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.info-disclaimer {
+  background: #e7f3ff;
+  color: #004085;
+  padding: 12px 16px;
+  border: 1px solid #b8daff;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.loading-container,
+.error-container {
+  padding: 40px;
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+}
+
+.error-container {
+  color: #dc3545;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .filters-container {
+    flex-direction: column;
+
+    .filter-group {
+      .filter-select,
+      .filter-input {
+        min-width: 100%;
+      }
+    }
+
+    .refresh-button {
+      align-self: stretch;
+    }
+  }
+}

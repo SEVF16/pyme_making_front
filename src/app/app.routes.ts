@@ -38,6 +38,23 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent),
       },
+      {
+        path: 'tickets',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/tickets/tickets.component').then(m => m.TicketsComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/tickets/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent),
+          },
+          {
+            path: ':id/print',
+            loadComponent: () => import('./features/tickets/ticket-print/ticket-print.component').then(m => m.TicketPrintComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

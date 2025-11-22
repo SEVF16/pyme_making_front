@@ -1,0 +1,81 @@
+<!-- tickets.component.html -->
+<div class="tickets-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <lucide-angular [img]="ReceiptIcon" [size]="32" class="header-icon"></lucide-angular>
+      <h1>Tickets</h1>
+    </div>
+    <div class="header-right">
+      <app-button-lib
+        [icon]="PlusIcon"
+        label="Nuevo Ticket"
+        severity="primary"
+        (click)="refreshTickets()"
+      ></app-button-lib>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-container">
+    <div class="filter-group">
+      <label for="status-filter">Estado:</label>
+      <select
+        id="status-filter"
+        [(ngModel)]="selectedStatus"
+        (change)="onStatusChange(selectedStatus)"
+        class="filter-select"
+      >
+        <option value="ALL">Todos</option>
+        <option value="DRAFT">Borrador</option>
+        <option value="ISSUED">Emitido</option>
+        <option value="CANCELLED">Cancelado</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="search-filter">Buscar:</label>
+      <input
+        id="search-filter"
+        type="text"
+        placeholder="Número o cliente..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch(searchTerm)"
+        class="filter-input"
+      />
+    </div>
+
+    <button
+      class="refresh-button"
+      (click)="refreshTickets()"
+      [disabled]="loading"
+    >
+      Actualizar
+    </button>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="info-disclaimer">
+    ℹ️ Los tickets no son documentos tributarios válidos. Para generar boletas electrónicas, debe habilitar la integración con SII.
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Cargando tickets...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading && !error">
+    <app-custom-data-table
+      [columns]="tableColumns()"
+      [data]="data"
+      [config]="tableConfig()"
+      [totalRecords]="totalItems"
+    ></app-custom-data-table>
+  </div>
+</div>

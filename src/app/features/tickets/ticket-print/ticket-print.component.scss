@@ -1,0 +1,295 @@
+// ticket-print.component.scss
+
+// Estilos para pantalla
+.print-container {
+  max-width: 80mm;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.print-header {
+  text-align: center;
+  margin-bottom: 16px;
+
+  .company-name {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .company-info {
+    margin: 4px 0;
+    font-size: 11px;
+  }
+}
+
+.separator {
+  margin: 12px 0;
+  text-align: center;
+  color: #666;
+  font-size: 10px;
+  overflow: hidden;
+}
+
+.separator-small {
+  margin: 8px 0;
+  text-align: center;
+  color: #999;
+  font-size: 10px;
+}
+
+.ticket-info {
+  text-align: center;
+  margin-bottom: 12px;
+
+  .ticket-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 4px 0;
+    font-size: 11px;
+  }
+}
+
+.customer-info {
+  margin-bottom: 12px;
+
+  p {
+    margin: 4px 0;
+    font-size: 11px;
+  }
+}
+
+.items-section {
+  margin-bottom: 12px;
+
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      th {
+        padding: 4px 2px;
+        font-size: 10px;
+        font-weight: bold;
+        text-align: left;
+        border-bottom: 1px solid #666;
+
+        &.text-center {
+          text-align: center;
+        }
+
+        &.text-right {
+          text-align: right;
+        }
+      }
+    }
+
+    tbody {
+      .item-row {
+        td {
+          padding: 6px 2px;
+          font-size: 11px;
+          border-bottom: 1px dotted #ddd;
+
+          &.text-center {
+            text-align: center;
+          }
+
+          &.text-right {
+            text-align: right;
+          }
+
+          .item-sku {
+            font-size: 9px;
+            color: #666;
+          }
+        }
+      }
+
+      .item-details {
+        td {
+          padding: 2px;
+          font-size: 9px;
+          color: #666;
+
+          .discount-info,
+          .tax-info {
+            display: inline-block;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.totals-section {
+  margin-bottom: 12px;
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+    font-size: 11px;
+
+    &.total {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+  }
+}
+
+.payment-info {
+  margin-bottom: 12px;
+
+  p {
+    margin: 4px 0;
+    font-size: 11px;
+  }
+}
+
+.notes-section {
+  margin-bottom: 12px;
+  font-size: 10px;
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+.legal-disclaimer {
+  text-align: center;
+  margin: 12px 0;
+  padding: 8px;
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+
+  p {
+    margin: 4px 0;
+    font-size: 10px;
+    font-weight: bold;
+
+    &:first-child {
+      font-size: 11px;
+    }
+  }
+}
+
+.print-footer {
+  text-align: center;
+  margin-top: 16px;
+
+  p {
+    margin: 4px 0;
+    font-size: 10px;
+  }
+
+  .print-date {
+    font-size: 9px;
+    color: #999;
+  }
+}
+
+.print-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &.print-button {
+      background: #007bff;
+      color: white;
+
+      &:hover {
+        background: darken(#007bff, 10%);
+      }
+    }
+
+    &.close-button {
+      background: #6c757d;
+      color: white;
+
+      &:hover {
+        background: darken(#6c757d, 10%);
+      }
+    }
+  }
+}
+
+.loading-container,
+.error-container {
+  padding: 60px 20px;
+  text-align: center;
+
+  p {
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: darken(#6c757d, 10%);
+    }
+  }
+}
+
+// Estilos de impresión
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .print-container {
+    max-width: 80mm;
+    width: 80mm;
+    margin: 0;
+    padding: 5mm;
+    border: none;
+    font-size: 12px;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .separator {
+    color: #000;
+  }
+
+  .legal-disclaimer {
+    background: none;
+    border: 2px solid #000;
+  }
+
+  // Ajustar tamaño de página para ticket térmico
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+}
