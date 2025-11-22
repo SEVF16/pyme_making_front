@@ -173,7 +173,7 @@ export class TicketsComponent implements OnInit {
       next: (response) => {
         console.log('Tickets loaded:', response);
         this.tickets = response.data.result || [];
-        this.totalItems = response.data.total || 0;
+        
         this.setTableData(this.tickets);
         this.loading = false;
       },

@@ -15,7 +15,8 @@ import {
   POSSalesStatsDto,
   SalesByPaymentMethodDto
 } from '../../interfaces/pos.interfaces';
-import { PaginatedResponse } from '../../interfaces/common.interfaces';
+import { PaginatedResponse } from '../../interfaces/purchase-order.interfaces';
+
 
 @Injectable({
   providedIn: 'root'
@@ -143,11 +144,5 @@ export class POSSalesService extends BaseApiService {
     return this.get<POSSaleResponseDto>(`${this.endpoint}/${id}`);
   }
 
-  /**
-   * Eliminar venta
-   */
-  delete(id: string): Observable<void> {
-    this.ensureTenantId();
-    return this.delete<void>(`${this.endpoint}/${id}`);
-  }
+
 }

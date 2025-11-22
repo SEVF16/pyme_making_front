@@ -49,7 +49,7 @@
             </label>
             <app-input
               type="date"
-              formControlName="issueDate"
+              [control]="quotationForm.get('issueDate')"
               placeholder="Seleccione una fecha"
             />
           </div>
@@ -60,7 +60,7 @@
             </label>
             <app-input
               type="date"
-              formControlName="validUntil"
+              [control]="quotationForm.get('validUntil')"
               placeholder="Seleccione una fecha"
             />
             @if (quotationForm.get('validUntil')?.invalid && quotationForm.get('validUntil')?.touched) {
@@ -96,7 +96,7 @@
             </label>
             <app-input
               type="number"
-              formControlName="paymentTermsDays"
+              [control]="quotationForm.get('paymentTermsDays')"
               placeholder="30"
             />
           </div>
@@ -177,7 +177,7 @@
                   </label>
                   <app-input
                     type="text"
-                    formControlName="description"
+                    [control]="items.at(i).get('description')"
                     placeholder="Descripción del producto/servicio"
                   />
                   @if (items.at(i).get('description')?.invalid && items.at(i).get('description')?.touched) {
@@ -191,9 +191,8 @@
                   </label>
                   <app-input
                     type="number"
-                    formControlName="quantity"
+                    [control]="items.at(i).get('quantity')"
                     placeholder="0"
-                    [step]="0.01"
                   />
                   @if (items.at(i).get('quantity')?.invalid && items.at(i).get('quantity')?.touched) {
                     <span class="error-message">Cantidad inválida</span>
@@ -206,9 +205,8 @@
                   </label>
                   <app-input
                     type="number"
-                    formControlName="unitPrice"
+                    [control]="items.at(i).get('unitPrice')"
                     placeholder="0"
-                    [step]="0.01"
                   />
                   @if (items.at(i).get('unitPrice')?.invalid && items.at(i).get('unitPrice')?.touched) {
                     <span class="error-message">Precio inválido</span>
@@ -219,9 +217,8 @@
                   <label class="form-label">Descuento %</label>
                   <app-input
                     type="number"
-                    formControlName="discountPercentage"
+                    [control]="items.at(i).get('discountPercentage')"
                     placeholder="0"
-                    [step]="0.01"
                   />
                 </div>
 
@@ -229,9 +226,8 @@
                   <label class="form-label">Descuento Monto</label>
                   <app-input
                     type="number"
-                    formControlName="discountAmount"
+                    [control]="items.at(i).get('discountAmount')"
                     placeholder="0"
-                    [step]="0.01"
                   />
                 </div>
 
@@ -239,9 +235,8 @@
                   <label class="form-label">IVA %</label>
                   <app-input
                     type="number"
-                    formControlName="taxRate"
+                    [control]="items.at(i).get('taxRate')"
                     placeholder="19"
-                    [step]="0.01"
                   />
                 </div>
 
@@ -256,7 +251,7 @@
                   <label class="form-label">Notas del Ítem</label>
                   <app-input
                     type="text"
-                    formControlName="notes"
+                    [control]="items.at(i).get('notes')"
                     placeholder="Notas adicionales..."
                   />
                 </div>
@@ -277,9 +272,8 @@
             </label>
             <app-input
               type="number"
-              formControlName="globalDiscountPercentage"
+              [control]="quotationForm.get('globalDiscountPercentage')"
               placeholder="0"
-              [step]="0.01"
             />
           </div>
 
@@ -289,9 +283,8 @@
             </label>
             <app-input
               type="number"
-              formControlName="globalDiscountAmount"
+              [control]="quotationForm.get('globalDiscountAmount')"
               placeholder="0"
-              [step]="0.01"
             />
           </div>
         </div>
@@ -334,7 +327,7 @@
         <app-button-lib
           [configuration]="saveButtonConfig"
           type="submit"
-          [disabled]="loading()"
+          
         />
       </div>
     </form>

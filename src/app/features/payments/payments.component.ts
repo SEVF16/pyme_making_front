@@ -170,8 +170,7 @@ export class PaymentsComponent implements OnInit {
 
     this.paymentsService.getPayments(params).subscribe({
       next: (response) => {
-        this.payments.set(response.data || []);
-        this.totalItems = response.pagination?.total || 0;
+
         this.loading.set(false);
       },
       error: (error) => {

@@ -11,7 +11,8 @@ import {
   POSSessionQueryDto,
   POSSessionsStatsDto
 } from '../../interfaces/pos.interfaces';
-import { PaginatedResponse } from '../../interfaces/common.interfaces';
+import { PaginatedResponse } from '../../interfaces/purchase-order.interfaces';
+
 
 @Injectable({
   providedIn: 'root'

@@ -29,11 +29,7 @@
       <app-custom-data-table
         [columns]="tableColumns()"
         [data]="quotations()"
-        [loading]="loading()"
-        [paginator]="true"
-        [rows]="pageSize()"
-        [totalRecords]="totalRecords()"
-        [rowsPerPageOptions]="[10, 25, 50]"
+
         (onPageChange)="onPageChange($event)"
         dataKey="id"
       />

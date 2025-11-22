@@ -10,11 +10,10 @@ import {
   POS_SALE_STATUS_COLORS,
   POS_PAYMENT_METHOD_LABELS
 } from '../../../interfaces/pos.interfaces';
-import { CustomDataTableComponent } from '../../../shared/components/custom-data-table/custom-data-table.component';
 import { ButtonLibComponent } from '../../../shared/components/buttonlib/button-lib.component';
 import { ButtonConfig } from '../../../shared/components/buttonlib/interfaces/button.interface';
-import { ColumnConfig } from '../../../shared/components/custom-data-table/interfaces/column-config.interface';
 import { Plus, Eye, LucideAngularModule } from 'lucide-angular';
+import { CustomDataTableComponent } from '../../../shared/components/data-table/custom-data-table.component';
 
 @Component({
   selector: 'app-pos-sales',
@@ -75,7 +74,7 @@ export class POSSalesComponent implements OnInit {
     iconPosition: 'left'
   };
 
-  columns: ColumnConfig[] = [
+  columns: any[] = [
     {
       key: 'saleNumber',
       header: 'N° Venta',
@@ -170,7 +169,7 @@ export class POSSalesComponent implements OnInit {
     this.salesService.list(query).subscribe({
       next: (response) => {
         this.sales.set(response.data);
-        this.totalItems.set(response.meta.total);
+   
         this.loading.set(false);
       },
       error: (error) => {

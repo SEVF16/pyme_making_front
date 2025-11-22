@@ -175,6 +175,10 @@ export const routes: Routes = [
           {
             path: 'initialize',
             loadComponent: () => import('./features/tenant-config/config-init/config-init.component').then(m => m.ConfigInitComponent),
+          }
+        ]
+      },
+      {
         path: 'tickets',
         children: [
           {
