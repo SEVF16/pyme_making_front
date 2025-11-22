@@ -14,7 +14,7 @@ import { ICreateUserDto, IUser } from '../../../interfaces/users/user-interfaces
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { InputComponent } from '../../../shared/components/input/input.component';
-import { SelectLibComponent } from '../../../shared/components/select-lib/select-lib.component';
+import { Option, SelectLibComponent } from '../../../shared/components/select-lib/select-lib.component';
 import { DataChangeEvent } from '../../../shared/interfaces/data-change-event.interface';
 import { CustomValidators } from '../../../shared/commonsUtils/common-utils-forms';
 
@@ -75,7 +75,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     { label: 'No verificado', value: 'false' }
   ];
 
-  readonly sendWelcomeEmailOptions = [
+  readonly sendWelcomeEmailOptions:  Option[]= [
     { label: 'Sí', value: true },
     { label: 'No', value: false }
   ];
