@@ -1,0 +1,300 @@
+<div class="purchase-order-detail-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando orden de compra...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+    </div>
+  }
+
+  @if (purchaseOrder() && !loading()) {
+    <div class="purchase-order-content">
+      <div class="purchase-order-header">
+        <div class="header-left">
+          <app-button-lib
+            [configuration]="backButtonConfig"
+            (buttonClick)="goBack()"
+          />
+          <div class="header-info">
+            <h1 class="order-number">{{ purchaseOrder()!.orderNumber }}</h1>
+            <span
+              class="status-badge"
+              [style.background-color]="getStatusColor(purchaseOrder()!.status)"
+            >
+              {{ getStatusLabel(purchaseOrder()!.status) }}
+            </span>
+            <span class="type-badge">
+              {{ getTypeLabel(purchaseOrder()!.type) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          @if (purchaseOrder()!.isDraft) {
+            <app-button-lib
+              [configuration]="submitButtonConfig"
+              (buttonClick)="submitForApproval()"
+            />
+          }
+          @if (purchaseOrder()!.isPendingApproval) {
+            <app-button-lib
+              [configuration]="approveButtonConfig"
+              (buttonClick)="approvePurchaseOrder()"
+            />
+          }
+          @if (purchaseOrder()!.isApproved) {
+            <app-button-lib
+              [configuration]="sendButtonConfig"
+              (buttonClick)="sendToSupplier()"
+            />
+          }
+          @if (purchaseOrder()!.canBeReceived) {
+            <app-button-lib
+              [configuration]="receiveButtonConfig"
+              (buttonClick)="receiveItems()"
+            />
+          }
+          @if (purchaseOrder()!.canBeEdited) {
+            <app-button-lib
+              [configuration]="editButtonConfig"
+              (buttonClick)="editPurchaseOrder()"
+            />
+          }
+          @if (purchaseOrder()!.canBeCancelled) {
+            <app-button-lib
+              [configuration]="cancelButtonConfig"
+              (buttonClick)="cancelPurchaseOrder()"
+            />
+          }
+          @if (purchaseOrder()!.isDraft) {
+            <app-button-lib
+              [configuration]="deleteButtonConfig"
+              (buttonClick)="deletePurchaseOrder()"
+            />
+          }
+        </div>
+      </div>
+
+      <!-- Información General -->
+      <div class="info-section">
+        <h2 class="section-title">Información General</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tipo:</span>
+            <span class="info-value">{{ getTypeLabel(purchaseOrder()!.type) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Moneda:</span>
+            <span class="info-value">{{ purchaseOrder()!.currency }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Subtotal:</span>
+            <span class="info-value">{{ formatCurrency(purchaseOrder()!.subtotal, purchaseOrder()!.currency) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">IVA:</span>
+            <span class="info-value">{{ formatCurrency(purchaseOrder()!.tax, purchaseOrder()!.currency) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total:</span>
+            <span class="info-value total-amount">{{ formatCurrency(purchaseOrder()!.total, purchaseOrder()!.currency) }}</span>
+          </div>
+          @if (purchaseOrder()!.expectedDeliveryDate) {
+            <div class="info-item">
+              <span class="info-label">Fecha Esperada de Entrega:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.expectedDeliveryDate!) }}</span>
+            </div>
+          }
+          @if (purchaseOrder()!.actualDeliveryDate) {
+            <div class="info-item">
+              <span class="info-label">Fecha Real de Entrega:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.actualDeliveryDate!) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Datos del Proveedor -->
+      @if (purchaseOrder()!.supplierData) {
+        <div class="info-section">
+          <h2 class="section-title">Datos del Proveedor</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value">{{ purchaseOrder()!.supplierData!.name }}</span>
+            </div>
+            @if (purchaseOrder()!.supplierData!.rut) {
+              <div class="info-item">
+                <span class="info-label">RUT:</span>
+                <span class="info-value">{{ purchaseOrder()!.supplierData!.rut }}</span>
+              </div>
+            }
+            @if (purchaseOrder()!.supplierData!.email) {
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ purchaseOrder()!.supplierData!.email }}</span>
+              </div>
+            }
+            @if (purchaseOrder()!.supplierData!.phone) {
+              <div class="info-item">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ purchaseOrder()!.supplierData!.phone }}</span>
+              </div>
+            }
+            @if (purchaseOrder()!.supplierData!.address) {
+              <div class="info-item span-2">
+                <span class="info-label">Dirección:</span>
+                <span class="info-value">{{ purchaseOrder()!.supplierData!.address }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Progreso de Recepción -->
+      @if (!purchaseOrder()!.isDraft && !purchaseOrder()!.isPendingApproval) {
+        <div class="info-section">
+          <h2 class="section-title">Progreso de Recepción</h2>
+          <div class="receipt-progress">
+            <div class="progress-bar-container">
+              <div
+                class="progress-bar"
+                [style.width.%]="purchaseOrder()!.receiptPercentage"
+                [style.background-color]="purchaseOrder()!.isFullyReceived ? '#10b981' : '#3b82f6'"
+              ></div>
+            </div>
+            <span class="progress-label">{{ purchaseOrder()!.receiptPercentage }}% Recibido</span>
+          </div>
+          @if (purchaseOrder()!.firstReceivedAt) {
+            <div class="info-item">
+              <span class="info-label">Primera Recepción:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.firstReceivedAt!) }}</span>
+            </div>
+          }
+          @if (purchaseOrder()!.fullyReceivedAt) {
+            <div class="info-item">
+              <span class="info-label">Recepción Completa:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.fullyReceivedAt!) }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Ítems -->
+      <div class="info-section">
+        <h2 class="section-title">Ítems de la Orden</h2>
+        <div class="items-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto/Servicio</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+                <th>IVA %</th>
+                <th>Total</th>
+                @if (!purchaseOrder()!.isDraft) {
+                  <th>Recibido</th>
+                  <th>Progreso</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of purchaseOrder()!.items; track item.id) {
+                <tr>
+                  <td class="item-name">{{ item.name }}</td>
+                  <td class="item-description">{{ item.description || '-' }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-right">{{ formatCurrency(item.unitPrice, purchaseOrder()!.currency) }}</td>
+                  <td class="text-center">{{ item.taxPercentage }}%</td>
+                  <td class="text-right">{{ formatCurrency(item.totalPrice, purchaseOrder()!.currency) }}</td>
+                  @if (!purchaseOrder()!.isDraft) {
+                    <td class="text-center">
+                      <span [style.color]="getItemReceiptColor(item)" style="font-weight: 600;">
+                        {{ item.receivedQuantity }} / {{ item.quantity }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="item-progress">
+                        <div class="item-progress-bar-container">
+                          <div
+                            class="item-progress-bar"
+                            [style.width.%]="getItemReceiptPercentage(item)"
+                            [style.background-color]="getItemReceiptColor(item)"
+                          ></div>
+                        </div>
+                        <span class="item-progress-label">{{ getItemReceiptPercentage(item) }}%</span>
+                      </div>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Información de Aprobación -->
+      @if (purchaseOrder()!.approvedBy) {
+        <div class="info-section">
+          <h2 class="section-title">Información de Aprobación</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Aprobado Por:</span>
+              <span class="info-value">{{ purchaseOrder()!.approvedBy }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Fecha de Aprobación:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.approvedAt!) }}</span>
+            </div>
+            @if (purchaseOrder()!.approvalNotes) {
+              <div class="info-item span-2">
+                <span class="info-label">Notas de Aprobación:</span>
+                <span class="info-value">{{ purchaseOrder()!.approvalNotes }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Información de Cancelación -->
+      @if (purchaseOrder()!.isCancelled) {
+        <div class="info-section alert-section">
+          <h2 class="section-title">Información de Cancelación</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Cancelado Por:</span>
+              <span class="info-value">{{ purchaseOrder()!.cancelledBy }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Fecha de Cancelación:</span>
+              <span class="info-value">{{ formatDate(purchaseOrder()!.cancelledAt!) }}</span>
+            </div>
+            @if (purchaseOrder()!.cancellationReason) {
+              <div class="info-item span-2">
+                <span class="info-label">Razón:</span>
+                <span class="info-value">{{ purchaseOrder()!.cancellationReason }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Notas -->
+      @if (purchaseOrder()!.notes) {
+        <div class="info-section">
+          <h2 class="section-title">Notas</h2>
+          <p class="note-text">{{ purchaseOrder()!.notes }}</p>
+        </div>
+      }
+    </div>
+  }
+</div>

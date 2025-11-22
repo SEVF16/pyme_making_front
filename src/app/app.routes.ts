@@ -80,6 +80,27 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'purchase-orders',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/purchase-orders/purchase-orders.component').then(m => m.PurchaseOrdersComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/purchase-orders/purchase-order-form/purchase-order-form.component').then(m => m.PurchaseOrderFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/purchase-orders/purchase-order-detail/purchase-order-detail.component').then(m => m.PurchaseOrderDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/purchase-orders/purchase-order-form/purchase-order-form.component').then(m => m.PurchaseOrderFormComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]
