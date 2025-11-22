@@ -1,0 +1,342 @@
+<div class="quotation-form-container">
+  <div class="form-header">
+    <app-button-lib
+      [configuration]="backButtonConfig"
+      (buttonClick)="goBack()"
+    />
+    <h1 class="form-title">
+      {{ isEditMode() ? 'Editar Cotización' : 'Nueva Cotización' }}
+    </h1>
+  </div>
+
+  @if (loading() && isEditMode()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando cotización...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (!loading() || !isEditMode()) {
+    <form [formGroup]="quotationForm" (ngSubmit)="onSubmit()" class="quotation-form">
+      <!-- Información General -->
+      <div class="form-section">
+        <h2 class="section-title">Información General</h2>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="customerId">
+              Cliente <span class="required">*</span>
+            </label>
+            <app-select-lib
+              [options]="customerOptions()"
+              formControlName="customerId"
+              placeholder="Seleccione un cliente"
+            />
+            @if (quotationForm.get('customerId')?.invalid && quotationForm.get('customerId')?.touched) {
+              <span class="error-message">El cliente es requerido</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="issueDate">
+              Fecha de Emisión
+            </label>
+            <app-input
+              type="date"
+              formControlName="issueDate"
+              placeholder="Seleccione una fecha"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="validUntil">
+              Válida Hasta <span class="required">*</span>
+            </label>
+            <app-input
+              type="date"
+              formControlName="validUntil"
+              placeholder="Seleccione una fecha"
+            />
+            @if (quotationForm.get('validUntil')?.invalid && quotationForm.get('validUntil')?.touched) {
+              <span class="error-message">La fecha de validez es requerida</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="currency">
+              Moneda <span class="required">*</span>
+            </label>
+            <app-select-lib
+              [options]="currencyOptions()"
+              formControlName="currency"
+              placeholder="Seleccione una moneda"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="paymentMethod">
+              Método de Pago
+            </label>
+            <app-select-lib
+              [options]="paymentMethodOptions()"
+              formControlName="paymentMethod"
+              placeholder="Seleccione un método"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="paymentTermsDays">
+              Términos de Pago (días)
+            </label>
+            <app-input
+              type="number"
+              formControlName="paymentTermsDays"
+              placeholder="30"
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="notes">
+            Notas para el Cliente
+          </label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            class="form-textarea"
+            rows="3"
+            placeholder="Notas visibles para el cliente..."
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="terms">
+            Términos y Condiciones
+          </label>
+          <textarea
+            id="terms"
+            formControlName="terms"
+            class="form-textarea"
+            rows="3"
+            placeholder="Términos y condiciones de la cotización..."
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="internalNotes">
+            Notas Internas
+          </label>
+          <textarea
+            id="internalNotes"
+            formControlName="internalNotes"
+            class="form-textarea"
+            rows="2"
+            placeholder="Notas internas (no visibles para el cliente)..."
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Ítems -->
+      <div class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">Ítems de la Cotización</h2>
+          <app-button-lib
+            [configuration]="addItemButtonConfig"
+            (buttonClick)="addItem()"
+            type="button"
+          />
+        </div>
+
+        <div formArrayName="items" class="items-container">
+          @for (item of items.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="item-card">
+              <div class="item-header">
+                <span class="item-number">Ítem {{ i + 1 }}</span>
+                @if (items.length > 1) {
+                  <button
+                    type="button"
+                    class="remove-item-btn"
+                    (click)="removeItem(i)"
+                    title="Eliminar ítem"
+                  >
+                    <lucide-angular [img]="Trash2Icon" [size]="16" />
+                  </button>
+                }
+              </div>
+
+              <div class="item-grid">
+                <div class="form-field span-4">
+                  <label class="form-label">
+                    Descripción <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="text"
+                    formControlName="description"
+                    placeholder="Descripción del producto/servicio"
+                  />
+                  @if (items.at(i).get('description')?.invalid && items.at(i).get('description')?.touched) {
+                    <span class="error-message">La descripción es requerida</span>
+                  }
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    Cantidad <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="number"
+                    formControlName="quantity"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                  @if (items.at(i).get('quantity')?.invalid && items.at(i).get('quantity')?.touched) {
+                    <span class="error-message">Cantidad inválida</span>
+                  }
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    Precio Unitario <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="number"
+                    formControlName="unitPrice"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                  @if (items.at(i).get('unitPrice')?.invalid && items.at(i).get('unitPrice')?.touched) {
+                    <span class="error-message">Precio inválido</span>
+                  }
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">Descuento %</label>
+                  <app-input
+                    type="number"
+                    formControlName="discountPercentage"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">Descuento Monto</label>
+                  <app-input
+                    type="number"
+                    formControlName="discountAmount"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">IVA %</label>
+                  <app-input
+                    type="number"
+                    formControlName="taxRate"
+                    placeholder="19"
+                    [step]="0.01"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">Total Ítem</label>
+                  <div class="total-display">
+                    {{ formatCurrency(getItemTotal(i)) }}
+                  </div>
+                </div>
+
+                <div class="form-field span-4">
+                  <label class="form-label">Notas del Ítem</label>
+                  <app-input
+                    type="text"
+                    formControlName="notes"
+                    placeholder="Notas adicionales..."
+                  />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Descuentos Globales -->
+      <div class="form-section">
+        <h2 class="section-title">Descuentos Globales</h2>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="globalDiscountPercentage">
+              Descuento Global %
+            </label>
+            <app-input
+              type="number"
+              formControlName="globalDiscountPercentage"
+              placeholder="0"
+              [step]="0.01"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="globalDiscountAmount">
+              Descuento Global Monto
+            </label>
+            <app-input
+              type="number"
+              formControlName="globalDiscountAmount"
+              placeholder="0"
+              [step]="0.01"
+            />
+          </div>
+        </div>
+
+        <p class="help-text">
+          Nota: Si especifica un porcentaje, se aplicará sobre el subtotal.
+          Si especifica un monto, se aplicará ese valor fijo.
+        </p>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-grid">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(getSubtotal()) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Descuentos:</span>
+            <span class="total-value">-{{ formatCurrency(getDiscount()) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">IVA:</span>
+            <span class="total-value">{{ formatCurrency(getTax()) }}</span>
+          </div>
+          <div class="total-row total-final">
+            <span class="total-label">Total:</span>
+            <span class="total-value">{{ formatCurrency(getTotal()) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="form-actions">
+        <app-button-lib
+          [configuration]="backButtonConfig"
+          (buttonClick)="goBack()"
+          type="button"
+        />
+        <app-button-lib
+          [configuration]="saveButtonConfig"
+          type="submit"
+          [disabled]="loading()"
+        />
+      </div>
+    </form>
+  }
+</div>

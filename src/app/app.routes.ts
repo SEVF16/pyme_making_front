@@ -101,6 +101,27 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'quotations',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/quotations/quotations.component').then(m => m.QuotationsComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/quotations/quotation-form/quotation-form.component').then(m => m.QuotationFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/quotations/quotation-detail/quotation-detail.component').then(m => m.QuotationDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/quotations/quotation-form/quotation-form.component').then(m => m.QuotationFormComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

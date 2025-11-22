@@ -1,0 +1,42 @@
+<div class="quotations-container">
+  <div class="header">
+    <div class="header-content">
+      <h1 class="title">Cotizaciones</h1>
+      <p class="subtitle">Gestiona las cotizaciones para clientes</p>
+    </div>
+    <app-button-lib
+      [configuration]="newQuotationButtonConfig"
+      (buttonClick)="createNewQuotation()"
+    />
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando cotizaciones...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <button (click)="loadQuotations()">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="table-container">
+      <app-custom-data-table
+        [columns]="tableColumns()"
+        [data]="quotations()"
+        [loading]="loading()"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [totalRecords]="totalRecords()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        (onPageChange)="onPageChange($event)"
+        dataKey="id"
+      />
+    </div>
+  }
+</div>
