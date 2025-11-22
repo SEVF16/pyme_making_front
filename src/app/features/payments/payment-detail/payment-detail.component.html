@@ -1,0 +1,131 @@
+<div class="payment-detail-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando pago...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+    </div>
+  }
+
+  @if (payment() && !loading()) {
+    <div class="payment-content">
+      <div class="payment-header">
+        <div class="header-left">
+          <app-button-lib
+            [configuration]="backButtonConfig"
+            (buttonClick)="goBack()"
+          />
+          <div class="header-info">
+            <h1 class="payment-number">{{ payment()!.paymentNumber }}</h1>
+            <span
+              class="status-badge"
+              [style.background-color]="getStatusColor(payment()!.status)"
+            >
+              {{ getStatusLabel(payment()!.status) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          @if (payment()!.isPending) {
+            <app-button-lib
+              [configuration]="processButtonConfig"
+              (buttonClick)="processPayment()"
+            />
+          }
+          @if (payment()!.isPending) {
+            <app-button-lib
+              [configuration]="editButtonConfig"
+              (buttonClick)="editPayment()"
+            />
+          }
+          @if (payment()!.canBeCancelled) {
+            <app-button-lib
+              [configuration]="cancelButtonConfig"
+              (buttonClick)="cancelPayment()"
+            />
+          }
+          @if (payment()!.isPending || payment()!.status === 'FAILED') {
+            <app-button-lib
+              [configuration]="deleteButtonConfig"
+              (buttonClick)="deletePayment()"
+            />
+          }
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h2 class="section-title">Información General</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tipo:</span>
+            <span class="info-value">{{ getTypeLabel(payment()!.type) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Método:</span>
+            <span class="info-value">{{ getMethodLabel(payment()!.paymentMethod) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha:</span>
+            <span class="info-value">{{ formatDate(payment()!.paymentDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Monto:</span>
+            <span class="info-value">{{ formatCurrency(payment()!.amount, payment()!.currency) }}</span>
+          </div>
+          @if (payment()!.transactionReference) {
+            <div class="info-item">
+              <span class="info-label">Referencia:</span>
+              <span class="info-value">{{ payment()!.transactionReference }}</span>
+            </div>
+          }
+          @if (payment()!.processedAt) {
+            <div class="info-item">
+              <span class="info-label">Procesado:</span>
+              <span class="info-value">{{ formatDate(payment()!.processedAt!) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (payment()!.partnerData) {
+        <div class="info-section">
+          <h2 class="section-title">Datos del Cliente/Proveedor</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value">{{ payment()!.partnerData!.name }}</span>
+            </div>
+            @if (payment()!.partnerData!.rut) {
+              <div class="info-item">
+                <span class="info-label">RUT:</span>
+                <span class="info-value">{{ payment()!.partnerData!.rut }}</span>
+              </div>
+            }
+            @if (payment()!.partnerData!.email) {
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ payment()!.partnerData!.email }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (payment()!.notes) {
+        <div class="info-section">
+          <h2 class="section-title">Notas</h2>
+          <p class="note-text">{{ payment()!.notes }}</p>
+        </div>
+      }
+    </div>
+  }
+</div>

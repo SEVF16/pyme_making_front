@@ -1,0 +1,73 @@
+<div class="session-open-container">
+  <div class="header">
+    <app-button-lib
+      [configuration]="backButtonConfig"
+      (buttonClick)="goBack()"
+    />
+    <div class="header-info">
+      <h1>Abrir Sesión de Caja</h1>
+      <p>Inicia una nueva sesión en el punto de venta</p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">
+      {{ error() }}
+    </div>
+  }
+
+  <form [formGroup]="sessionForm" (ngSubmit)="openSession()" class="session-form">
+    <div class="form-section">
+      <h2 class="section-title">Información del Terminal</h2>
+      <div class="form-grid">
+        <app-input
+          label="ID del Terminal"
+          name="posTerminalId"
+          [control]="sessionForm.get('posTerminalId')!"
+          [required]="true"
+          placeholder="Ej: CAJA-01"
+        />
+
+        <app-input
+          label="Nombre del Terminal"
+          name="posTerminalName"
+          [control]="sessionForm.get('posTerminalName')!"
+          [required]="true"
+          placeholder="Ej: Caja Principal"
+        />
+
+        <app-input
+          label="Efectivo Inicial"
+          name="openingCash"
+          type="number"
+          [control]="sessionForm.get('openingCash')!"
+          [required]="true"
+          placeholder="0"
+        />
+
+        <div class="full-width">
+          <label for="openingNotes">Notas de Apertura</label>
+          <textarea
+            id="openingNotes"
+            formControlName="openingNotes"
+            class="form-input"
+            rows="3"
+            placeholder="Notas adicionales sobre la apertura de sesión"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+      <app-button-lib
+        [configuration]="openButtonConfig"
+        [disabled]="sessionForm.invalid || loading()"
+        (buttonClick)="openSession()"
+      />
+    </div>
+  </form>
+</div>

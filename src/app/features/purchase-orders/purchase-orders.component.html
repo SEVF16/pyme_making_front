@@ -1,0 +1,42 @@
+<div class="purchase-orders-container">
+  <div class="header">
+    <div class="header-content">
+      <h1 class="title">Órdenes de Compra</h1>
+      <p class="subtitle">Gestiona las órdenes de compra a proveedores</p>
+    </div>
+    <app-button-lib
+      [configuration]="newPurchaseOrderButtonConfig"
+      (buttonClick)="createNewPurchaseOrder()"
+    />
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando órdenes de compra...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <button (click)="loadPurchaseOrders()">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="table-container">
+      <app-custom-data-table
+        [columns]="tableColumns()"
+        [data]="purchaseOrders()"
+        [loading]="loading()"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [totalRecords]="totalRecords()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        (onPageChange)="onPageChange($event)"
+        dataKey="id"
+      />
+    </div>
+  }
+</div>

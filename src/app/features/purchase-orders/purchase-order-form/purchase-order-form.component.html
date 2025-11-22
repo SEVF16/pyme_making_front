@@ -1,0 +1,231 @@
+<div class="purchase-order-form-container">
+  <div class="form-header">
+    <app-button-lib
+      [configuration]="backButtonConfig"
+      (buttonClick)="goBack()"
+    />
+    <h1 class="form-title">
+      {{ isEditMode() ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }}
+    </h1>
+  </div>
+
+  @if (loading() && isEditMode()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando orden de compra...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (!loading() || !isEditMode()) {
+    <form [formGroup]="purchaseOrderForm" (ngSubmit)="onSubmit()" class="purchase-order-form">
+      <!-- Información General -->
+      <div class="form-section">
+        <h2 class="section-title">Información General</h2>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="supplierId">
+              Proveedor <span class="required">*</span>
+            </label>
+            <app-select-lib
+              [options]="supplierOptions()"
+              formControlName="supplierId"
+              placeholder="Seleccione un proveedor"
+            />
+            @if (purchaseOrderForm.get('supplierId')?.invalid && purchaseOrderForm.get('supplierId')?.touched) {
+              <span class="error-message">El proveedor es requerido</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="type">
+              Tipo <span class="required">*</span>
+            </label>
+            <app-select-lib
+              [options]="typeOptions()"
+              formControlName="type"
+              placeholder="Seleccione un tipo"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="currency">
+              Moneda <span class="required">*</span>
+            </label>
+            <app-select-lib
+              [options]="currencyOptions()"
+              formControlName="currency"
+              placeholder="Seleccione una moneda"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="expectedDeliveryDate">
+              Fecha Esperada de Entrega
+            </label>
+            <app-input
+              type="date"
+              formControlName="expectedDeliveryDate"
+              placeholder="Seleccione una fecha"
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="notes">
+            Notas
+          </label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            class="form-textarea"
+            rows="3"
+            placeholder="Notas adicionales..."
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Ítems -->
+      <div class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">Ítems de la Orden</h2>
+          <app-button-lib
+            [configuration]="addItemButtonConfig"
+            (buttonClick)="addItem()"
+            type="button"
+          />
+        </div>
+
+        <div formArrayName="items" class="items-container">
+          @for (item of items.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="item-card">
+              <div class="item-header">
+                <span class="item-number">Ítem {{ i + 1 }}</span>
+                @if (items.length > 1) {
+                  <button
+                    type="button"
+                    class="remove-item-btn"
+                    (click)="removeItem(i)"
+                    title="Eliminar ítem"
+                  >
+                    <lucide-angular [img]="Trash2Icon" [size]="16" />
+                  </button>
+                }
+              </div>
+
+              <div class="item-grid">
+                <div class="form-field span-2">
+                  <label class="form-label">
+                    Nombre <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="text"
+                    formControlName="name"
+                    placeholder="Nombre del producto/servicio"
+                  />
+                  @if (items.at(i).get('name')?.invalid && items.at(i).get('name')?.touched) {
+                    <span class="error-message">El nombre es requerido</span>
+                  }
+                </div>
+
+                <div class="form-field span-2">
+                  <label class="form-label">Descripción</label>
+                  <app-input
+                    type="text"
+                    formControlName="description"
+                    placeholder="Descripción del producto/servicio"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    Cantidad <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="number"
+                    formControlName="quantity"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                  @if (items.at(i).get('quantity')?.invalid && items.at(i).get('quantity')?.touched) {
+                    <span class="error-message">Cantidad inválida</span>
+                  }
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">
+                    Precio Unitario <span class="required">*</span>
+                  </label>
+                  <app-input
+                    type="number"
+                    formControlName="unitPrice"
+                    placeholder="0"
+                    [step]="0.01"
+                  />
+                  @if (items.at(i).get('unitPrice')?.invalid && items.at(i).get('unitPrice')?.touched) {
+                    <span class="error-message">Precio inválido</span>
+                  }
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">IVA (%)</label>
+                  <app-input
+                    type="number"
+                    formControlName="taxPercentage"
+                    placeholder="19"
+                    [step]="0.01"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label">Total Ítem</label>
+                  <div class="total-display">
+                    {{ formatCurrency(getItemTotal(i)) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-grid">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(getSubtotal()) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">IVA:</span>
+            <span class="total-value">{{ formatCurrency(getTax()) }}</span>
+          </div>
+          <div class="total-row total-final">
+            <span class="total-label">Total:</span>
+            <span class="total-value">{{ formatCurrency(getTotal()) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="form-actions">
+        <app-button-lib
+          [configuration]="backButtonConfig"
+          (buttonClick)="goBack()"
+          type="button"
+        />
+        <app-button-lib
+          [configuration]="saveButtonConfig"
+          type="submit"
+          [disabled]="loading()"
+        />
+      </div>
+    </form>
+  }
+</div>

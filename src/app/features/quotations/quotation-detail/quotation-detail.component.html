@@ -1,0 +1,299 @@
+<div class="quotation-detail-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando cotización...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+    </div>
+  }
+
+  @if (quotation() && !loading()) {
+    <div class="quotation-content">
+      <div class="quotation-header">
+        <div class="header-left">
+          <app-button-lib
+            [configuration]="backButtonConfig"
+            (buttonClick)="goBack()"
+          />
+          <div class="header-info">
+            <h1 class="quotation-number">{{ quotation()!.quotationNumber }}</h1>
+            <span
+              class="status-badge"
+              [style.background-color]="getStatusColor(quotation()!.status)"
+            >
+              {{ getStatusLabel(quotation()!.status) }}
+            </span>
+            <span class="expiry-badge" [style.color]="getExpiryColor()">
+              {{ getExpiryText() }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          @if (canPerformAction('send')) {
+            <app-button-lib
+              [configuration]="sendButtonConfig"
+              (buttonClick)="sendQuotation()"
+            />
+          }
+          @if (canPerformAction('accept')) {
+            <app-button-lib
+              [configuration]="acceptButtonConfig"
+              (buttonClick)="acceptQuotation()"
+            />
+          }
+          @if (canPerformAction('reject')) {
+            <app-button-lib
+              [configuration]="rejectButtonConfig"
+              (buttonClick)="rejectQuotation()"
+            />
+          }
+          @if (canPerformAction('convert')) {
+            <app-button-lib
+              [configuration]="convertButtonConfig"
+              (buttonClick)="convertToInvoice()"
+            />
+          }
+          @if (canPerformAction('edit')) {
+            <app-button-lib
+              [configuration]="editButtonConfig"
+              (buttonClick)="editQuotation()"
+            />
+          }
+          @if (canPerformAction('cancel')) {
+            <app-button-lib
+              [configuration]="cancelButtonConfig"
+              (buttonClick)="cancelQuotation()"
+            />
+          }
+          @if (canPerformAction('delete')) {
+            <app-button-lib
+              [configuration]="deleteButtonConfig"
+              (buttonClick)="deleteQuotation()"
+            />
+          }
+        </div>
+      </div>
+
+      <!-- Información General -->
+      <div class="info-section">
+        <h2 class="section-title">Información General</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Fecha de Emisión:</span>
+            <span class="info-value">{{ formatDate(quotation()!.issueDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Válida Hasta:</span>
+            <span class="info-value">{{ formatDate(quotation()!.validUntil) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Moneda:</span>
+            <span class="info-value">{{ quotation()!.currency }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Tasa de Cambio:</span>
+            <span class="info-value">{{ quotation()!.exchangeRate }}</span>
+          </div>
+          @if (quotation()!.paymentMethod) {
+            <div class="info-item">
+              <span class="info-label">Método de Pago:</span>
+              <span class="info-value">{{ getPaymentMethodLabel(quotation()!.paymentMethod) }}</span>
+            </div>
+          }
+          @if (quotation()!.paymentTermsDays) {
+            <div class="info-item">
+              <span class="info-label">Términos de Pago:</span>
+              <span class="info-value">{{ quotation()!.paymentTermsDays }} días</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Datos del Cliente -->
+      @if (quotation()!.customerData) {
+        <div class="info-section">
+          <h2 class="section-title">Datos del Cliente</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value">{{ quotation()!.customerData!.name }}</span>
+            </div>
+            @if (quotation()!.customerData!.rut) {
+              <div class="info-item">
+                <span class="info-label">RUT:</span>
+                <span class="info-value">{{ quotation()!.customerData!.rut }}</span>
+              </div>
+            }
+            @if (quotation()!.customerData!.email) {
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ quotation()!.customerData!.email }}</span>
+              </div>
+            }
+            @if (quotation()!.customerData!.phone) {
+              <div class="info-item">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ quotation()!.customerData!.phone }}</span>
+              </div>
+            }
+            @if (quotation()!.customerData!.address) {
+              <div class="info-item span-2">
+                <span class="info-label">Dirección:</span>
+                <span class="info-value">{{ quotation()!.customerData!.address }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Fechas de Workflow -->
+      @if (quotation()!.sentAt || quotation()!.acceptedAt || quotation()!.rejectedAt || quotation()!.convertedAt) {
+        <div class="info-section">
+          <h2 class="section-title">Historial de Estados</h2>
+          <div class="info-grid">
+            @if (quotation()!.sentAt) {
+              <div class="info-item">
+                <span class="info-label">Enviada:</span>
+                <span class="info-value">{{ formatDate(quotation()!.sentAt!) }}</span>
+              </div>
+            }
+            @if (quotation()!.acceptedAt) {
+              <div class="info-item">
+                <span class="info-label">Aceptada:</span>
+                <span class="info-value">{{ formatDate(quotation()!.acceptedAt!) }}</span>
+              </div>
+            }
+            @if (quotation()!.rejectedAt) {
+              <div class="info-item">
+                <span class="info-label">Rechazada:</span>
+                <span class="info-value">{{ formatDate(quotation()!.rejectedAt!) }}</span>
+              </div>
+            }
+            @if (quotation()!.convertedAt) {
+              <div class="info-item">
+                <span class="info-label">Convertida:</span>
+                <span class="info-value">{{ formatDate(quotation()!.convertedAt!) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Ítems -->
+      <div class="info-section">
+        <h2 class="section-title">Ítems de la Cotización</h2>
+        <div class="items-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+                <th>Desc. %</th>
+                <th>Desc. Monto</th>
+                <th>IVA %</th>
+                <th>Subtotal</th>
+                <th>Descuento</th>
+                <th>IVA</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of quotation()!.items; track item.id) {
+                <tr>
+                  <td class="item-description">
+                    {{ item.description }}
+                    @if (item.notes) {
+                      <div class="item-notes">{{ item.notes }}</div>
+                    }
+                  </td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-right">{{ formatCurrency(item.unitPrice, quotation()!.currency) }}</td>
+                  <td class="text-center">{{ item.discountPercentage }}%</td>
+                  <td class="text-right">{{ formatCurrency(item.discountAmount, quotation()!.currency) }}</td>
+                  <td class="text-center">{{ item.taxRate }}%</td>
+                  <td class="text-right">{{ formatCurrency(item.subtotal, quotation()!.currency) }}</td>
+                  <td class="text-right">-{{ formatCurrency(item.discountTotal, quotation()!.currency) }}</td>
+                  <td class="text-right">{{ formatCurrency(item.taxAmount, quotation()!.currency) }}</td>
+                  <td class="text-right total-col">{{ formatCurrency(item.lineTotal, quotation()!.currency) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-grid">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(quotation()!.subtotal, quotation()!.currency) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Descuentos:</span>
+            <span class="total-value">-{{ formatCurrency(quotation()!.discountTotal, quotation()!.currency) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">IVA:</span>
+            <span class="total-value">{{ formatCurrency(quotation()!.taxTotal, quotation()!.currency) }}</span>
+          </div>
+          <div class="total-row total-final">
+            <span class="total-label">Total:</span>
+            <span class="total-value">{{ formatCurrency(quotation()!.total, quotation()!.currency) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas y Términos -->
+      @if (quotation()!.notes) {
+        <div class="info-section">
+          <h2 class="section-title">Notas para el Cliente</h2>
+          <p class="note-text">{{ quotation()!.notes }}</p>
+        </div>
+      }
+
+      @if (quotation()!.terms) {
+        <div class="info-section">
+          <h2 class="section-title">Términos y Condiciones</h2>
+          <p class="note-text">{{ quotation()!.terms }}</p>
+        </div>
+      }
+
+      @if (quotation()!.internalNotes) {
+        <div class="info-section alert-section">
+          <h2 class="section-title">Notas Internas</h2>
+          <p class="note-text">{{ quotation()!.internalNotes }}</p>
+        </div>
+      }
+
+      <!-- Información de Rechazo -->
+      @if (quotation()!.rejectionReason) {
+        <div class="info-section alert-section">
+          <h2 class="section-title">Razón del Rechazo</h2>
+          <p class="note-text">{{ quotation()!.rejectionReason }}</p>
+        </div>
+      }
+
+      <!-- Información de Conversión -->
+      @if (quotation()!.convertedToInvoiceId) {
+        <div class="info-section success-section">
+          <h2 class="section-title">Convertida a Factura</h2>
+          <div class="info-item">
+            <span class="info-label">ID de Factura:</span>
+            <span class="info-value">{{ quotation()!.convertedToInvoiceId }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

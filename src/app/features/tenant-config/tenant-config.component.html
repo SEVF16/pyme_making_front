@@ -1,0 +1,320 @@
+<div class="tenant-config-container">
+  <div class="header">
+    <div class="header-content">
+      <lucide-angular [img]="SettingsIcon" [size]="32"></lucide-angular>
+      <div>
+        <h1>Configuración del Sistema</h1>
+        <p>Administra la configuración de tu empresa</p>
+      </div>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (loading() && !config()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando configuración...</p>
+    </div>
+  }
+
+  @if (config() && !loading()) {
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+      <div class="tabs">
+        <button
+          type="button"
+          class="tab-button"
+          [class.active]="activeTab() === 'tax'"
+          (click)="setActiveTab('tax')"
+        >
+          Tributaria
+        </button>
+        <button
+          type="button"
+          class="tab-button"
+          [class.active]="activeTab() === 'sales'"
+          (click)="setActiveTab('sales')"
+        >
+          Ventas
+        </button>
+        <button
+          type="button"
+          class="tab-button"
+          [class.active]="activeTab() === 'inventory'"
+          (click)="setActiveTab('inventory')"
+        >
+          Inventario
+        </button>
+        <button
+          type="button"
+          class="tab-button"
+          [class.active]="activeTab() === 'general'"
+          (click)="setActiveTab('general')"
+        >
+          General
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Tax Configuration -->
+      @if (activeTab() === 'tax') {
+        <form [formGroup]="taxForm" class="config-form">
+          <div class="form-section">
+            <h2 class="section-title">Configuración Tributaria</h2>
+            <div class="form-grid">
+              <app-input
+                label="Tasa de IVA (%)"
+                name="ivaRate"
+                type="number"
+                [control]="taxForm.get('ivaRate')!"
+                [required]="true"
+                placeholder="19"
+              />
+
+              <div class="form-field">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="ivaEnabled"
+                    class="checkbox-input"
+                  />
+                  IVA Habilitado
+                </label>
+              </div>
+
+              <app-select-lib
+                label="Modo de Cálculo"
+                name="taxCalculationMode"
+                [control]="taxForm.get('taxCalculationMode')!"
+                [options]="taxModeOptions"
+                [required]="true"
+              />
+
+              <div class="form-field">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="siiEnabled"
+                    class="checkbox-input"
+                  />
+                  Integración con SII Habilitada
+                </label>
+              </div>
+
+              @if (taxForm.get('siiEnabled')?.value) {
+                <app-input
+                  label="Ambiente SII"
+                  name="siiEnvironment"
+                  [control]="taxForm.get('siiEnvironment')!"
+                  placeholder="production o certification"
+                />
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <app-button-lib
+              [configuration]="saveButtonConfig"
+              [disabled]="taxForm.invalid || loading()"
+              (buttonClick)="saveConfig()"
+            />
+          </div>
+        </form>
+      }
+
+      <!-- Sales Configuration -->
+      @if (activeTab() === 'sales') {
+        <form [formGroup]="salesForm" class="config-form">
+          <div class="form-section">
+            <h2 class="section-title">Configuración de Ventas</h2>
+            <div class="form-grid">
+              <app-input
+                label="Prefijo de Numeración"
+                name="invoiceSeriesPrefix"
+                [control]="salesForm.get('invoiceSeriesPrefix')!"
+                [required]="true"
+                placeholder="VENTA"
+              />
+
+              <app-select-lib
+                label="Término de Pago por Defecto"
+                name="defaultPaymentTerm"
+                [control]="salesForm.get('defaultPaymentTerm')!"
+                [options]="paymentTermOptions"
+                [required]="true"
+              />
+
+              <div class="form-field full-width">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="requireCustomerForInvoice"
+                    class="checkbox-input"
+                  />
+                  Requiere cliente para emitir factura
+                </label>
+              </div>
+
+              <div class="info-box full-width">
+                <strong>Folio Actual:</strong> {{ config()!.sales.currentFolio }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <app-button-lib
+              [configuration]="saveButtonConfig"
+              [disabled]="salesForm.invalid || loading()"
+              (buttonClick)="saveConfig()"
+            />
+          </div>
+        </form>
+      }
+
+      <!-- Inventory Configuration -->
+      @if (activeTab() === 'inventory') {
+        <form [formGroup]="inventoryForm" class="config-form">
+          <div class="form-section">
+            <h2 class="section-title">Configuración de Inventario</h2>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="stockControlEnabled"
+                    class="checkbox-input"
+                  />
+                  Control de Stock Habilitado
+                </label>
+              </div>
+
+              <div class="form-field">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="allowNegativeStock"
+                    class="checkbox-input"
+                  />
+                  Permitir Stock Negativo
+                </label>
+              </div>
+
+              <div class="form-field">
+                <label>
+                  <input
+                    type="checkbox"
+                    formControlName="lowStockAlertsEnabled"
+                    class="checkbox-input"
+                  />
+                  Alertas de Stock Bajo Habilitadas
+                </label>
+              </div>
+
+              <app-input
+                label="Stock Mínimo por Defecto"
+                name="defaultMinStock"
+                type="number"
+                [control]="inventoryForm.get('defaultMinStock')!"
+                [required]="true"
+                placeholder="5"
+              />
+
+              <app-select-lib
+                label="Regla de Redondeo de Precios"
+                name="priceRoundingRule"
+                [control]="inventoryForm.get('priceRoundingRule')!"
+                [options]="roundingRuleOptions"
+                [required]="true"
+              />
+
+              <app-input
+                label="Unidad de Medida por Defecto"
+                name="defaultProductUnit"
+                [control]="inventoryForm.get('defaultProductUnit')!"
+                [required]="true"
+                placeholder="unidad"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <app-button-lib
+              [configuration]="saveButtonConfig"
+              [disabled]="inventoryForm.invalid || loading()"
+              (buttonClick)="saveConfig()"
+            />
+          </div>
+        </form>
+      }
+
+      <!-- General Configuration -->
+      @if (activeTab() === 'general') {
+        <form [formGroup]="generalForm" class="config-form">
+          <div class="form-section">
+            <h2 class="section-title">Configuración General</h2>
+            <div class="form-grid">
+              <app-input
+                label="Moneda Base"
+                name="baseCurrency"
+                [control]="generalForm.get('baseCurrency')!"
+                [required]="true"
+                placeholder="CLP"
+              />
+
+              <app-input
+                label="Zona Horaria"
+                name="timezone"
+                [control]="generalForm.get('timezone')!"
+                [required]="true"
+                placeholder="America/Santiago"
+              />
+
+              <app-input
+                label="Formato de Fecha"
+                name="dateFormat"
+                [control]="generalForm.get('dateFormat')!"
+                [required]="true"
+                placeholder="DD/MM/YYYY"
+              />
+
+              <app-input
+                label="Locale"
+                name="locale"
+                [control]="generalForm.get('locale')!"
+                [required]="true"
+                placeholder="es-CL"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <app-button-lib
+              [configuration]="saveButtonConfig"
+              [disabled]="generalForm.invalid || loading()"
+              (buttonClick)="saveConfig()"
+            />
+          </div>
+        </form>
+      }
+    </div>
+
+    <!-- Config Status -->
+    <div class="config-status">
+      <span class="status-label">Estado de Configuración:</span>
+      <span
+        class="status-badge"
+        [class.active]="config()!.isActive"
+        [class.inactive]="!config()!.isActive"
+      >
+        {{ config()!.isActive ? 'Activa' : 'Inactiva' }}
+      </span>
+    </div>
+  }
+</div>

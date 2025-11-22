@@ -1,0 +1,75 @@
+<div class="pos-sessions-container">
+  <div class="header">
+    <div class="header-content">
+      <h1>Sesiones de Caja</h1>
+      <p>Gestión de sesiones del punto de venta</p>
+    </div>
+    <div class="header-actions">
+      <app-button-lib
+        [configuration]="openSessionButtonConfig"
+        (buttonClick)="navigateToOpenSession()"
+      />
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label for="status-filter">Estado</label>
+        <select
+          id="status-filter"
+          [value]="selectedStatus()"
+          (change)="onStatusFilterChange($event)"
+          class="filter-select"
+        >
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button (click)="clearFilters()" class="clear-filters-button">
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando sesiones...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-container">
+      <p>{{ error() }}</p>
+      <button (click)="loadSessions()" class="retry-button">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <app-custom-data-table
+      [data]="sessions()"
+      [columns]="columns"
+      [currentPage]="currentPage()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="onPageChange($event)"
+      (rowClick)="onRowClick($event)"
+    />
+  }
+
+  @if (!loading() && !error() && sessions().length === 0) {
+    <div class="empty-state">
+      <h3>No hay sesiones registradas</h3>
+      <p>Abre una nueva sesión para comenzar</p>
+      <app-button-lib
+        [configuration]="openSessionButtonConfig"
+        (buttonClick)="navigateToOpenSession()"
+      />
+    </div>
+  }
+</div>
