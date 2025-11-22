@@ -1,0 +1,203 @@
+<div class="sale-detail-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando venta...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+    </div>
+  }
+
+  @if (sale() && !loading()) {
+    <div class="sale-content">
+      <div class="sale-header">
+        <div class="header-left">
+          <app-button-lib
+            [configuration]="backButtonConfig"
+            (buttonClick)="goBack()"
+          />
+          <div class="header-info">
+            <h1 class="sale-number">{{ sale()!.saleNumber }}</h1>
+            <span
+              class="status-badge"
+              [style.background-color]="getStatusColor(sale()!.status)"
+            >
+              {{ getStatusLabel(sale()!.status) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          @if (canCancel()) {
+            <app-button-lib
+              [configuration]="cancelButtonConfig"
+              (buttonClick)="cancelSale()"
+            />
+          }
+          @if (canRefund()) {
+            <app-button-lib
+              [configuration]="refundButtonConfig"
+              (buttonClick)="refundSale()"
+            />
+          }
+        </div>
+      </div>
+
+      <!-- Información General -->
+      <div class="info-section">
+        <h2 class="section-title">Información General</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Fecha de Venta:</span>
+            <span class="info-value">{{ formatDate(sale()!.saleDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Método de Pago:</span>
+            <span class="info-value">{{ getPaymentMethodLabel(sale()!.paymentMethod) }}</span>
+          </div>
+          @if (sale()!.sessionId) {
+            <div class="info-item">
+              <span class="info-label">ID de Sesión:</span>
+              <span class="info-value">{{ sale()!.sessionId }}</span>
+            </div>
+          }
+          @if (sale()!.cashierId) {
+            <div class="info-item">
+              <span class="info-label">Cajero:</span>
+              <span class="info-value">{{ sale()!.cashierName || sale()!.cashierId }}</span>
+            </div>
+          }
+          @if (sale()!.transactionReference) {
+            <div class="info-item">
+              <span class="info-label">Referencia:</span>
+              <span class="info-value">{{ sale()!.transactionReference }}</span>
+            </div>
+          }
+          @if (sale()!.completedAt) {
+            <div class="info-item">
+              <span class="info-label">Completada:</span>
+              <span class="info-value">{{ formatDate(sale()!.completedAt!) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Datos del Cliente -->
+      @if (sale()!.customerData) {
+        <div class="info-section">
+          <h2 class="section-title">Datos del Cliente</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value">{{ sale()!.customerData!.name }}</span>
+            </div>
+            @if (sale()!.customerData!.rut) {
+              <div class="info-item">
+                <span class="info-label">RUT:</span>
+                <span class="info-value">{{ sale()!.customerData!.rut }}</span>
+              </div>
+            }
+            @if (sale()!.customerData!.email) {
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ sale()!.customerData!.email }}</span>
+              </div>
+            }
+            @if (sale()!.customerData!.phone) {
+              <div class="info-item">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ sale()!.customerData!.phone }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Items -->
+      <div class="info-section">
+        <h2 class="section-title">Items de la Venta</h2>
+        <div class="items-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th>SKU</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-right">Precio Unit.</th>
+                <th class="text-right">Descuento</th>
+                <th class="text-center">IVA %</th>
+                <th class="text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of sale()!.items; track item.id) {
+                <tr>
+                  <td class="item-description">{{ item.description }}</td>
+                  <td>{{ item.sku || '-' }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-right">{{ formatCurrency(item.unitPrice) }}</td>
+                  <td class="text-right">-{{ formatCurrency(item.discount) }}</td>
+                  <td class="text-center">{{ item.taxRate }}%</td>
+                  <td class="text-right total-col">{{ formatCurrency(item.lineTotal) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-grid">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(sale()!.subtotal) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Descuentos:</span>
+            <span class="total-value">-{{ formatCurrency(sale()!.discountTotal) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">IVA:</span>
+            <span class="total-value">{{ formatCurrency(sale()!.taxTotal) }}</span>
+          </div>
+          <div class="total-row total-final">
+            <span class="total-label">Total:</span>
+            <span class="total-value">{{ formatCurrency(sale()!.total) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Monto Recibido:</span>
+            <span class="total-value">{{ formatCurrency(sale()!.amountReceived) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Vuelto:</span>
+            <span class="total-value">{{ formatCurrency(sale()!.changeGiven) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      @if (sale()!.notes) {
+        <div class="info-section">
+          <h2 class="section-title">Notas</h2>
+          <p class="note-text">{{ sale()!.notes }}</p>
+        </div>
+      }
+
+      <!-- Razón de Cancelación -->
+      @if (sale()!.cancellationReason) {
+        <div class="info-section alert-section">
+          <h2 class="section-title">Razón de Cancelación</h2>
+          <p class="note-text">{{ sale()!.cancellationReason }}</p>
+        </div>
+      }
+    </div>
+  }
+</div>

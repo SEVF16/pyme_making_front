@@ -1,0 +1,124 @@
+<div class="pos-sales-container">
+  <div class="header">
+    <div class="header-content">
+      <h1>Ventas POS</h1>
+      <p>Gestión de ventas del punto de venta</p>
+    </div>
+    <div class="header-actions">
+      <app-button-lib
+        [configuration]="newSaleButtonConfig"
+        (buttonClick)="navigateToNew()"
+      />
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label for="status-filter">Estado</label>
+        <select
+          id="status-filter"
+          [value]="selectedStatus()"
+          (change)="onStatusFilterChange($event)"
+          class="filter-select"
+        >
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="payment-method-filter">Método de Pago</label>
+        <select
+          id="payment-method-filter"
+          [value]="selectedPaymentMethod()"
+          (change)="onPaymentMethodFilterChange($event)"
+          class="filter-select"
+        >
+          @for (option of paymentMethodOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="start-date">Fecha Inicio</label>
+        <input
+          type="date"
+          id="start-date"
+          [value]="startDate()"
+          (change)="onStartDateChange($event)"
+          class="filter-input"
+        />
+      </div>
+
+      <div class="filter-item">
+        <label for="end-date">Fecha Fin</label>
+        <input
+          type="date"
+          id="end-date"
+          [value]="endDate()"
+          (change)="onEndDateChange($event)"
+          class="filter-input"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button
+          type="button"
+          (click)="clearFilters()"
+          class="clear-filters-button"
+        >
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando ventas...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-container">
+      <p>{{ error() }}</p>
+      <button (click)="loadSales()" class="retry-button">Reintentar</button>
+    </div>
+  }
+
+  <!-- Tabla de ventas -->
+  @if (!loading() && !error()) {
+    <app-custom-data-table
+      [data]="sales()"
+      [columns]="columns"
+      [currentPage]="currentPage()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="onPageChange($event)"
+      (rowClick)="onRowClick($event)"
+    />
+  }
+
+  <!-- Estado vacío -->
+  @if (!loading() && !error() && sales().length === 0) {
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="20" height="14" x="2" y="5" rx="2"/>
+        <line x1="2" x2="22" y1="10" y2="10"/>
+      </svg>
+      <h3>No hay ventas registradas</h3>
+      <p>Comienza creando tu primera venta en el punto de venta</p>
+      <app-button-lib
+        [configuration]="newSaleButtonConfig"
+        (buttonClick)="navigateToNew()"
+      />
+    </div>
+  }
+</div>

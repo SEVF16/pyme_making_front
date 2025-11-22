@@ -1,0 +1,96 @@
+<div class="session-close-container">
+  <div class="header">
+    <app-button-lib
+      [configuration]="backButtonConfig"
+      (buttonClick)="goBack()"
+    />
+    <div class="header-info">
+      <h1>Cerrar Sesión de Caja</h1>
+      <p>Cierra la sesión y realiza el cuadre de caja</p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (loading() && !session()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando sesión...</p>
+    </div>
+  }
+
+  @if (session()) {
+    <div class="session-summary">
+      <h2 class="section-title">Resumen de Sesión</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">N° Sesión:</span>
+          <span class="summary-value">{{ session()!.sessionNumber }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Terminal:</span>
+          <span class="summary-value">{{ session()!.posTerminalName }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Efectivo Inicial:</span>
+          <span class="summary-value">{{ formatCurrency(session()!.openingCash) }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Ventas en Efectivo:</span>
+          <span class="summary-value">{{ formatCurrency(session()!.totalCashSales) }}</span>
+        </div>
+        <div class="summary-item highlight">
+          <span class="summary-label">Efectivo Esperado:</span>
+          <span class="summary-value">{{ formatCurrency(session()!.expectedClosingCash) }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Transacciones:</span>
+          <span class="summary-value">{{ session()!.transactionCount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="closeForm" (ngSubmit)="closeSession()" class="close-form">
+      <div class="form-section">
+        <h2 class="section-title">Cuadre de Caja</h2>
+        <div class="form-grid">
+          <app-input
+            label="Efectivo Real Contado"
+            name="actualClosingCash"
+            type="number"
+            [control]="closeForm.get('actualClosingCash')!"
+            [required]="true"
+            placeholder="0"
+          />
+
+          <div class="full-width">
+            <label for="closingNotes">Notas de Cierre</label>
+            <textarea
+              id="closingNotes"
+              formControlName="closingNotes"
+              class="form-input"
+              rows="3"
+              placeholder="Notas adicionales sobre el cierre de sesión"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-button-lib
+          [configuration]="backButtonConfig"
+          (buttonClick)="goBack()"
+        />
+        <app-button-lib
+          [configuration]="closeButtonConfig"
+          [disabled]="closeForm.invalid || loading()"
+          (buttonClick)="closeSession()"
+        />
+      </div>
+    </form>
+  }
+</div>

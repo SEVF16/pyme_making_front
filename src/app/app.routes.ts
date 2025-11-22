@@ -126,6 +126,45 @@ export const routes: Routes = [
         path: 'reporting',
         loadComponent: () => import('./features/reporting/reporting.component').then(m => m.ReportingComponent),
       },
+      {
+        path: 'pos',
+        children: [
+          {
+            path: 'sales',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/pos/pos-sales/pos-sales.component').then(m => m.POSSalesComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () => import('./features/pos/pos-sale-form/pos-sale-form.component').then(m => m.POSSaleFormComponent),
+              },
+              {
+                path: ':id',
+                loadComponent: () => import('./features/pos/pos-sale-detail/pos-sale-detail.component').then(m => m.POSSaleDetailComponent),
+              }
+            ]
+          },
+          {
+            path: 'sessions',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/pos/pos-sessions/pos-sessions.component').then(m => m.POSSessionsComponent),
+              },
+              {
+                path: 'open',
+                loadComponent: () => import('./features/pos/pos-session-open/pos-session-open.component').then(m => m.POSSessionOpenComponent),
+              },
+              {
+                path: ':id/close',
+                loadComponent: () => import('./features/pos/pos-session-close/pos-session-close.component').then(m => m.POSSessionCloseComponent),
+              }
+            ]
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]
