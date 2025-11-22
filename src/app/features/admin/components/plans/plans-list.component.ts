@@ -1,11 +1,14 @@
 // plans-list.component.ts
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AdminService } from '../../../services/admin/admin.service';
-import { Plan } from '../../../interfaces/admin';
+import { AdminService } from '../../../../services/admin/admin.service';
+import { Plan } from '../../../../interfaces/admin';
 
 @Component({
   selector: 'app-plans-list',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './plans-list.component.html',
   styleUrls: ['./plans-list.component.css']
 })

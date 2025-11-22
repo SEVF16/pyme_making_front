@@ -1,10 +1,13 @@
 // metrics-overview.component.ts
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../../services/admin/admin.service';
-import { MetricsOverview } from '../../../interfaces/admin';
+import { CommonModule } from '@angular/common';
+import { AdminService } from '../../../../services/admin/admin.service';
+import { MetricsOverview } from '../../../../interfaces/admin';
 
 @Component({
   selector: 'app-metrics-overview',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './metrics-overview.component.html',
   styleUrls: ['./metrics-overview.component.css']
 })

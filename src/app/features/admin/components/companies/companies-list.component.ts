@@ -1,11 +1,15 @@
 // companies-list.component.ts
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AdminService } from '../../../services/admin/admin.service';
-import { CompanyListItem, Plan, CompanyStatus } from '../../../interfaces/admin';
+import { AdminService } from '../../../../services/admin/admin.service';
+import { CompanyListItem, Plan, CompanyStatus } from '../../../../interfaces/admin';
 
 @Component({
   selector: 'app-companies-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './companies-list.component.html',
   styleUrls: ['./companies-list.component.css']
 })

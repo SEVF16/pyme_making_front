@@ -1,11 +1,14 @@
 // company-dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdminService } from '../../../services/admin/admin.service';
-import { CompanyDashboard } from '../../../interfaces/admin';
+import { AdminService } from '../../../../services/admin/admin.service';
+import { CompanyDashboard } from '../../../../interfaces/admin';
 
 @Component({
   selector: 'app-company-dashboard',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './company-dashboard.component.html',
   styleUrls: ['./company-dashboard.component.css']
 })
