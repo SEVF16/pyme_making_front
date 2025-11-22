@@ -1,0 +1,142 @@
+<!-- ticket-print.component.html -->
+<div class="print-container" *ngIf="!loading && ticket">
+  <!-- Header de la empresa -->
+  <div class="print-header">
+    <h2 class="company-name">{{ getTenantInfo().name }}</h2>
+    <p class="company-info">RUT: {{ getTenantInfo().rut }}</p>
+    <p class="company-info">{{ getTenantInfo().address }}</p>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Información del Ticket -->
+  <div class="ticket-info">
+    <h3 class="ticket-title">TICKET DE VENTA</h3>
+    <p><strong>N°:</strong> {{ ticket.ticketNumber }}</p>
+    <p><strong>Fecha:</strong> {{ formatDate(ticket.issueDate) }}</p>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Información del Cliente -->
+  <div class="customer-info" *ngIf="ticket.customerData">
+    <p><strong>Cliente:</strong> {{ ticket.customerData.name }}</p>
+    <p *ngIf="ticket.customerData.rut"><strong>RUT:</strong> {{ ticket.customerData.rut }}</p>
+  </div>
+  <div class="customer-info" *ngIf="!ticket.customerData">
+    <p><strong>Cliente:</strong> Consumidor Final</p>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Items -->
+  <div class="items-section">
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th class="text-center">Cant.</th>
+          <th class="text-right">P. Unit.</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of ticket.items" class="item-row">
+          <td>
+            {{ item.description }}
+            <span class="item-sku" *ngIf="item.sku"><br>SKU: {{ item.sku }}</span>
+          </td>
+          <td class="text-center">{{ item.quantity }}</td>
+          <td class="text-right">{{ formatCurrency(item.unitPrice) }}</td>
+          <td class="text-right">{{ formatCurrency(item.lineTotal) }}</td>
+        </tr>
+        <tr *ngFor="let item of ticket.items" class="item-details">
+          <td colspan="4">
+            <span *ngIf="item.discountAmount > 0" class="discount-info">
+              Descuento: -{{ formatCurrency(item.discountAmount) }}
+            </span>
+            <span *ngIf="item.taxAmount > 0" class="tax-info">
+              IVA ({{ item.taxRate }}%): {{ formatCurrency(item.taxAmount) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Totales -->
+  <div class="totals-section">
+    <div class="total-row">
+      <span>Subtotal:</span>
+      <span>{{ formatCurrency(ticket.subtotal) }}</span>
+    </div>
+    <div class="total-row" *ngIf="ticket.discountTotal > 0">
+      <span>Descuentos:</span>
+      <span>-{{ formatCurrency(ticket.discountTotal) }}</span>
+    </div>
+    <div class="total-row">
+      <span>IVA (19%):</span>
+      <span>{{ formatCurrency(ticket.taxTotal) }}</span>
+    </div>
+    <div class="separator-small">- - - - - - - - - - - - - - - - - - -</div>
+    <div class="total-row total">
+      <span>TOTAL:</span>
+      <span>{{ formatCurrency(ticket.total) }}</span>
+    </div>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Método de Pago -->
+  <div class="payment-info">
+    <p><strong>Método de Pago:</strong> {{ formatPaymentMethod(ticket.paymentMethod) }}</p>
+    <p *ngIf="ticket.transactionReference">
+      <strong>Referencia:</strong> {{ ticket.transactionReference }}
+    </p>
+  </div>
+
+  <!-- Notas -->
+  <div class="notes-section" *ngIf="ticket.notes">
+    <p><strong>Notas:</strong></p>
+    <p>{{ ticket.notes }}</p>
+  </div>
+
+  <!-- Separador -->
+  <div class="separator">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+  <!-- Disclaimer Legal -->
+  <div class="legal-disclaimer">
+    <p><strong>⚠️ IMPORTANTE ⚠️</strong></p>
+    <p>{{ ticket.legalDisclaimer }}</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="print-footer">
+    <p>Gracias por su compra</p>
+    <p class="print-date">Impreso: {{ formatDate(new Date()) }}</p>
+  </div>
+
+  <!-- Botones (no se imprimen) -->
+  <div class="print-actions no-print">
+    <button class="print-button" (click)="print()">Imprimir</button>
+    <button class="close-button" (click)="close()">Cerrar</button>
+  </div>
+</div>
+
+<!-- Loading -->
+<div *ngIf="loading" class="loading-container no-print">
+  <p>Cargando ticket para impresión...</p>
+</div>
+
+<!-- Error -->
+<div *ngIf="error && !loading" class="error-container no-print">
+  <p>{{ error }}</p>
+  <button class="close-button" (click)="close()">Cerrar</button>
+</div>
