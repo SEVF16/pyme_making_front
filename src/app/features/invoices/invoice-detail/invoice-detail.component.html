@@ -1,0 +1,210 @@
+<div class="invoice-detail-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando factura...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <app-button-lib
+        [configuration]="backButtonConfig"
+        (buttonClick)="goBack()"
+      />
+    </div>
+  }
+
+  @if (invoice() && !loading()) {
+    <div class="invoice-content">
+      <!-- Header -->
+      <div class="invoice-header">
+        <div class="header-left">
+          <app-button-lib
+            [configuration]="backButtonConfig"
+            (buttonClick)="goBack()"
+          />
+          <div class="header-info">
+            <h1 class="invoice-number">{{ invoice()!.invoiceNumber }}</h1>
+            <span
+              class="status-badge"
+              [style.background-color]="getStatusColor(invoice()!.status)"
+            >
+              {{ getStatusLabel(invoice()!.status) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <app-button-lib
+            [configuration]="downloadButtonConfig"
+            (buttonClick)="downloadPDF()"
+          />
+          @if (canEdit()) {
+            <app-button-lib
+              [configuration]="editButtonConfig"
+              (buttonClick)="editInvoice()"
+            />
+          }
+          @if (canDelete()) {
+            <app-button-lib
+              [configuration]="deleteButtonConfig"
+              (buttonClick)="deleteInvoice()"
+            />
+          }
+        </div>
+      </div>
+
+      <!-- Información General -->
+      <div class="info-section">
+        <h2 class="section-title">Información General</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tipo de Documento:</span>
+            <span class="info-value">{{ getTypeLabel(invoice()!.type) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Emisión:</span>
+            <span class="info-value">{{ formatDate(invoice()!.issueDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Vencimiento:</span>
+            <span class="info-value">{{ formatDate(invoice()!.dueDate!) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Método de Pago:</span>
+            <span class="info-value">{{ getPaymentMethodLabel(invoice()!.paymentMethod) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Moneda:</span>
+            <span class="info-value">{{ invoice()!.currency }}</span>
+          </div>
+          @if (invoice()!.isOverdue) {
+            <div class="info-item">
+              <span class="info-label">Días de Atraso:</span>
+              <span class="info-value text-danger">{{ invoice()!.daysPastDue }} días</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Datos del Cliente -->
+      @if (invoice()!.customerData) {
+        <div class="info-section">
+          <h2 class="section-title">Datos del Cliente</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nombre / Razón Social:</span>
+              <span class="info-value">{{ invoice()!.customerData!.name }}</span>
+            </div>
+            @if (invoice()!.customerData!.rut) {
+              <div class="info-item">
+                <span class="info-label">RUT:</span>
+                <span class="info-value">{{ invoice()!.customerData!.rut }}</span>
+              </div>
+            }
+            @if (invoice()!.customerData!.email) {
+              <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ invoice()!.customerData!.email }}</span>
+              </div>
+            }
+            @if (invoice()!.customerData!.phone) {
+              <div class="info-item">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ invoice()!.customerData!.phone }}</span>
+              </div>
+            }
+            @if (invoice()!.customerData!.address) {
+              <div class="info-item full-width">
+                <span class="info-label">Dirección:</span>
+                <span class="info-value">{{ invoice()!.customerData!.address }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Ítems de la Factura -->
+      <div class="info-section">
+        <h2 class="section-title">Ítems de la Factura</h2>
+        <div class="items-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto/Servicio</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+                <th>Descuento</th>
+                <th>IVA</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of invoice()!.items; track item.id) {
+                <tr>
+                  <td>
+                    <div class="item-name">{{ item.name }}</div>
+                    @if (item.description) {
+                      <div class="item-description">{{ item.description }}</div>
+                    }
+                  </td>
+                  <td>{{ item.quantity }} {{ item.unit }}</td>
+                  <td>{{ formatCurrency(item.unitPrice) }}</td>
+                  <td>{{ item.discountPercentage }}%</td>
+                  <td>{{ item.taxPercentage }}%</td>
+                  <td class="text-right">{{ formatCurrency(item.total) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-grid">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(invoice()!.subtotal) }}</span>
+          </div>
+          @if (invoice()!.discountTotal > 0) {
+            <div class="total-row">
+              <span class="total-label">Descuentos:</span>
+              <span class="total-value text-danger">-{{ formatCurrency(invoice()!.discountTotal) }}</span>
+            </div>
+          }
+          @if (invoice()!.taxTotal > 0) {
+            <div class="total-row">
+              <span class="total-label">IVA (19%):</span>
+              <span class="total-value">{{ formatCurrency(invoice()!.taxTotal) }}</span>
+            </div>
+          }
+          <div class="total-row total-final">
+            <span class="total-label">TOTAL:</span>
+            <span class="total-value">{{ formatCurrency(invoice()!.total) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Términos y Notas -->
+      @if (invoice()!.terms || invoice()!.notes) {
+        <div class="info-section">
+          <h2 class="section-title">Términos y Notas</h2>
+          @if (invoice()!.terms) {
+            <div class="note-item">
+              <span class="note-label">Términos de Pago:</span>
+              <p class="note-text">{{ invoice()!.terms }}</p>
+            </div>
+          }
+          @if (invoice()!.notes) {
+            <div class="note-item">
+              <span class="note-label">Notas:</span>
+              <p class="note-text">{{ invoice()!.notes }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,240 @@
+<div class="invoice-form-container">
+  <div class="form-header">
+    <h1 class="form-title">
+      {{ isEditMode ? 'Editar Factura' : 'Nueva Factura' }}
+    </h1>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <button (click)="error.set(null)" class="close-btn">&times;</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>{{ isEditMode ? 'Cargando factura...' : 'Guardando factura...' }}</p>
+    </div>
+  }
+
+  <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()" class="invoice-form">
+
+    <!-- Información General -->
+    <div class="form-section">
+      <h2 class="section-title">Información General</h2>
+      <div class="form-grid">
+        <app-select-lib
+          label="Tipo de Documento"
+          [options]="invoiceTypeOptions"
+          [control]="invoiceForm.controls['type']"
+          placeholder="Seleccione tipo"
+        />
+
+        <app-input
+          label="Fecha de Emisión"
+          type="date"
+          [control]="invoiceForm.controls['issueDate']"
+        />
+
+        <app-input
+          label="Fecha de Vencimiento"
+          type="date"
+          [control]="invoiceForm.controls['dueDate']"
+          placeholder="Opcional"
+        />
+
+        <app-select-lib
+          label="Método de Pago"
+          [options]="paymentMethodOptions"
+          [control]="invoiceForm.controls['paymentMethod']"
+        />
+      </div>
+    </div>
+
+    <!-- Datos del Cliente -->
+    <div class="form-section" formGroupName="customerData">
+      <h2 class="section-title">Datos del Cliente</h2>
+      <div class="form-grid">
+        <app-input
+          label="Nombre / Razón Social"
+          [control]="invoiceForm.get('customerData.name')"
+          placeholder="Nombre del cliente"
+        />
+
+        <app-input
+          label="RUT"
+          [control]="invoiceForm.get('customerData.rut')"
+          placeholder="12.345.678-9"
+          mask="00.000.000-0"
+        />
+
+        <app-input
+          label="Email"
+          type="email"
+          [control]="invoiceForm.get('customerData.email')"
+          placeholder="cliente@example.com"
+        />
+
+        <app-input
+          label="Teléfono"
+          [control]="invoiceForm.get('customerData.phone')"
+          placeholder="+56 9 1234 5678"
+          mask="+00 0 0000 0000"
+        />
+
+        <div class="full-width">
+          <app-input
+            label="Dirección"
+            [control]="invoiceForm.get('customerData.address')"
+            placeholder="Dirección completa"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Ítems de la Factura -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">Ítems de la Factura</h2>
+        <app-button-lib
+          [configuration]="addItemButtonConfig"
+          (buttonClick)="addItem()"
+        />
+      </div>
+
+      <div formArrayName="items" class="items-container">
+        @for (item of items.controls; track $index) {
+          <div [formGroupName]="$index" class="item-card">
+            <div class="item-header">
+              <h3 class="item-title">Ítem {{ $index + 1 }}</h3>
+              @if (items.length > 1) {
+                <button
+                  type="button"
+                  class="remove-item-btn"
+                  (click)="removeItem($index)"
+                  title="Eliminar ítem"
+                >
+                  <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
+                </button>
+              }
+            </div>
+
+            <div class="item-grid">
+              <div class="full-width">
+                <app-input
+                  label="Nombre del Producto/Servicio"
+                  [control]="item.get('name')"
+                  placeholder="Ej: Laptop Dell Inspiron"
+                />
+              </div>
+
+              <div class="full-width">
+                <app-input
+                  label="Descripción"
+                  [control]="item.get('description')"
+                  placeholder="Descripción detallada (opcional)"
+                />
+              </div>
+
+              <app-input
+                label="Cantidad"
+                type="number"
+                [control]="item.get('quantity')"
+                placeholder="1"
+              />
+
+              <app-input
+                label="Precio Unitario"
+                type="number"
+                [control]="item.get('unitPrice')"
+                placeholder="0"
+              />
+
+              <app-input
+                label="Descuento (%)"
+                type="number"
+                [control]="item.get('discountPercentage')"
+                placeholder="0"
+              />
+
+              <app-input
+                label="IVA (%)"
+                type="number"
+                [control]="item.get('taxPercentage')"
+                placeholder="19"
+              />
+
+              <app-input
+                label="Unidad"
+                [control]="item.get('unit')"
+                placeholder="unidad"
+              />
+
+              <app-input
+                label="SKU"
+                [control]="item.get('productSku')"
+                placeholder="Código (opcional)"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Descuentos Globales -->
+    <div class="form-section">
+      <h2 class="section-title">Descuentos Globales</h2>
+      <div class="form-grid">
+        <app-input
+          label="Descuento Global (%)"
+          type="number"
+          [control]="invoiceForm.controls['globalDiscountPercentage']"
+          placeholder="0"
+        />
+
+        <app-input
+          label="Descuento Global (Monto)"
+          type="number"
+          [control]="invoiceForm.controls['globalDiscountAmount']"
+          placeholder="0"
+        />
+      </div>
+    </div>
+
+    <!-- Términos y Notas -->
+    <div class="form-section">
+      <h2 class="section-title">Términos y Notas</h2>
+      <div class="form-grid">
+        <div class="full-width">
+          <app-input
+            label="Términos de Pago"
+            [control]="invoiceForm.controls['terms']"
+            placeholder="Ej: Pago a 30 días"
+          />
+        </div>
+
+        <div class="full-width">
+          <app-input
+            label="Notas Adicionales"
+            [control]="invoiceForm.controls['notes']"
+            placeholder="Notas o comentarios adicionales"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <app-button-lib
+        [configuration]="cancelButtonConfig"
+        (buttonClick)="cancel()"
+      />
+      <app-button-lib
+        [configuration]="saveButtonConfig"
+        (buttonClick)="onSubmit()"
+      />
+    </div>
+  </form>
+</div>

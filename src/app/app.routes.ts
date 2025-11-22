@@ -38,6 +38,27 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent),
       },
+      {
+        path: 'invoices',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/invoices/invoices.component').then(m => m.InvoicesComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/invoices/invoice-form/invoice-form.component').then(m => m.InvoiceFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/invoices/invoice-detail/invoice-detail.component').then(m => m.InvoiceDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/invoices/invoice-form/invoice-form.component').then(m => m.InvoiceFormComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]
