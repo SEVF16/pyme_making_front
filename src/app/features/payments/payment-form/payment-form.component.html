@@ -1,0 +1,107 @@
+<div class="payment-form-container">
+  <div class="form-header">
+    <h1 class="form-title">
+      {{ isEditMode ? 'Editar Pago' : 'Nuevo Pago' }}
+    </h1>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+      <button (click)="error.set(null)" class="close-btn">&times;</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>{{ isEditMode ? 'Cargando pago...' : 'Guardando pago...' }}</p>
+    </div>
+  }
+
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="payment-form">
+    <div class="form-section">
+      <h2 class="section-title">Información General</h2>
+      <div class="form-grid">
+        <app-select-lib
+          label="Tipo de Pago"
+          [options]="typeOptions"
+          [control]="paymentForm.controls['type']"
+          placeholder="Seleccione tipo"
+        />
+
+        <app-select-lib
+          label="Método de Pago"
+          [options]="methodOptions"
+          [control]="paymentForm.controls['paymentMethod']"
+        />
+
+        <app-input
+          label="Monto"
+          type="number"
+          [control]="paymentForm.controls['amount']"
+          placeholder="0"
+        />
+
+        <app-input
+          label="Moneda"
+          [control]="paymentForm.controls['currency']"
+          placeholder="CLP"
+        />
+
+        <app-input
+          label="Fecha de Pago"
+          type="date"
+          [control]="paymentForm.controls['paymentDate']"
+        />
+
+        <app-input
+          label="Referencia de Transacción"
+          [control]="paymentForm.controls['transactionReference']"
+          placeholder="Ej: TRANS-2025-001"
+        />
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2 class="section-title">Referencias</h2>
+      <div class="form-grid">
+        <app-input
+          label="ID de Factura (INBOUND)"
+          [control]="paymentForm.controls['invoiceId']"
+          placeholder="UUID de factura"
+        />
+
+        <app-input
+          label="ID de Orden de Compra (OUTBOUND)"
+          [control]="paymentForm.controls['purchaseOrderId']"
+          placeholder="UUID de orden"
+        />
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2 class="section-title">Notas</h2>
+      <div class="form-grid">
+        <div class="full-width">
+          <app-input
+            label="Notas"
+            [control]="paymentForm.controls['notes']"
+            placeholder="Notas adicionales"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <app-button-lib
+        [configuration]="cancelButtonConfig"
+        (buttonClick)="cancel()"
+      />
+      <app-button-lib
+        [configuration]="saveButtonConfig"
+        (buttonClick)="onSubmit()"
+      />
+    </div>
+  </form>
+</div>

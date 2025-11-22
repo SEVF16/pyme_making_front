@@ -59,6 +59,27 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'payments',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/payments/payments.component').then(m => m.PaymentsComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/payments/payment-form/payment-form.component').then(m => m.PaymentFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/payments/payment-detail/payment-detail.component').then(m => m.PaymentDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/payments/payment-form/payment-form.component').then(m => m.PaymentFormComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]
