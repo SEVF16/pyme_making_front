@@ -1,0 +1,21 @@
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pricing h3 {
+  font-weight: bold;
+}
+
+.list-unstyled li {
+  padding: 5px 0;
+}
+
+.list-unstyled i {
+  width: 20px;
+  color: #6c757d;
+}

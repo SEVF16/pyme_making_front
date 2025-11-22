@@ -1,0 +1,19 @@
+.badge-lg {
+  font-size: 1rem;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.card-header h5 {
+  margin: 0;
+}
+
+.table th {
+  font-weight: 600;
+}
+
+.alert {
+  border-radius: 8px;
+}

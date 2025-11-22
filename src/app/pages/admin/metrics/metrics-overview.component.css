@@ -1,0 +1,19 @@
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body h2 {
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.card-body h6 {
+  font-weight: normal;
+  opacity: 0.9;
+}
+
+.progress {
+  height: 8px;
+  border-radius: 4px;
+}
