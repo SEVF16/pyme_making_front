@@ -122,6 +122,10 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'reporting',
+        loadComponent: () => import('./features/reporting/reporting.component').then(m => m.ReportingComponent),
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

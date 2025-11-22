@@ -1,0 +1,523 @@
+<div class="reporting-container">
+  <!-- Header con navegación -->
+  <div class="reporting-header">
+    <h1 class="title">Reportes y Análisis</h1>
+
+    <!-- Navegación de tabs -->
+    <div class="tabs">
+      <button
+        class="tab"
+        [class.active]="activeView() === 'dashboard'"
+        (click)="setActiveView('dashboard')"
+      >
+        <lucide-angular [img]="DollarSignIcon" [size]="18" />
+        Dashboard
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeView() === 'sales'"
+        (click)="setActiveView('sales')"
+      >
+        <lucide-angular [img]="ShoppingCartIcon" [size]="18" />
+        Ventas
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeView() === 'products'"
+        (click)="setActiveView('products')"
+      >
+        <lucide-angular [img]="PackageIcon" [size]="18" />
+        Productos
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeView() === 'receivables'"
+        (click)="setActiveView('receivables')"
+      >
+        <lucide-angular [img]="AlertCircleIcon" [size]="18" />
+        Cuentas por Cobrar
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeView() === 'inventory'"
+        (click)="setActiveView('inventory')"
+      >
+        <lucide-angular [img]="PackageIcon" [size]="18" />
+        Inventario
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros (no se muestran para inventario) -->
+  @if (activeView() !== 'inventory') {
+    <div class="filters">
+      <div class="filter-group">
+        <label>Período:</label>
+        <select [(ngModel)]="selectedPeriod" (change)="onPeriodChange()" class="filter-select">
+          @for (option of periodOptions(); track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      @if (activeView() === 'products') {
+        <div class="filter-group">
+          <label>Cantidad:</label>
+          <select [(ngModel)]="topProductsLimit" (change)="onLimitChange()" class="filter-select">
+            @for (option of limitOptions(); track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Dashboard Ejecutivo -->
+  @if (activeView() === 'dashboard') {
+    <div class="view-content">
+      @if (loadingDashboard()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando dashboard...</p>
+        </div>
+      }
+
+      @if (errorDashboard()) {
+        <div class="alert alert-error">
+          <span>{{ errorDashboard() }}</span>
+        </div>
+      }
+
+      @if (dashboard() && !loadingDashboard()) {
+        <div class="dashboard-grid">
+          <!-- Card de Ventas -->
+          <div class="metric-card">
+            <div class="card-header">
+              <lucide-angular [img]="DollarSignIcon" [size]="24" class="card-icon" />
+              <h3>Ventas</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-value">{{ formatCurrency(dashboard()!.sales.total) }}</div>
+              <div class="metric-details">
+                <span>{{ formatNumber(dashboard()!.sales.count) }} facturas</span>
+                <span class="separator">•</span>
+                <span>Promedio: {{ formatCurrency(dashboard()!.sales.average) }}</span>
+              </div>
+              <div class="metric-trend" [ngClass]="getTrendClass(dashboard()!.sales.trend)">
+                <lucide-angular [img]="getTrendIcon(dashboard()!.sales.trend)" [size]="18" />
+                <span>{{ formatTrend(dashboard()!.sales.trend) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card de Compras -->
+          <div class="metric-card">
+            <div class="card-header">
+              <lucide-angular [img]="ShoppingCartIcon" [size]="24" class="card-icon" />
+              <h3>Compras</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-value">{{ formatCurrency(dashboard()!.purchases.total) }}</div>
+              <div class="metric-details">
+                <span>{{ formatNumber(dashboard()!.purchases.count) }} órdenes</span>
+                <span class="separator">•</span>
+                <span>Promedio: {{ formatCurrency(dashboard()!.purchases.average) }}</span>
+              </div>
+              <div class="metric-trend" [ngClass]="getTrendClass(dashboard()!.purchases.trend)">
+                <lucide-angular [img]="getTrendIcon(dashboard()!.purchases.trend)" [size]="18" />
+                <span>{{ formatTrend(dashboard()!.purchases.trend) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card de Cuentas por Cobrar -->
+          <div class="metric-card">
+            <div class="card-header">
+              <lucide-angular [img]="UsersIcon" [size]="24" class="card-icon" />
+              <h3>Cuentas por Cobrar</h3>
+            </div>
+            <div class="card-body">
+              <div class="metric-value">{{ formatCurrency(dashboard()!.accountsReceivable.total) }}</div>
+              <div class="metric-breakdown">
+                <div class="breakdown-item">
+                  <span class="label">Al día:</span>
+                  <span class="value">{{ formatCurrency(dashboard()!.accountsReceivable.current) }}</span>
+                </div>
+                <div class="breakdown-item overdue">
+                  <span class="label">Vencido:</span>
+                  <span class="value">{{ formatCurrency(dashboard()!.accountsReceivable.overdue) }}</span>
+                </div>
+              </div>
+              @if (dashboard()!.accountsReceivable.overduePercentage > 0) {
+                <div class="overdue-indicator">
+                  <div class="progress-bar">
+                    <div
+                      class="progress-fill"
+                      [style.width.%]="dashboard()!.accountsReceivable.overduePercentage"
+                    ></div>
+                  </div>
+                  <span class="percentage">{{ dashboard()!.accountsReceivable.overduePercentage.toFixed(1) }}% vencido</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-footer">
+          <small>
+            Período: {{ formatDate(dashboard()!.period.startDate) }} - {{ formatDate(dashboard()!.period.endDate) }}
+            | Generado: {{ formatDate(dashboard()!.generatedAt) }}
+          </small>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Reporte de Ventas -->
+  @if (activeView() === 'sales') {
+    <div class="view-content">
+      @if (loadingSales()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando reporte de ventas...</p>
+        </div>
+      }
+
+      @if (errorSales()) {
+        <div class="alert alert-error">
+          <span>{{ errorSales() }}</span>
+        </div>
+      }
+
+      @if (salesReport() && !loadingSales()) {
+        <div class="report-section">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <h4>Total Ventas</h4>
+              <p class="summary-value">{{ formatCurrency(salesReport()!.summary.totalSales) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Total Facturas</h4>
+              <p class="summary-value">{{ formatNumber(salesReport()!.summary.totalInvoices) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Ticket Promedio</h4>
+              <p class="summary-value">{{ formatCurrency(salesReport()!.summary.averageTicket) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Total IVA</h4>
+              <p class="summary-value">{{ formatCurrency(salesReport()!.summary.totalTax) }}</p>
+            </div>
+          </div>
+
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th class="text-right">Ventas</th>
+                  <th class="text-center">Facturas</th>
+                  <th class="text-right">Promedio</th>
+                  <th class="text-right">IVA</th>
+                  <th class="text-right">Neto</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of salesReport()!.data; track item.date) {
+                  <tr>
+                    <td>{{ formatDate(item.date) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.totalSales) }}</td>
+                    <td class="text-center">{{ formatNumber(item.invoiceCount) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.averageTicket) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.taxTotal) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.netTotal) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Top Productos -->
+  @if (activeView() === 'products') {
+    <div class="view-content">
+      @if (loadingProducts()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando productos más vendidos...</p>
+        </div>
+      }
+
+      @if (errorProducts()) {
+        <div class="alert alert-error">
+          <span>{{ errorProducts() }}</span>
+        </div>
+      }
+
+      @if (topProducts() && !loadingProducts()) {
+        <div class="report-section">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <h4>Productos Únicos</h4>
+              <p class="summary-value">{{ formatNumber(topProducts()!.summary.totalProducts) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Unidades Vendidas</h4>
+              <p class="summary-value">{{ formatNumber(topProducts()!.summary.totalQuantitySold) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Ingresos Totales</h4>
+              <p class="summary-value">{{ formatCurrency(topProducts()!.summary.totalRevenue) }}</p>
+            </div>
+          </div>
+
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text-center">Rank</th>
+                  <th>Código</th>
+                  <th>Producto</th>
+                  <th class="text-right">Cantidad</th>
+                  <th class="text-right">Ingresos</th>
+                  <th class="text-right">Precio Prom.</th>
+                  <th class="text-center">Facturas</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of topProducts()!.products; track product.productId) {
+                  <tr>
+                    <td class="text-center">
+                      <span class="rank-badge">{{ product.rank }}</span>
+                    </td>
+                    <td>{{ product.productCode }}</td>
+                    <td class="product-name">{{ product.productName }}</td>
+                    <td class="text-right">{{ formatNumber(product.quantitySold) }}</td>
+                    <td class="text-right">{{ formatCurrency(product.totalRevenue) }}</td>
+                    <td class="text-right">{{ formatCurrency(product.averagePrice) }}</td>
+                    <td class="text-center">{{ formatNumber(product.invoiceCount) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Cuentas por Cobrar Vencidas -->
+  @if (activeView() === 'receivables') {
+    <div class="view-content">
+      @if (loadingReceivables()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando cuentas por cobrar...</p>
+        </div>
+      }
+
+      @if (errorReceivables()) {
+        <div class="alert alert-error">
+          <span>{{ errorReceivables() }}</span>
+        </div>
+      }
+
+      @if (overdueReceivables() && !loadingReceivables()) {
+        <div class="report-section">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <h4>Total Vencido</h4>
+              <p class="summary-value">{{ formatCurrency(overdueReceivables()!.summary.totalBalanceDue) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Facturas Vencidas</h4>
+              <p class="summary-value">{{ formatNumber(overdueReceivables()!.summary.totalOverdue) }}</p>
+            </div>
+          </div>
+
+          <!-- Aging Buckets -->
+          <div class="aging-section">
+            <h3>Distribución por Antigüedad</h3>
+            <div class="aging-grid">
+              <div class="aging-card">
+                <h4>Al día</h4>
+                <p class="aging-amount" [style.color]="getAgingColor('CURRENT')">
+                  {{ formatCurrency(overdueReceivables()!.aging.current.amount) }}
+                </p>
+                <p class="aging-count">{{ formatNumber(overdueReceivables()!.aging.current.count) }} facturas</p>
+              </div>
+              <div class="aging-card">
+                <h4>1-30 días</h4>
+                <p class="aging-amount" [style.color]="getAgingColor('1-30')">
+                  {{ formatCurrency(overdueReceivables()!.aging.days1to30.amount) }}
+                </p>
+                <p class="aging-count">{{ formatNumber(overdueReceivables()!.aging.days1to30.count) }} facturas</p>
+              </div>
+              <div class="aging-card">
+                <h4>31-60 días</h4>
+                <p class="aging-amount" [style.color]="getAgingColor('31-60')">
+                  {{ formatCurrency(overdueReceivables()!.aging.days31to60.amount) }}
+                </p>
+                <p class="aging-count">{{ formatNumber(overdueReceivables()!.aging.days31to60.count) }} facturas</p>
+              </div>
+              <div class="aging-card">
+                <h4>61-90 días</h4>
+                <p class="aging-amount" [style.color]="getAgingColor('61-90')">
+                  {{ formatCurrency(overdueReceivables()!.aging.days61to90.amount) }}
+                </p>
+                <p class="aging-count">{{ formatNumber(overdueReceivables()!.aging.days61to90.count) }} facturas</p>
+              </div>
+              <div class="aging-card">
+                <h4>90+ días</h4>
+                <p class="aging-amount" [style.color]="getAgingColor('90+')">
+                  {{ formatCurrency(overdueReceivables()!.aging.days90plus.amount) }}
+                </p>
+                <p class="aging-count">{{ formatNumber(overdueReceivables()!.aging.days90plus.count) }} facturas</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de facturas vencidas -->
+          <div class="data-table">
+            <h3>Detalle de Facturas Vencidas</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>N° Factura</th>
+                  <th>Cliente</th>
+                  <th>Fecha Emisión</th>
+                  <th>Vencimiento</th>
+                  <th class="text-right">Total</th>
+                  <th class="text-right">Saldo</th>
+                  <th class="text-center">Días Vencido</th>
+                  <th>Categoría</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (receivable of overdueReceivables()!.receivables; track receivable.invoiceId) {
+                  <tr>
+                    <td>{{ receivable.invoiceNumber }}</td>
+                    <td>{{ receivable.customer.name }}</td>
+                    <td>{{ formatDate(receivable.issueDate) }}</td>
+                    <td>{{ formatDate(receivable.dueDate) }}</td>
+                    <td class="text-right">{{ formatCurrency(receivable.totalAmount) }}</td>
+                    <td class="text-right">{{ formatCurrency(receivable.balanceDue) }}</td>
+                    <td class="text-center">{{ formatNumber(receivable.daysOverdue) }}</td>
+                    <td>
+                      <span
+                        class="aging-badge"
+                        [style.background-color]="getAgingColor(receivable.agingCategory)"
+                      >
+                        {{ getAgingLabel(receivable.agingCategory) }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Inventario Valorizado -->
+  @if (activeView() === 'inventory') {
+    <div class="view-content">
+      @if (loadingInventory()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando inventario...</p>
+        </div>
+      }
+
+      @if (errorInventory()) {
+        <div class="alert alert-error">
+          <span>{{ errorInventory() }}</span>
+        </div>
+      }
+
+      @if (inventory() && !loadingInventory()) {
+        <div class="report-section">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <h4>Valor Total</h4>
+              <p class="summary-value">{{ formatCurrency(inventory()!.summary.totalValue) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Productos</h4>
+              <p class="summary-value">{{ formatNumber(inventory()!.summary.totalProducts) }}</p>
+            </div>
+            <div class="summary-card">
+              <h4>Unidades en Stock</h4>
+              <p class="summary-value">{{ formatNumber(inventory()!.summary.totalItemsInStock) }}</p>
+            </div>
+            <div class="summary-card alert">
+              <h4>Requieren Restock</h4>
+              <p class="summary-value">{{ formatNumber(inventory()!.summary.productsNeedingRestock) }}</p>
+            </div>
+          </div>
+
+          <!-- Por categoría -->
+          @if (inventory()!.byCategory && inventory()!.byCategory.length > 0) {
+            <div class="category-section">
+              <h3>Por Categoría</h3>
+              <div class="category-grid">
+                @for (cat of inventory()!.byCategory; track cat.category) {
+                  <div class="category-card">
+                    <h4>{{ cat.category }}</h4>
+                    <p class="category-value">{{ formatCurrency(cat.totalValue) }}</p>
+                    <p class="category-count">{{ formatNumber(cat.productCount) }} productos</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Tabla de productos -->
+          <div class="data-table">
+            <h3>Detalle de Productos</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th class="text-right">Stock</th>
+                  <th class="text-right">Costo Unit.</th>
+                  <th class="text-right">Valor Total</th>
+                  <th class="text-right">Stock Mín.</th>
+                  <th class="text-center">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of inventory()!.items; track item.productId) {
+                  <tr>
+                    <td>{{ item.productCode }}</td>
+                    <td class="product-name">{{ item.productName }}</td>
+                    <td>{{ item.category }}</td>
+                    <td class="text-right">{{ formatNumber(item.currentStock) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.unitCost) }}</td>
+                    <td class="text-right">{{ formatCurrency(item.totalValue) }}</td>
+                    <td class="text-right">{{ formatNumber(item.minimumStock) }}</td>
+                    <td class="text-center">
+                      @if (item.needsRestock) {
+                        <span class="status-badge restock">Restock</span>
+                      } @else {
+                        <span class="status-badge ok">OK</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
