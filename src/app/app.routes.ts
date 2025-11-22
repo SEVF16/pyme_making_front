@@ -165,6 +165,19 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'config',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/tenant-config/tenant-config.component').then(m => m.TenantConfigComponent),
+          },
+          {
+            path: 'initialize',
+            loadComponent: () => import('./features/tenant-config/config-init/config-init.component').then(m => m.ConfigInitComponent),
+          }
+        ]
+      },
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]

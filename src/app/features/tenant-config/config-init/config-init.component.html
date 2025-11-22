@@ -1,0 +1,68 @@
+<div class="config-init-container">
+  <div class="init-card">
+    <div class="icon-container">
+      <lucide-angular [img]="SettingsIcon" [size]="64" [strokeWidth]="1.5"></lucide-angular>
+    </div>
+
+    <h1>Inicializar Configuración</h1>
+    <p class="description">
+      No se encontró una configuración para tu empresa. Haz clic en el botón
+      para crear una configuración por defecto optimizada para PYMEs chilenas.
+    </p>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="default-config-info">
+      <h3>La configuración por defecto incluye:</h3>
+      <ul>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          IVA 19% habilitado
+        </li>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          Métodos de pago: Efectivo, Transferencia, Tarjetas, Cheque
+        </li>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          Control de stock habilitado
+        </li>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          Redondeo de precios a .990
+        </li>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          Moneda: CLP, Zona horaria: America/Santiago
+        </li>
+        <li>
+          <lucide-angular [img]="CheckCircleIcon" [size]="18"></lucide-angular>
+          Términos de pago: Contado, 30, 60 y 90 días
+        </li>
+      </ul>
+    </div>
+
+    <div class="actions">
+      <app-button-lib
+        [configuration]="initButtonConfig"
+        [disabled]="loading()"
+        (buttonClick)="initializeConfig()"
+      />
+    </div>
+
+    @if (loading()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Inicializando configuración...</p>
+      </div>
+    }
+
+    <p class="note">
+      Podrás personalizar toda la configuración después de crearla.
+    </p>
+  </div>
+</div>
