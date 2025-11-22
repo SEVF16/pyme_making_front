@@ -49,6 +49,16 @@ export class HeadersService {
     this.removeHeader('Authorization');
   }
 
+  // Establecer tenant ID
+  setTenantId(tenantId: string): void {
+    this.setHeader('x-tenant-id', tenantId);
+  }
+
+  // Remover tenant ID
+  removeTenantId(): void {
+    this.removeHeader('x-tenant-id');
+  }
+
   // Limpiar todos los headers (excepto los por defecto)
   clearHeaders(): void {
     this.setDefaultHeaders();
