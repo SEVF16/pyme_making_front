@@ -9,11 +9,13 @@ import {
   QUOTATION_STATUS_COLORS,
   getExpiryColor
 } from '../../interfaces/quotation.interfaces';
-import { CustomDataTableComponent } from '../../shared/components/data-table/data-table.component';
+
 import { ButtonLibComponent } from '../../shared/components/buttonlib/button-lib.component';
-import { TableColumn } from '../../shared/components/data-table/interfaces/datatable.interface';
+
 import { ButtonConfig } from '../../shared/components/buttonlib/interfaces/button.interface';
 import { Plus, Eye, Edit, Trash2, Send, CheckCircle, XCircle, FileText, LucideAngularModule } from 'lucide-angular';
+import { CustomDataTableComponent } from '../../shared/components/data-table/custom-data-table.component';
+import { TableColumn } from '../../shared/components/data-table/models/data-table.models';
 
 @Component({
   selector: 'app-quotations',
@@ -51,7 +53,6 @@ export class QuotationsComponent implements OnInit {
       field: 'quotationNumber',
       header: 'N° Cotización',
       width: '150px',
-      sortable: true
     },
     {
       field: 'status',

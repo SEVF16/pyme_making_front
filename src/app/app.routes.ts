@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { CompaniesComponent } from './features/companies/companies.component';
 import { authGuard, publicGuard } from './guards/auth.guard';
+import { superAdminGuard } from './guards/super-admin.guard';
 
 export const routes: Routes = [
   { 
@@ -175,6 +176,10 @@ export const routes: Routes = [
           {
             path: 'initialize',
             loadComponent: () => import('./features/tenant-config/config-init/config-init.component').then(m => m.ConfigInitComponent),
+          }
+        ]
+      },
+      {
         path: 'tickets',
         children: [
           {
@@ -194,6 +199,13 @@ export const routes: Routes = [
       // Otras rutas protegidas
       { path: '', redirectTo: '/companies', pathMatch: 'full' },
     ]
+  },
+  // ===== MÓDULO ADMIN (SOLO SUPER ADMIN) =====
+  {
+    path: 'admin',
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
+    canActivate: [authGuard, superAdminGuard], // Requiere estar autenticado Y ser super-admin
+    title: 'Admin Panel'
   },
   // Redirección por defecto
   { path: '**', redirectTo: '/companies' }

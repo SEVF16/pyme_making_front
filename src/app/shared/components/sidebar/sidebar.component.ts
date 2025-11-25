@@ -1,7 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { BarChart3, Home, List, LucideAngularModule, Package, Settings, Tags, UserPlus, Users } from 'lucide-angular';
+import {
+  BarChart3,
+  Home,
+  List,
+  LucideAngularModule,
+  Package,
+  Settings,
+  Tags,
+  UserPlus,
+  Users,
+  FileText,
+  CreditCard,
+  ShoppingCart,
+  FileSpreadsheet,
+  Store,
+  Receipt,
+  Ticket
+} from 'lucide-angular';
 import { MenuItem } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { SidebarMenuItem } from '../../interfaces/menu-item.interface';
@@ -29,13 +46,20 @@ export class SidebarComponent {
   readonly UserPlusIcon = UserPlus;
   readonly ListIcon = List;
   readonly TagsIcon = Tags;
+  readonly FileTextIcon = FileText;
+  readonly CreditCardIcon = CreditCard;
+  readonly ShoppingCartIcon = ShoppingCart;
+  readonly FileSpreadsheetIcon = FileSpreadsheet;
+  readonly StoreIcon = Store;
+  readonly ReceiptIcon = Receipt;
+  readonly TicketIcon = Ticket;
   
   // Items del menú principal
   menuItems: SidebarMenuItem[] = [
     {
       label: 'Dashboard',
       icon: 'Home',
-      routerLink: 'companies',
+      routerLink: '/companies',
       expanded: false
     },
     {
@@ -44,13 +68,13 @@ export class SidebarComponent {
       expanded: false,
       items: [
         {
-          label: 'Lista de clientes',
-          icon: 'List',
+          label: 'Clientes',
+          icon: 'Users',
           routerLink: '/customers'
         },
         {
-          label: 'Lista de usuario',
-          icon: 'List',
+          label: 'Usuarios',
+          icon: 'UserPlus',
           routerLink: '/users'
         }
       ]
@@ -58,30 +82,76 @@ export class SidebarComponent {
     {
       label: 'Productos',
       icon: 'Package',
+      routerLink: '/products',
+      expanded: false
+    },
+    {
+      label: 'Ventas',
+      icon: 'ShoppingCart',
       expanded: false,
       items: [
         {
-          label: 'Inventario',
-          icon: 'List',
-          routerLink: '/products'
+          label: 'Facturas',
+          icon: 'FileText',
+          routerLink: '/invoices'
         },
         {
-          label: 'Categorías',
-          icon: 'Tags',
-          routerLink: '/categories'
+          label: 'Cotizaciones',
+          icon: 'FileSpreadsheet',
+          routerLink: '/quotations'
+        },
+        {
+          label: 'Pagos',
+          icon: 'CreditCard',
+          routerLink: '/payments'
         }
       ]
     },
     {
+      label: 'Compras',
+      icon: 'Receipt',
+      expanded: false,
+      items: [
+        {
+          label: 'Órdenes de Compra',
+          icon: 'ShoppingCart',
+          routerLink: '/purchase-orders'
+        }
+      ]
+    },
+    {
+      label: 'Punto de Venta',
+      icon: 'Store',
+      expanded: false,
+      items: [
+        {
+          label: 'Ventas POS',
+          icon: 'Receipt',
+          routerLink: '/pos/sales'
+        },
+        {
+          label: 'Sesiones',
+          icon: 'List',
+          routerLink: '/pos/sessions'
+        }
+      ]
+    },
+    {
+      label: 'Tickets',
+      icon: 'Ticket',
+      routerLink: '/tickets',
+      expanded: false
+    },
+    {
       label: 'Reportes',
       icon: 'BarChart3',
-      routerLink: '/reports',
+      routerLink: '/reporting',
       expanded: false
     },
     {
       label: 'Configuración',
       icon: 'Settings',
-      routerLink: '/settings',
+      routerLink: '/config',
       expanded: false
     }
   ];
@@ -114,7 +184,14 @@ export class SidebarComponent {
       'Settings': this.SettingsIcon,
       'UserPlus': this.UserPlusIcon,
       'List': this.ListIcon,
-      'Tags': this.TagsIcon
+      'Tags': this.TagsIcon,
+      'FileText': this.FileTextIcon,
+      'CreditCard': this.CreditCardIcon,
+      'ShoppingCart': this.ShoppingCartIcon,
+      'FileSpreadsheet': this.FileSpreadsheetIcon,
+      'Store': this.StoreIcon,
+      'Receipt': this.ReceiptIcon,
+      'Ticket': this.TicketIcon
     };
     return iconMap[iconName] || this.HomeIcon;
   }

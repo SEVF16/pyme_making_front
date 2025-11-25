@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BaseApiService } from '../api/base-api.service';
+import { isPlatformBrowser } from '@angular/common';
+import { BaseApiService } from '../base-api.service';
+import { HeadersService } from '../headers.service';
 import {
   TenantConfigResponseDto,
   CreateTenantConfigDto,
@@ -28,26 +31,51 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class TenantConfigService extends BaseApiService<
-  TenantConfigResponseDto,
-  CreateTenantConfigDto,
-  UpdateTenantConfigDto
-> {
-  protected override endpoint = 'config';
+export class TenantConfigService extends BaseApiService {
+  private tenantId: string | null = null;
+  private endpoint = 'config';
 
   // BehaviorSubject para mantener la configuración en memoria
   private configSubject = new BehaviorSubject<TenantConfigResponseDto | null>(null);
   public config$ = this.configSubject.asObservable();
 
+  constructor(
+    override http: HttpClient,
+    override headersService: HeadersService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    super(http, headersService);
+    this.initializeTenantId();
+  }
+
+  /**
+   * Inicializa el tenant-id desde localStorage (solo en browser)
+   */
+  private initializeTenantId(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.tenantId = localStorage.getItem('tenant_id');
+    }
+  }
+
+  /**
+   * Asegura que el tenant-id esté configurado antes de cada petición
+   */
+  private ensureTenantId(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const currentTenantId = localStorage.getItem('tenant_id');
+      if (currentTenantId && currentTenantId !== this.tenantId) {
+        this.tenantId = currentTenantId;
+        this.headersService.setTenantId(currentTenantId);
+      }
+    }
+  }
+
   /**
    * Inicializa configuración por defecto para el tenant actual
    */
   initializeConfig(): Observable<TenantConfigResponseDto> {
-    return this.http.post<TenantConfigResponseDto>(
-      `${this.apiUrl}/${this.endpoint}/initialize`,
-      {},
-      { headers: this.getHeaders() }
-    ).pipe(
+    this.ensureTenantId();
+    return this.post<TenantConfigResponseDto>(`${this.endpoint}/initialize`, {}).pipe(
       tap(config => this.configSubject.next(config))
     );
   }
@@ -56,10 +84,8 @@ export class TenantConfigService extends BaseApiService<
    * Obtiene la configuración del tenant actual
    */
   getCurrentConfig(): Observable<TenantConfigResponseDto> {
-    return this.http.get<TenantConfigResponseDto>(
-      `${this.apiUrl}/${this.endpoint}`,
-      { headers: this.getHeaders() }
-    ).pipe(
+    this.ensureTenantId();
+    return this.get<TenantConfigResponseDto>(this.endpoint).pipe(
       tap(config => this.configSubject.next(config))
     );
   }
@@ -68,11 +94,8 @@ export class TenantConfigService extends BaseApiService<
    * Actualiza la configuración del tenant actual
    */
   updateCurrentConfig(dto: UpdateTenantConfigDto): Observable<TenantConfigResponseDto> {
-    return this.http.put<TenantConfigResponseDto>(
-      `${this.apiUrl}/${this.endpoint}`,
-      dto,
-      { headers: this.getHeaders() }
-    ).pipe(
+    this.ensureTenantId();
+    return this.put<TenantConfigResponseDto>(this.endpoint, dto).pipe(
       tap(config => this.configSubject.next(config))
     );
   }
@@ -81,32 +104,24 @@ export class TenantConfigService extends BaseApiService<
    * Calcula impuesto para un monto dado
    */
   calculateTaxForAmount(request: TaxCalculationRequestDto): Observable<TaxCalculationResponseDto> {
-    return this.http.post<TaxCalculationResponseDto>(
-      `${this.apiUrl}/${this.endpoint}/tax-calculation`,
-      request,
-      { headers: this.getHeaders() }
-    );
+    this.ensureTenantId();
+    return this.post<TaxCalculationResponseDto>(`${this.endpoint}/tax-calculation`, request);
   }
 
   /**
    * Aplica redondeo de precio según configuración
    */
   applyPriceRounding(request: PriceRoundingRequestDto): Observable<PriceRoundingResponseDto> {
-    return this.http.post<PriceRoundingResponseDto>(
-      `${this.apiUrl}/${this.endpoint}/price-rounding`,
-      request,
-      { headers: this.getHeaders() }
-    );
+    this.ensureTenantId();
+    return this.post<PriceRoundingResponseDto>(`${this.endpoint}/price-rounding`, request);
   }
 
   /**
    * Obtiene el siguiente número de factura
    */
   getNextInvoiceNumber(): Observable<NextInvoiceNumberResponseDto> {
-    return this.http.get<NextInvoiceNumberResponseDto>(
-      `${this.apiUrl}/${this.endpoint}/next-invoice-number`,
-      { headers: this.getHeaders() }
-    );
+    this.ensureTenantId();
+    return this.get<NextInvoiceNumberResponseDto>(`${this.endpoint}/next-invoice-number`);
   }
 
   // ============================================

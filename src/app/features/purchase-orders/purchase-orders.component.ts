@@ -9,11 +9,12 @@ import {
   PURCHASE_ORDER_TYPE_LABELS,
   PURCHASE_ORDER_STATUS_COLORS
 } from '../../interfaces/purchase-order.interfaces';
-import { CustomDataTableComponent } from '../../shared/components/data-table/data-table.component';
+
 import { ButtonLibComponent } from '../../shared/components/buttonlib/button-lib.component';
-import { TableColumn, TableAction } from '../../shared/components/data-table/interfaces/datatable.interface';
 import { ButtonConfig } from '../../shared/components/buttonlib/interfaces/button.interface';
 import { Plus, Eye, Edit, Trash2, LucideAngularModule } from 'lucide-angular';
+import { CustomDataTableComponent } from '../../shared/components/data-table/custom-data-table.component';
+import { TableColumn } from '../../shared/components/data-table/models/data-table.models';
 
 @Component({
   selector: 'app-purchase-orders',
@@ -47,7 +48,6 @@ export class PurchaseOrdersComponent implements OnInit {
       field: 'orderNumber',
       header: 'N° Orden',
       width: '150px',
-      sortable: true
     },
     {
       field: 'type',

@@ -63,7 +63,7 @@
             name="actualClosingCash"
             type="number"
             [control]="closeForm.get('actualClosingCash')!"
-            [required]="true"
+          
             placeholder="0"
           />
 
@@ -87,7 +87,6 @@
         />
         <app-button-lib
           [configuration]="closeButtonConfig"
-          [disabled]="closeForm.invalid || loading()"
           (buttonClick)="closeSession()"
         />
       </div>

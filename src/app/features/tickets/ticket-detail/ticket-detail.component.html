@@ -15,7 +15,7 @@
 
     <div class="header-right">
       <app-button-lib
-        [icon]="PrinterIcon"
+        
         label="Imprimir"
         severity="primary"
         (click)="printTicket()"
@@ -23,7 +23,7 @@
 
       <app-button-lib
         *ngIf="ticket.canCancel()"
-        [icon]="XCircleIcon"
+        
         label="Cancelar"
         severity="danger"
         (click)="cancelTicket()"
@@ -31,7 +31,7 @@
 
       <app-button-lib
         *ngIf="ticket.canConvert()"
-        [icon]="FileTextIcon"
+        
         label="Convertir a Boleta"
         severity="success"
         (click)="convertToBoleta()"
@@ -48,9 +48,9 @@
     <div class="conversion-text">
       <strong>Este ticket fue convertido a Boleta Electrónica</strong>
       <p>Fecha de conversión: {{ formatDate(ticket.convertedAt) }}</p>
-      <a [routerLink]="['/invoices', ticket.convertedToInvoiceId]" class="view-invoice-link">
+      <!-- <a [routerLink]="['/invoices', ticket.convertedToInvoiceId]" class="view-invoice-link">
         Ver Boleta →
-      </a>
+      </a> -->
     </div>
   </div>
 
@@ -66,15 +66,15 @@
         </div>
         <div class="info-row" *ngIf="ticket.customerData?.rut">
           <span class="label">RUT:</span>
-          <span class="value">{{ ticket.customerData.rut }}</span>
+          <span class="value">{{ ticket.customerData?.rut }}</span>
         </div>
         <div class="info-row" *ngIf="ticket.customerData?.email">
           <span class="label">Email:</span>
-          <span class="value">{{ ticket.customerData.email }}</span>
+          <span class="value">{{ ticket.customerData?.email }}</span>
         </div>
         <div class="info-row" *ngIf="ticket.customerData?.phone">
           <span class="label">Teléfono:</span>
-          <span class="value">{{ ticket.customerData.phone }}</span>
+          <span class="value">{{ ticket.customerData?.phone  }}</span>
         </div>
       </div>
     </div>

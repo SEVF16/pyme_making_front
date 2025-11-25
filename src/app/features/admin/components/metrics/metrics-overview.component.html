@@ -1,0 +1,91 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h2>Métricas Globales del Sistema</h2>
+      <p class="text-muted">Vista general de todas las empresas</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && metrics">
+    <!-- Tarjetas de métricas principales -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2">Total Empresas</h6>
+            <h2 class="card-title">{{ metrics.totalCompanies }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2">Empresas Activas</h6>
+            <h2 class="card-title">{{ metrics.activeCompanies }}</h2>
+            <small>{{ getActivePercentage() }}% del total</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2">En Período de Prueba</h6>
+            <h2 class="card-title">{{ metrics.trialCompanies }}</h2>
+            <small>{{ getTrialPercentage() }}% del total</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card text-center bg-danger text-white">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2">Empresas Suspendidas</h6>
+            <h2 class="card-title">{{ metrics.suspendedCompanies }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución por plan -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Distribución por Plan</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4" *ngFor="let planName of getPlanNames()">
+                <div class="card mb-3">
+                  <div class="card-body text-center">
+                    <h6 class="text-muted">{{ planName }}</h6>
+                    <h3 class="text-primary">{{ getPlanCount(planName) }}</h3>
+                    <small class="text-muted">empresas</small>
+                    <div class="progress mt-2">
+                      <div class="progress-bar bg-info"
+                           role="progressbar"
+                           [style.width.%]="(getPlanCount(planName) / metrics.totalCompanies) * 100">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="getPlanNames().length === 0" class="text-center text-muted">
+              <p>No hay empresas con planes asignados aún.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

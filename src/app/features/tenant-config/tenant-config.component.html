@@ -74,7 +74,7 @@
                 name="ivaRate"
                 type="number"
                 [control]="taxForm.get('ivaRate')!"
-                [required]="true"
+                
                 placeholder="19"
               />
 
@@ -94,7 +94,7 @@
                 name="taxCalculationMode"
                 [control]="taxForm.get('taxCalculationMode')!"
                 [options]="taxModeOptions"
-                [required]="true"
+                
               />
 
               <div class="form-field">
@@ -122,7 +122,7 @@
           <div class="form-actions">
             <app-button-lib
               [configuration]="saveButtonConfig"
-              [disabled]="taxForm.invalid || loading()"
+              
               (buttonClick)="saveConfig()"
             />
           </div>
@@ -139,7 +139,7 @@
                 label="Prefijo de Numeración"
                 name="invoiceSeriesPrefix"
                 [control]="salesForm.get('invoiceSeriesPrefix')!"
-                [required]="true"
+                
                 placeholder="VENTA"
               />
 
@@ -148,7 +148,7 @@
                 name="defaultPaymentTerm"
                 [control]="salesForm.get('defaultPaymentTerm')!"
                 [options]="paymentTermOptions"
-                [required]="true"
+                
               />
 
               <div class="form-field full-width">
@@ -171,7 +171,7 @@
           <div class="form-actions">
             <app-button-lib
               [configuration]="saveButtonConfig"
-              [disabled]="salesForm.invalid || loading()"
+              
               (buttonClick)="saveConfig()"
             />
           </div>
@@ -222,7 +222,7 @@
                 name="defaultMinStock"
                 type="number"
                 [control]="inventoryForm.get('defaultMinStock')!"
-                [required]="true"
+                
                 placeholder="5"
               />
 
@@ -231,14 +231,14 @@
                 name="priceRoundingRule"
                 [control]="inventoryForm.get('priceRoundingRule')!"
                 [options]="roundingRuleOptions"
-                [required]="true"
+                
               />
 
               <app-input
                 label="Unidad de Medida por Defecto"
                 name="defaultProductUnit"
                 [control]="inventoryForm.get('defaultProductUnit')!"
-                [required]="true"
+                
                 placeholder="unidad"
               />
             </div>
@@ -247,7 +247,7 @@
           <div class="form-actions">
             <app-button-lib
               [configuration]="saveButtonConfig"
-              [disabled]="inventoryForm.invalid || loading()"
+              
               (buttonClick)="saveConfig()"
             />
           </div>
@@ -264,7 +264,7 @@
                 label="Moneda Base"
                 name="baseCurrency"
                 [control]="generalForm.get('baseCurrency')!"
-                [required]="true"
+                
                 placeholder="CLP"
               />
 
@@ -272,7 +272,7 @@
                 label="Zona Horaria"
                 name="timezone"
                 [control]="generalForm.get('timezone')!"
-                [required]="true"
+                
                 placeholder="America/Santiago"
               />
 
@@ -280,7 +280,7 @@
                 label="Formato de Fecha"
                 name="dateFormat"
                 [control]="generalForm.get('dateFormat')!"
-                [required]="true"
+                
                 placeholder="DD/MM/YYYY"
               />
 
@@ -288,7 +288,7 @@
                 label="Locale"
                 name="locale"
                 [control]="generalForm.get('locale')!"
-                [required]="true"
+                
                 placeholder="es-CL"
               />
             </div>
@@ -297,7 +297,7 @@
           <div class="form-actions">
             <app-button-lib
               [configuration]="saveButtonConfig"
-              [disabled]="generalForm.invalid || loading()"
+              
               (buttonClick)="saveConfig()"
             />
           </div>

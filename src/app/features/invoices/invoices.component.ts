@@ -157,8 +157,7 @@ export class InvoicesComponent implements OnInit {
 
     this.invoicesService.getInvoices(params).subscribe({
       next: (response) => {
-        this.invoices.set(response.data || []);
-        this.totalItems = response.pagination?.total || 0;
+        this.invoices.set(response.data.result);
         this.loading.set(false);
       },
       error: (error) => {

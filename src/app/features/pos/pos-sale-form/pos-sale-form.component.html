@@ -74,9 +74,9 @@
         </button>
       </div>
 
-      <div class="items-container">
+      <div class="items-container" formArrayName="items">
         @for (item of items.controls; track $index; let i = $index) {
-          <div class="item-card" [formGroup]="item">
+          <div class="item-card" [formGroupName]="i">
             <div class="item-header">
               <span class="item-number">Item #{{ i + 1 }}</span>
               @if (items.length > 1) {
@@ -225,7 +225,6 @@
       />
       <app-button-lib
         [configuration]="saveButtonConfig"
-        [disabled]="saleForm.invalid || loading()"
         (buttonClick)="createSale()"
       />
     </div>

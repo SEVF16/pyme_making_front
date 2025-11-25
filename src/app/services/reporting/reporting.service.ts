@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { BaseApiService } from '../base-api.service';
-import { HeadersService } from '../headers/headers.service';
+
 import {
   ExecutiveDashboardDto,
   SalesByPeriodDto,
@@ -16,6 +16,7 @@ import {
   ReportRequestDto,
   TopProductsRequestDto
 } from '../../interfaces/reporting.interfaces';
+import { HeadersService } from '../headers.service';
 
 @Injectable({
   providedIn: 'root'

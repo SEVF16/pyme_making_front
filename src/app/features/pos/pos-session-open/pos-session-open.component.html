@@ -24,7 +24,7 @@
           label="ID del Terminal"
           name="posTerminalId"
           [control]="sessionForm.get('posTerminalId')!"
-          [required]="true"
+          
           placeholder="Ej: CAJA-01"
         />
 
@@ -32,7 +32,7 @@
           label="Nombre del Terminal"
           name="posTerminalName"
           [control]="sessionForm.get('posTerminalName')!"
-          [required]="true"
+          
           placeholder="Ej: Caja Principal"
         />
 
@@ -41,7 +41,7 @@
           name="openingCash"
           type="number"
           [control]="sessionForm.get('openingCash')!"
-          [required]="true"
+          
           placeholder="0"
         />
 
@@ -65,7 +65,7 @@
       />
       <app-button-lib
         [configuration]="openButtonConfig"
-        [disabled]="sessionForm.invalid || loading()"
+        
         (buttonClick)="openSession()"
       />
     </div>
